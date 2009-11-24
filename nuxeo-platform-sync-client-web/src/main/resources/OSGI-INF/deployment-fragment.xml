@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<fragment>
+
+  <extension target="application#MODULE">
+    <module>
+      <java>${bundle.fileName}</java>
+    </module>
+  </extension>
+  
+  <extension target="pages#PAGES">
+    <page view-id="/sync_admin.xhtml">
+      breadcrumb=command.sync_admin
+    </page>
+  </extension>
+  
+  <extension target="faces-config#NAVIGATION">
+    <navigation-case>
+      <from-outcome>sync_admin</from-outcome>
+      <to-view-id>/sync_admin.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </extension>
+  
+  <install>
+    <!--  Unzip the war template -->
+    <unzip from="${bundle.fileName}" to="/">
+      <include>nuxeo.war/**</include>
+    </unzip>
+    
+    <!--  create a temp dir -->
+    <!--  be sure no directory with that name exists -->
+    <delete path="nxsync.tmp"/>
+    <mkdir path="nxsync.tmp"/>
+
+    <unzip from="${bundle.fileName}" to="nxsync.tmp">
+      <include>OSGI-INF/l10n/**</include>
+    </unzip>
+
+    <append from="nxsync.tmp/OSGI-INF/l10n/messages.properties"
+        to="nuxeo.war/WEB-INF/classes/messages.properties"
+        addNewLine="true"/>
+    <append
+        from="nxsync.tmp/OSGI-INF/l10n/messages_en.properties"
+        to="nuxeo.war/WEB-INF/classes/messages_en.properties"
+        addNewLine="true"/>
+    <append
+        from="nxsync.tmp/OSGI-INF/l10n/messages_fr.properties"
+        to="nuxeo.war/WEB-INF/classes/messages_fr.properties"
+        addNewLine="true"/>
+
+    <delete path="nxsync.tmp"/>
+  </install>
+
+</fragment>

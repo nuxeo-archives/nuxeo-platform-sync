@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<fragment>
+  <extension target="application#MODULE">
+    <module>
+      <java>${bundle.fileName}</java>
+    </module>
+  </extension>
+
+  <!-- Enable authentication for mywebservices requests -->
+
+  <extension target="web#LISTENER">
+    <listener>
+      <listener-class>
+        com.sun.xml.ws.transport.http.servlet.WSServletContextListener
+      </listener-class>
+    </listener>
+  </extension>
+  <extension target="web#SERVLET">
+    <servlet>
+      <description>JAX-WS endpoint - Nuxeo WebServices</description>
+      <display-name>Nuxeo WebServices</display-name>
+      <servlet-name>NuxeoWS</servlet-name>
+      <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet
+      </servlet-class>
+      <load-on-startup>1</load-on-startup>
+    </servlet>
+  </extension>
+  <extension target="web#SERVLET-MAPPING">
+    <servlet-mapping>
+      <servlet-name>NuxeoWS</servlet-name>
+      <url-pattern> /webservices/*</url-pattern>
+    </servlet-mapping>
+  </extension>
+
+  <extension target="jaxws#ENDPOINT">
+    <endpoint name="NuxeoWSMainEntrancePoint"
+      implementation="org.nuxeo.ecm.platform.sync.server.webservices.NuxeoWSMainEntrancePoint"
+      url-pattern="/webservices/wssyncroentry" />
+  </extension>
+  <extension target="jaxws#ENDPOINT">
+    <endpoint name="WSSynchroServerModule"
+      implementation="org.nuxeo.ecm.platform.sync.server.webservices.WSSynchroServerModule"
+      url-pattern="/webservices/wssyncroserver" />
+  </extension>
+</fragment>
+

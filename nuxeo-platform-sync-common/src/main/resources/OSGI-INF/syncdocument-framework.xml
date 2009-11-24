@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.ecm.platform.sync.SynchronizableDocumentManager">
+
+  <service>
+    <provide interface="org.nuxeo.ecm.platform.sync.adapter.service.SynchronizableDocumentManagerService" />
+  </service>
+
+  <implementation class="org.nuxeo.ecm.platform.sync.adapter.service.SynchronizableDocumentManagerComponent" />
+
+  <extension-point name="synchronizableDocument">
+    <object class="org.nuxeo.ecm.platform.sync.adapter.service.SynchronizableDocumentFactoryDescriptor" />
+  </extension-point>
+
+</component>

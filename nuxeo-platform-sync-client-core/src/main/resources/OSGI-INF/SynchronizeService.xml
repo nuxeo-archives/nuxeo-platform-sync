@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<component name="org.nuxeo.ecm.platform.synchronize.SynchronizeService">
+  <implementation class="org.nuxeo.ecm.platform.sync.client.SynchronizeServiceImpl" />
+
+  <service>
+    <provide interface="org.nuxeo.ecm.platform.sync.api.SynchronizeService" />
+  </service>
+
+  <documentation>
+   The Synchronize Service responsible for performing the synchronization on a client server.
+  </documentation>
+
+  <extension-point name="importConfiguration">
+    <object class="org.nuxeo.ecm.platform.sync.client.ImportConfiguration" />
+  </extension-point>
+
+  <extension-point name="pathToAvoidSecurityPolicy">
+    <object class="org.nuxeo.ecm.platform.sync.client.DocumentPathDescriptor" />
+  </extension-point>
+
+  <extension-point name="defaultSynchronizeDetails">
+    <object class="org.nuxeo.ecm.platform.sync.client.SynchronizeDetailsDescriptor" />
+  </extension-point>
+
+</component>

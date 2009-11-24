@@ -1,0 +1,13 @@
+<component name="org.nuxeo.ecm.platform.sync.client.actions">
+
+  <extension target="org.nuxeo.ecm.platform.actions.ActionService"
+    point="actions">
+
+    <action id="sync_admin" link="sync_admin"
+      label="command.sync_admin" order="50">
+      <category>USER_SERVICES</category>
+    </action>
+
+  </extension>
+
+</component>

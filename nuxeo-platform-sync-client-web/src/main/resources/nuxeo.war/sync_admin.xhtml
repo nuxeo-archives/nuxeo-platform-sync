@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<nxthemes:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:nxthemes="http://nuxeo.org/nxthemes"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jstl/core">
+
+  <ui:define name="page title"><h:outputText value="#{messages['title.sync_admin']}" /></ui:define>
+
+  <ui:define name="body">
+    <div>
+    <h:form>
+      <ui:include src="/incl/message_banner.xhtml"/>
+      
+      <h:panelGrid columns="2" styleClass="dataInput" columnClasses="labelColumn, fieldColumn">
+        <h:outputLabel for="clientIP" class="required" value="#{messages['label.sync.clientIP']}" />
+        <h:panelGroup>
+          <h:inputText id="clientIP" value="#{syncActions.synchronizeDetails.host}" required="true" />
+          <h:message for="clientIP" />
+        </h:panelGroup>
+        <h:outputLabel for="clientPort" value="#{messages['label.sync.clientPort']}" />
+        <h:panelGroup>
+          <h:inputText id="clientPort" value="#{syncActions.synchronizeDetails.port}">
+            <f:converter converterId="javax.faces.Short" />
+          </h:inputText>
+          <h:message for="clientPort" />
+        </h:panelGroup>
+        <h:outputLabel for="username" class="required" value="#{messages['label.sync.username']}" />
+        <h:panelGroup>
+          <h:inputText id="username" value="#{syncActions.synchronizeDetails.username}" required="true" />
+          <h:message for="username" />
+        </h:panelGroup>        
+        <h:outputLabel for="password" class="required" value="#{messages['label.sync.password']}" />
+        <h:panelGroup>
+          <h:inputSecret id="password" value="#{syncActions.synchronizeDetails.password}" required="true" />
+          <h:message for="password" />
+        </h:panelGroup>
+      </h:panelGrid>
+      
+      <h:panelGrid columns="1" styleClass="dataInput">
+        <h:commandLink value="#{messages['command.syncDocs']}" action="#{syncActions.doSynchronize}" />
+        <h:commandLink value="#{messages['command.syncVocabularies']}" action="#{syncActions.doSynchronizeVocabularies}" />
+        <h:commandLink value="#{messages['command.syncRelations']}" action="#{syncActions.doSynchronizeRelations}" />
+      </h:panelGrid>
+    </h:form>
+    </div>
+  </ui:define>
+
+</nxthemes:composition>
