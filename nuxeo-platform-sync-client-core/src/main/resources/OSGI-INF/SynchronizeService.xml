@@ -23,4 +23,8 @@
     <object class="org.nuxeo.ecm.platform.sync.client.SynchronizeDetailsDescriptor" />
   </extension-point>
 
+  <extension-point name="documentDifferencesPolicy">
+    <object class="org.nuxeo.ecm.platform.sync.client.DocumentDifferencesPolicyDescriptor" />
+  </extension-point>
+
 </component>

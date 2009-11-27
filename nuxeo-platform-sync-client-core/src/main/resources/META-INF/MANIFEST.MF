@@ -11,4 +11,5 @@ Require-Bundle: org.nuxeo.ecm.core.schema,
 Provide-Package: org.nuxeo.ecm.platform.sync.manager
 Nuxeo-Component: OSGI-INF/sync-client-security-contrib.xml,
  OSGI-INF/SynchronizeService.xml,
+ OSGI-INF/sync-client-synchronize-contrib.xml,
  OSGI-INF/sync-client-jaxrs-contrib.xml

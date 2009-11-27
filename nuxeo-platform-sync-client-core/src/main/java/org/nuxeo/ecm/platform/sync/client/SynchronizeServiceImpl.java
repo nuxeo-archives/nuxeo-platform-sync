@@ -25,6 +25,7 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.platform.sync.api.SynchronizeService;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
+import org.nuxeo.ecm.platform.sync.manager.DocumentDifferencesPolicy;
 import org.nuxeo.ecm.platform.sync.manager.DocumentsSynchronizeManager;
 import org.nuxeo.ecm.platform.sync.manager.RelationsSynchronizeManager;
 import org.nuxeo.ecm.platform.sync.manager.VocabularySynchronizeManager;
@@ -49,6 +50,8 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
 
     private static final String DEFAULT_SYNCHRONIZE_DETAILS_EP = "defaultSynchronizeDetails";
 
+    private static final String DOCUMENT_DIFFERENCES_POLICY_EP = "documentDifferencesPolicy";
+
     private static final Logger log = Logger.getLogger(SynchronizeServiceImpl.class);
 
     private UserManager userManager;
@@ -58,6 +61,8 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
     private List<String> documentPaths;
 
     private SynchronizeDetails defaultSynchronizeDetails;
+
+    private DocumentDifferencesPolicy documentDifferencesPolicy;
 
     @Override
     public void activate(ComponentContext componentContext) throws Exception {
@@ -75,6 +80,9 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
             defaultSynchronizeDetails = new SynchronizeDetails(
                     desc.getUsername(), desc.getPassword(), desc.getHost(),
                     desc.getPort());
+        } else if (DOCUMENT_DIFFERENCES_POLICY_EP.equals(extensionPoint)) {
+            DocumentDifferencesPolicyDescriptor desc = (DocumentDifferencesPolicyDescriptor) contribution;
+            documentDifferencesPolicy = desc.getPolicyClass().newInstance();
         }
     }
 
@@ -116,7 +124,7 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
             getUserManager().createUser(userModel);
         }
         DocumentsSynchronizeManager documentSynchronizeManager = new DocumentsSynchronizeManager(
-                session, details, queryName, importConfiguration);
+                session, details, queryName, importConfiguration, documentDifferencesPolicy);
         documentSynchronizeManager.run();
     }
 

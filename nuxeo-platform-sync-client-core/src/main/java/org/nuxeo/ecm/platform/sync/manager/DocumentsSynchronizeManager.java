@@ -18,7 +18,6 @@
 package org.nuxeo.ecm.platform.sync.manager;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,16 +26,13 @@ import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import org.apache.log4j.Logger;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.event.EventServiceAdmin;
-import org.nuxeo.ecm.platform.sync.adapter.SynchronizableDocument;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 import org.nuxeo.ecm.platform.sync.client.ImportConfiguration;
 import org.nuxeo.ecm.platform.sync.processor.TupleProcessor;
-import org.nuxeo.ecm.platform.sync.utils.ImportUtils;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoWSMainEntrancePoint;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoWSMainEntrancePointService;
@@ -74,19 +70,19 @@ public class DocumentsSynchronizeManager {
 
     private ImportConfiguration importConfiguration;
 
+    private DocumentDifferencesPolicy documentDifferencesPolicy;
+
     public DocumentsSynchronizeManager(CoreSession session,
-            SynchronizeDetails synchronizeDetails, String queryName, ImportConfiguration importConfiguration) {
+            SynchronizeDetails synchronizeDetails, String queryName,
+            ImportConfiguration importConfiguration,
+            DocumentDifferencesPolicy documentDifferencesPolicy) {
 
         this.session = session;
         this.synchronizeDetails = synchronizeDetails;
         this.queryName = queryName;
         this.importConfiguration = importConfiguration;
+        this.documentDifferencesPolicy = documentDifferencesPolicy;
         prepareLists();
-    }
-
-    public DocumentsSynchronizeManager(CoreSession session,
-            SynchronizeDetails synchronizeDetails) {
-        this(session, synchronizeDetails, null, null);
     }
 
     public void run() throws ClientException {
@@ -192,37 +188,10 @@ public class DocumentsSynchronizeManager {
             query.runUnrestricted();
             DocumentModelList availableDocs = query.result;
 
-            // backup list that will contain the new added documents from the
-            // server
-            List<NuxeoSynchroTuple> newTuples = new ArrayList<NuxeoSynchroTuple>();
-            newTuples.addAll(tuples);
-            for (DocumentModel doc : availableDocs) {
-                boolean remove = true;
-                SynchronizableDocument syncDoc = doc.getAdapter(SynchronizableDocument.class);
-                for (NuxeoSynchroTuple tuple : tuples) {
-                    String lifecycleState = ImportUtils.getContextDataInfo(
-                            tuple.getContextData(),
-                            CoreSession.IMPORT_LIFECYCLE_STATE);
-                    if (syncDoc.getId().equals(tuple.getId())) {
-                        newTuples.remove(tuple);
-                        remove = false;
-                        // document was modified
-                        Calendar modificationDate = (Calendar) doc.getPropertyValue("dc:modified");
-                        // MC : test made using seconds instead of millis due to parseUsingMask ( in DataParser.java)
-                        // yyyy-MM-dd'T'HH:mm:ssz used when dates properties are set on a document when listeners are disabled
-                        if (modificationDate.getTimeInMillis() / 1000 != (long) tuple.getLastModification() / 1000
-                                || !doc.getCurrentLifeCycleState().equals(lifecycleState)) {
-                            modifiedTuples.add(tuple);
-                        }
-                        break;
-                    }
-                }
-                if (remove) {
-                    deletedIds.add(doc.getId());
-                }
+            if (documentDifferencesPolicy != null) {
+                documentDifferencesPolicy.process(availableDocs, tuples,
+                        addedTuples, modifiedTuples, deletedIds);
             }
-            // new documents added
-            addedTuples.addAll(newTuples);
         } catch (Exception e) {
             throw new ClientException(e);
         }
