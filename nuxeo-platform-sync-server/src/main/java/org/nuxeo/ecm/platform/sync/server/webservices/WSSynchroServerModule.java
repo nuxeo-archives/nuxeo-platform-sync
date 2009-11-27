@@ -97,8 +97,7 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
             }
             for (DocumentModel documentModel : availableDocs) {
                 modificationDate = (Calendar) documentModel.getPropertyValue("dc:modified");
-                long modificationTime = modificationDate != null ? modificationDate.getTimeInMillis() / 1000
-                        : 0;
+                long modificationTime = modificationDate != null ? modificationDate.getTimeInMillis() : 0;
                 SynchronizableDocument syncDoc = documentModel.getAdapter(SynchronizableDocument.class);
                 tuple = new NuxeoSynchroTuple(syncDoc.getId(),
                         documentModel.getType(),

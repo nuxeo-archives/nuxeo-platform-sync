@@ -17,8 +17,6 @@
  */
 package org.nuxeo.ecm.platform.sync.manager;
 
-import static org.nuxeo.ecm.platform.sync.utils.ImportUtils.DELETED_LIFECYCLE_STATE;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -72,9 +70,6 @@ public class DocumentsSynchronizeManager {
     // this list will keep the deleted documents from the server
     private List<String> deletedIds;
 
-    // this list will keep the documents that were restored on the server
-    private List<String> restoredIds;
-
     private String queryName;
 
     private ImportConfiguration importConfiguration;
@@ -124,7 +119,7 @@ public class DocumentsSynchronizeManager {
         // computes the diffs
         processDifferences(tuples, query);
         // first remove documents no more availanle on online server
-        //removeDocuments();
+        removeDocuments();
         // disable the listener in order to keep the original dc:modified
         EventServiceAdmin eventAdmin = Framework.getLocalService(EventServiceAdmin.class);
         eventAdmin.setListenerEnabledFlag(DC_LISTENER, false);
@@ -199,52 +194,35 @@ public class DocumentsSynchronizeManager {
 
             // backup list that will contain the new added documents from the
             // server
-            List<NuxeoSynchroTuple> backUpTuples = new ArrayList<NuxeoSynchroTuple>();
-            backUpTuples.addAll(tuples);
-            boolean remove = true;
-            String lifecycleState = null;
+            List<NuxeoSynchroTuple> newTuples = new ArrayList<NuxeoSynchroTuple>();
+            newTuples.addAll(tuples);
             for (DocumentModel doc : availableDocs) {
+                boolean remove = true;
                 SynchronizableDocument syncDoc = doc.getAdapter(SynchronizableDocument.class);
                 for (NuxeoSynchroTuple tuple : tuples) {
-                    lifecycleState = ImportUtils.getContextDataInfo(
+                    String lifecycleState = ImportUtils.getContextDataInfo(
                             tuple.getContextData(),
                             CoreSession.IMPORT_LIFECYCLE_STATE);
                     if (syncDoc.getId().equals(tuple.getId())) {
-                        backUpTuples.remove(tuple);
+                        newTuples.remove(tuple);
                         remove = false;
-                        // document is still deleted
-                        if (DELETED_LIFECYCLE_STATE.equals(lifecycleState)
-                                && DELETED_LIFECYCLE_STATE.equals(doc.getCurrentLifeCycleState())) {
-                            break;
-                        }
-                        // document was restored
-                        if (!DELETED_LIFECYCLE_STATE.equals(lifecycleState)
-                                && DELETED_LIFECYCLE_STATE.equals(doc.getCurrentLifeCycleState())) {
-                            restoredIds.add(doc.getId());
-                        }
-                        // document was deleted
-                        if (DELETED_LIFECYCLE_STATE.equals(lifecycleState)
-                                && !DELETED_LIFECYCLE_STATE.equals(doc.getCurrentLifeCycleState())) {
-                            deletedIds.add(doc.getId());
-                        }
                         // document was modified
                         Calendar modificationDate = (Calendar) doc.getPropertyValue("dc:modified");
                         // MC : test made using seconds instead of millis due to parseUsingMask ( in DataParser.java)
                         // yyyy-MM-dd'T'HH:mm:ssz used when dates properties are set on a document when listeners are disabled
-                        if (modificationDate.getTimeInMillis() /1000 != (long) tuple.getLastModification() /1000) {
+                        if (modificationDate.getTimeInMillis() / 1000 != (long) tuple.getLastModification() / 1000
+                                || !doc.getCurrentLifeCycleState().equals(lifecycleState)) {
                             modifiedTuples.add(tuple);
                         }
                         break;
                     }
                 }
-                if (remove && !doc.getCurrentLifeCycleState().equals("deleted")) {
+                if (remove) {
                     deletedIds.add(doc.getId());
                 }
             }
             // new documents added
-            for (NuxeoSynchroTuple tuple : backUpTuples) {
-                addedTuples.add(tuple);
-            }
+            addedTuples.addAll(newTuples);
         } catch (Exception e) {
             throw new ClientException(e);
         }
@@ -254,7 +232,6 @@ public class DocumentsSynchronizeManager {
         addedTuples = new LinkedList<NuxeoSynchroTuple>();
         modifiedTuples = new LinkedList<NuxeoSynchroTuple>();
         deletedIds = new LinkedList<String>();
-        restoredIds = new LinkedList<String>();
     }
 
     protected static class RemoveDocumentsUnrestricted extends

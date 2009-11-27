@@ -45,6 +45,7 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.log4j.Logger;
 import org.nuxeo.common.collections.PrimitiveArrays;
 import org.nuxeo.common.utils.FileUtils;
+import org.nuxeo.ecm.core.NXCore;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -54,6 +55,9 @@ import org.nuxeo.ecm.core.api.impl.blob.StreamingBlob;
 import org.nuxeo.ecm.core.api.model.DocumentPart;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACL;
+import org.nuxeo.ecm.core.lifecycle.LifeCycle;
+import org.nuxeo.ecm.core.lifecycle.LifeCycleException;
+import org.nuxeo.ecm.core.lifecycle.LifeCycleService;
 import org.nuxeo.ecm.core.schema.types.ComplexType;
 import org.nuxeo.ecm.core.schema.types.Field;
 import org.nuxeo.ecm.core.schema.types.JavaTypes;
@@ -111,21 +115,43 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * @throws ClientException
      */
     protected void setProperties() throws ClientException {
-        String lifecycle = ImportUtils.getContextDataInfo(contextData,
-                        CoreSession.IMPORT_LIFECYCLE_STATE);
-        if (importConfiguration != null) {
-            String importLC = importConfiguration.getDefaultImportLifeCycle();
-            if (importLC != null && importLC.length() > 0)
-            lifecycle = importLC;
-        }
-        localDocument.putContextData(CoreSession.IMPORT_LIFECYCLE_STATE, lifecycle);
-        localDocument.putContextData(CoreSession.IMPORT_LIFECYCLE_POLICY,
-                ImportUtils.getContextDataInfo(contextData,
-                        CoreSession.IMPORT_LIFECYCLE_POLICY));
+        setLifeCycle();
+
         setPropertiesOnDocument();
 
         if (documentSnapshot.isHasBlobs()) {
             updateBlobs();
+        }
+    }
+
+    /**
+     * Sets life cycle details on localDocument as super user.
+     *
+     * @throws ClientException
+     */
+    protected void setLifeCycle() throws ClientException {
+        String lifeCyclePolicy = ImportUtils.getContextDataInfo(contextData,
+                CoreSession.IMPORT_LIFECYCLE_POLICY);
+        String destState = ImportUtils.getContextDataInfo(contextData,
+                CoreSession.IMPORT_LIFECYCLE_STATE);
+        if (importConfiguration != null) {
+            String importLC = importConfiguration.getDefaultImportLifeCycle();
+            if (importLC != null && importLC.length() > 0)
+                destState = importLC;
+        }
+        String origState = localDocument.getCurrentLifeCycleState();
+
+        LifeCycleService service = NXCore.getLifeCycleService();
+        if (service != null) {
+            try {
+                LifeCycle lifeCycle = service.getLifeCycleByName(lifeCyclePolicy);
+                List<String> transitions = ImportUtils.getLifeCycleTransitions(lifeCycle, origState, destState);
+                for (String transition : transitions) {
+                    localDocument.followTransition(transition);
+                }
+            } catch (LifeCycleException e) {
+                log.error("Unable to get transitions", e);
+            }
         }
     }
 

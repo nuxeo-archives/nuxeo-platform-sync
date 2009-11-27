@@ -23,6 +23,7 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
+import org.nuxeo.ecm.platform.sync.utils.ImportUtils;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 
 /**
@@ -70,4 +71,25 @@ public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
             session.save();
         }
     }
+
+    /**
+     * Sets life cycle details on localDocument as super user.
+     *
+     */
+    @Override
+    protected void setLifeCycle() throws ClientException {
+        String lifecycle = ImportUtils.getContextDataInfo(contextData,
+                CoreSession.IMPORT_LIFECYCLE_STATE);
+        if (importConfiguration != null) {
+            String importLC = importConfiguration.getDefaultImportLifeCycle();
+            if (importLC != null && importLC.length() > 0)
+                lifecycle = importLC;
+        }
+        localDocument.putContextData(CoreSession.IMPORT_LIFECYCLE_STATE,
+                lifecycle);
+        localDocument.putContextData(CoreSession.IMPORT_LIFECYCLE_POLICY,
+                ImportUtils.getContextDataInfo(contextData,
+                        CoreSession.IMPORT_LIFECYCLE_POLICY));
+    }
+
 }

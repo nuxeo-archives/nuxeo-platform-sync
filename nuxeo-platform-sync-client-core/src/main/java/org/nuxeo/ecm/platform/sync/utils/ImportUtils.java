@@ -17,8 +17,13 @@
  */
 package org.nuxeo.ecm.platform.sync.utils;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.nuxeo.ecm.core.lifecycle.LifeCycle;
+import org.nuxeo.ecm.core.lifecycle.LifeCycleException;
+import org.nuxeo.ecm.core.lifecycle.LifeCycleTransition;
 import org.nuxeo.ecm.platform.sync.webservices.generated.ContextDataInfo;
 
 /**
@@ -83,6 +88,49 @@ public class ImportUtils {
     public static String getName(String path) {
         int index = path.lastIndexOf('/');
         return path.substring(index + 1, path.length());
+    }
+
+    /**
+     * Returns the list of transition names to follow to go from one particular
+     * state to another.
+     *
+     * @param lifeCycle - the lifecycle
+     * @param origState - the origin state
+     * @param destState - the destination state
+     * @return the list of transition names
+     */
+    public static List<String> getLifeCycleTransitions(LifeCycle lifeCycle,
+            String origState, String destState) throws LifeCycleException {
+        List<String> path = new ArrayList<String>();
+        LinkedList<List<String>> paths = new LinkedList<List<String>>();
+        paths.add(path);
+
+        LinkedList<String> fifo = new LinkedList<String>();
+        fifo.add(origState);
+
+        ArrayList<String> marked = new ArrayList<String>();
+        marked.add(origState);
+
+        while (!fifo.isEmpty()) {
+            String state = fifo.removeFirst();
+            path = paths.removeFirst();
+            if (state.equals(destState)) {
+                break;
+            }
+            for (String transitionName : lifeCycle.getAllowedStateTransitionsFrom(state)) {
+                LifeCycleTransition transition = lifeCycle.getTransitionByName(transitionName);
+                String nextState = transition.getDestinationStateName();
+                if (!marked.contains(nextState)) {
+                    marked.add(nextState);
+                    fifo.addLast(nextState);
+                    List<String> nextPath = new ArrayList<String>(path);
+                    nextPath.add(transitionName);
+                    paths.addLast(nextPath);
+                }
+            }
+        }
+
+        return path;
     }
 
 }
