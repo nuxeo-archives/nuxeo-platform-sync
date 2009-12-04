@@ -130,7 +130,7 @@ public abstract class TupleProcessor {
     protected FlagedDocumentSnapshot getDocumentSnapshot()
             throws ClientException {
         if (documentSnapshot == null) {
-            documentSnapshot = synchroServerModule.getDocumentByIdWithoutBlob(tuple.getId());
+            documentSnapshot = synchroServerModule.getDocumentByIdWithoutBlob(tuple.getServerId());
         }
         return documentSnapshot;
     }

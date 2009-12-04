@@ -47,7 +47,7 @@ public class TupleProcessorAddVersion extends TupleProcessorAdd {
         log.debug("Starting the process of adding version on the client side: " + name);
         // in case there is a version, the document model will have parent ref null
         localDocument = new DocumentModelImpl((String) null, tuple.getType(),
-                tuple.getId(), new Path(name), null, null, null, null, null,
+                tuple.getClientId(), new Path(name), null, null, null, null, null,
                 null, session.getRepositoryName());
 
         localDocument.putContextData(CoreSession.IMPORT_VERSION_VERSIONABLE_ID,

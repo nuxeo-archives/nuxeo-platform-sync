@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.1
  * 
  */
-@WebServiceClient(name = "NuxeoWSMainEntrancePointService", targetNamespace = "http://webservices.server.sync.platform.ecm.nuxeo.org/", wsdlLocation = "http://192.168.2.117:8080/nuxeo/webservices/wssyncroentry?wsdl")
+@WebServiceClient(name = "NuxeoWSMainEntrancePointService", targetNamespace = "http://webservices.server.sync.platform.ecm.nuxeo.org/", wsdlLocation = "http://localhost:8080/nuxeo/webservices/wssyncroentry?wsdl")
 public class NuxeoWSMainEntrancePointService
     extends Service
 {
@@ -30,9 +30,9 @@ public class NuxeoWSMainEntrancePointService
         try {
             URL baseUrl;
             baseUrl = org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoWSMainEntrancePointService.class.getResource(".");
-            url = new URL(baseUrl, "http://192.168.2.117:8080/nuxeo/webservices/wssyncroentry?wsdl");
+            url = new URL(baseUrl, "http://localhost:8080/nuxeo/webservices/wssyncroentry?wsdl");
         } catch (MalformedURLException e) {
-            logger.warning("Failed to create URL for the wsdl Location: 'http://192.168.2.117:8080/nuxeo/webservices/wssyncroentry?wsdl', retrying as a local file");
+            logger.warning("Failed to create URL for the wsdl Location: 'http://localhost:8080/nuxeo/webservices/wssyncroentry?wsdl', retrying as a local file");
             logger.warning(e.getMessage());
         }
         NUXEOWSMAINENTRANCEPOINTSERVICE_WSDL_LOCATION = url;

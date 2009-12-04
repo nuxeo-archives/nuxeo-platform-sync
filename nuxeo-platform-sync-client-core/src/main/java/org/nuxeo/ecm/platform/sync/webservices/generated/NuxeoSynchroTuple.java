@@ -19,11 +19,13 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
+ *         &lt;element name="adaptedId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="clientId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="contextData" type="{http://webservices.server.sync.platform.ecm.nuxeo.org/}contextDataInfo" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="lastModification" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
  *         &lt;element name="path" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="proxy" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+ *         &lt;element name="serverId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="type" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="version" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *       &lt;/sequence>
@@ -36,24 +38,76 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "nuxeoSynchroTuple", propOrder = {
+    "adaptedId",
+    "clientId",
     "contextData",
-    "id",
     "lastModification",
     "path",
     "proxy",
+    "serverId",
     "type",
     "version"
 })
 public class NuxeoSynchroTuple {
 
+    protected String adaptedId;
+    protected String clientId;
     @XmlElement(nillable = true)
     protected List<ContextDataInfo> contextData;
-    protected String id;
     protected Long lastModification;
     protected String path;
     protected boolean proxy;
+    protected String serverId;
     protected String type;
     protected boolean version;
+
+    /**
+     * Gets the value of the adaptedId property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getAdaptedId() {
+        return adaptedId;
+    }
+
+    /**
+     * Sets the value of the adaptedId property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setAdaptedId(String value) {
+        this.adaptedId = value;
+    }
+
+    /**
+     * Gets the value of the clientId property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getClientId() {
+        return clientId;
+    }
+
+    /**
+     * Sets the value of the clientId property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setClientId(String value) {
+        this.clientId = value;
+    }
 
     /**
      * Gets the value of the contextData property.
@@ -82,30 +136,6 @@ public class NuxeoSynchroTuple {
             contextData = new ArrayList<ContextDataInfo>();
         }
         return this.contextData;
-    }
-
-    /**
-     * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setId(String value) {
-        this.id = value;
     }
 
     /**
@@ -170,6 +200,30 @@ public class NuxeoSynchroTuple {
      */
     public void setProxy(boolean value) {
         this.proxy = value;
+    }
+
+    /**
+     * Gets the value of the serverId property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getServerId() {
+        return serverId;
+    }
+
+    /**
+     * Sets the value of the serverId property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setServerId(String value) {
+        this.serverId = value;
     }
 
     /**

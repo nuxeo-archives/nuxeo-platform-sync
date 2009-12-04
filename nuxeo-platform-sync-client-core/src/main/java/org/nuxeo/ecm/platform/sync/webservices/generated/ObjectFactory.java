@@ -48,6 +48,70 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link DocumentSnapshot }
+     * 
+     */
+    public DocumentSnapshot createDocumentSnapshot() {
+        return new DocumentSnapshot();
+    }
+
+    /**
+     * Create an instance of {@link GetAvailableDocumentListResponse }
+     * 
+     */
+    public GetAvailableDocumentListResponse createGetAvailableDocumentListResponse() {
+        return new GetAvailableDocumentListResponse();
+    }
+
+    /**
+     * Create an instance of {@link NuxeoSynchroTuple }
+     * 
+     */
+    public NuxeoSynchroTuple createNuxeoSynchroTuple() {
+        return new NuxeoSynchroTuple();
+    }
+
+    /**
+     * Create an instance of {@link GetAvailableDocumentList }
+     * 
+     */
+    public GetAvailableDocumentList createGetAvailableDocumentList() {
+        return new GetAvailableDocumentList();
+    }
+
+    /**
+     * Create an instance of {@link GetQueryAvailableDocumentListWithQueryResponse }
+     * 
+     */
+    public GetQueryAvailableDocumentListWithQueryResponse createGetQueryAvailableDocumentListWithQueryResponse() {
+        return new GetQueryAvailableDocumentListWithQueryResponse();
+    }
+
+    /**
+     * Create an instance of {@link DestroySession }
+     * 
+     */
+    public DestroySession createDestroySession() {
+        return new DestroySession();
+    }
+
+    /**
+     * Create an instance of {@link GetAvailableDocumentListWithQueryResponse }
+     * 
+     */
+    public GetAvailableDocumentListWithQueryResponse createGetAvailableDocumentListWithQueryResponse() {
+        return new GetAvailableDocumentListWithQueryResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetDocumentByIdWithoutBlob }
+     * 
+     */
+    public GetDocumentByIdWithoutBlob createGetDocumentByIdWithoutBlob() {
+        return new GetDocumentByIdWithoutBlob();
+    }
+
+    /**
      * Create an instance of {@link GetQueryAvailableDocumentListWithQuery }
      * 
      */
@@ -64,115 +128,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetAvailableDocumentList }
+     * Create an instance of {@link GetDocumentByIdWithoutBlobResponse }
      * 
      */
-    public GetAvailableDocumentList createGetAvailableDocumentList() {
-        return new GetAvailableDocumentList();
-    }
-
-    /**
-     * Create an instance of {@link DestroySession }
-     * 
-     */
-    public DestroySession createDestroySession() {
-        return new DestroySession();
-    }
-
-    /**
-     * Create an instance of {@link GetQueryAvailableDocumentListWithQueryResponse }
-     * 
-     */
-    public GetQueryAvailableDocumentListWithQueryResponse createGetQueryAvailableDocumentListWithQueryResponse() {
-        return new GetQueryAvailableDocumentListWithQueryResponse();
-    }
-
-    /**
-     * Create an instance of {@link GetDocumentByIdWithoutBlob }
-     * 
-     */
-    public GetDocumentByIdWithoutBlob createGetDocumentByIdWithoutBlob() {
-        return new GetDocumentByIdWithoutBlob();
-    }
-
-    /**
-     * Create an instance of {@link NuxeoSynchroTuple }
-     * 
-     */
-    public NuxeoSynchroTuple createNuxeoSynchroTuple() {
-        return new NuxeoSynchroTuple();
-    }
-
-    /**
-     * Create an instance of {@link KeepAliveResponse }
-     * 
-     */
-    public KeepAliveResponse createKeepAliveResponse() {
-        return new KeepAliveResponse();
-    }
-
-    /**
-     * Create an instance of {@link KeepAlive }
-     * 
-     */
-    public KeepAlive createKeepAlive() {
-        return new KeepAlive();
-    }
-
-    /**
-     * Create an instance of {@link DocumentProperty }
-     * 
-     */
-    public DocumentProperty createDocumentProperty() {
-        return new DocumentProperty();
-    }
-
-    /**
-     * Create an instance of {@link GetAvailableDocumentListWithQueryResponse }
-     * 
-     */
-    public GetAvailableDocumentListWithQueryResponse createGetAvailableDocumentListWithQueryResponse() {
-        return new GetAvailableDocumentListWithQueryResponse();
-    }
-
-    /**
-     * Create an instance of {@link FlagedDocumentSnapshot }
-     * 
-     */
-    public FlagedDocumentSnapshot createFlagedDocumentSnapshot() {
-        return new FlagedDocumentSnapshot();
-    }
-
-    /**
-     * Create an instance of {@link GetAvailableDocumentListWithQuery }
-     * 
-     */
-    public GetAvailableDocumentListWithQuery createGetAvailableDocumentListWithQuery() {
-        return new GetAvailableDocumentListWithQuery();
-    }
-
-    /**
-     * Create an instance of {@link DocumentSnapshot }
-     * 
-     */
-    public DocumentSnapshot createDocumentSnapshot() {
-        return new DocumentSnapshot();
-    }
-
-    /**
-     * Create an instance of {@link GetQueryAvailableDocumentList }
-     * 
-     */
-    public GetQueryAvailableDocumentList createGetQueryAvailableDocumentList() {
-        return new GetQueryAvailableDocumentList();
-    }
-
-    /**
-     * Create an instance of {@link DocumentBlob }
-     * 
-     */
-    public DocumentBlob createDocumentBlob() {
-        return new DocumentBlob();
+    public GetDocumentByIdWithoutBlobResponse createGetDocumentByIdWithoutBlobResponse() {
+        return new GetDocumentByIdWithoutBlobResponse();
     }
 
     /**
@@ -184,11 +144,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetAvailableDocumentListResponse }
+     * Create an instance of {@link KeepAlive }
      * 
      */
-    public GetAvailableDocumentListResponse createGetAvailableDocumentListResponse() {
-        return new GetAvailableDocumentListResponse();
+    public KeepAlive createKeepAlive() {
+        return new KeepAlive();
     }
 
     /**
@@ -200,11 +160,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetDocumentByIdWithoutBlobResponse }
+     * Create an instance of {@link GetQueryAvailableDocumentList }
      * 
      */
-    public GetDocumentByIdWithoutBlobResponse createGetDocumentByIdWithoutBlobResponse() {
-        return new GetDocumentByIdWithoutBlobResponse();
+    public GetQueryAvailableDocumentList createGetQueryAvailableDocumentList() {
+        return new GetQueryAvailableDocumentList();
+    }
+
+    /**
+     * Create an instance of {@link FlagedDocumentSnapshot }
+     * 
+     */
+    public FlagedDocumentSnapshot createFlagedDocumentSnapshot() {
+        return new FlagedDocumentSnapshot();
+    }
+
+    /**
+     * Create an instance of {@link DocumentBlob }
+     * 
+     */
+    public DocumentBlob createDocumentBlob() {
+        return new DocumentBlob();
     }
 
     /**
@@ -213,6 +189,30 @@ public class ObjectFactory {
      */
     public ClientException createClientException() {
         return new ClientException();
+    }
+
+    /**
+     * Create an instance of {@link DocumentProperty }
+     * 
+     */
+    public DocumentProperty createDocumentProperty() {
+        return new DocumentProperty();
+    }
+
+    /**
+     * Create an instance of {@link GetAvailableDocumentListWithQuery }
+     * 
+     */
+    public GetAvailableDocumentListWithQuery createGetAvailableDocumentListWithQuery() {
+        return new GetAvailableDocumentListWithQuery();
+    }
+
+    /**
+     * Create an instance of {@link KeepAliveResponse }
+     * 
+     */
+    public KeepAliveResponse createKeepAliveResponse() {
+        return new KeepAliveResponse();
     }
 
     /**

@@ -25,7 +25,7 @@ public class DefaultDocumentDifferencesPolicy implements
             for (NuxeoSynchroTuple tuple : tuples) {
                 String lifecycleState = ImportUtils.getContextDataInfo(
                         tuple.getContextData(), CoreSession.IMPORT_LIFECYCLE_STATE);
-                if (syncDoc.getId().equals(tuple.getId())) {
+                if (syncDoc.getId().equals(tuple.getAdaptedId())) {
                     addedTuples.remove(tuple);
                     remove = false;
                     // document was modified
@@ -37,6 +37,7 @@ public class DefaultDocumentDifferencesPolicy implements
                     if (modificationDate.getTimeInMillis() / 1000 != (long) tuple.getLastModification() / 1000
                             || !doc.getCurrentLifeCycleState().equals(
                                     lifecycleState)) {
+                        tuple.setClientId(doc.getId());
                         modifiedTuples.add(tuple);
                     }
                     break;
@@ -46,7 +47,6 @@ public class DefaultDocumentDifferencesPolicy implements
                 deletedIds.add(doc.getId());
             }
         }
-
     }
 
 }

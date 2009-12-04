@@ -41,7 +41,7 @@ public class TupleProcessorUpdateDocument extends TupleProcessorUpdate {
     @Override
     public void process() throws ClientException {
         log.debug("Starting the process of updating document on the client side: " + name);
-        localDocument = session.getDocument(new IdRef(tuple.getId()));
+        localDocument = session.getDocument(new IdRef(tuple.getClientId()));
         setProperties();
         setACE();
         updateDocument();

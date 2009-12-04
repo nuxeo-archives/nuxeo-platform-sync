@@ -111,8 +111,8 @@
 <!--        <configuration>-->
 <!--          <keep>true</keep>-->
 <!--          <wsdlUrls>-->
-<!--            <wsdlUrl>http://192.168.2.117:8080/nuxeo/webservices/wssyncroentry?wsdl</wsdlUrl>-->
-<!--            <wsdlUrl>http://192.168.2.117:8080/nuxeo/webservices/wssyncroserver?wsdl</wsdlUrl>-->
+<!--            <wsdlUrl>http://localhost:8080/nuxeo/webservices/wssyncroentry?wsdl</wsdlUrl>-->
+<!--            <wsdlUrl>http://localhost:8080/nuxeo/webservices/wssyncroserver?wsdl</wsdlUrl>-->
 <!--          </wsdlUrls>-->
 <!--          <bindingDirectory>${basedir}/src/</bindingDirectory>-->
 <!--          <packageName>org.nuxeo.ecm.platform.sync.webservices.generated</packageName>-->

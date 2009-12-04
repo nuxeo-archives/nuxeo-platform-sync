@@ -47,7 +47,7 @@ public class TupleProcessorAddDocument extends TupleProcessorAdd {
         log.debug("Starting the process of adding document on the client side: " + name);
         // a normal document model will be created
         localDocument = new DocumentModelImpl((String) null, tuple.getType(),
-                tuple.getId(), new Path(name), null, null, new PathRef(
+                tuple.getClientId(), new Path(name), null, null, new PathRef(
                         parentPath), null, null, null,
                 session.getRepositoryName());
 

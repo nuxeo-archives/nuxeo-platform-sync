@@ -508,7 +508,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
         //first get blobs through export restlet
         SynchHttpClient httpClient = new SynchHttpClient(synchronizeDetails);
         String repoName = session.getRepositoryName();
-        String docId = tuple.getId();
+        String docId = tuple.getClientId();
         List<String> pathParams = Arrays.asList(repoName, docId, "exportSingle");
         Map<String, String> params = new HashMap<String, String>();
         params.put("format", "zip");

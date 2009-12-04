@@ -36,6 +36,9 @@ public class ImportConfiguration {
     @XNode("@defaultImportLifeCycle")
     private String defaultImportLifeCycle;
 
+    @XNode("@generateNewId")
+    private boolean generateNewId;
+
     public Path getDocumentRootPath() {
         return new Path(documentRootPath);
     }
@@ -46,6 +49,10 @@ public class ImportConfiguration {
 
     public String getDefaultImportLifeCycle() {
         return defaultImportLifeCycle;
+    }
+
+    public boolean getGenerateNewId() {
+        return generateNewId;
     }
 
 }

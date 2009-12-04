@@ -99,7 +99,9 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
                 modificationDate = (Calendar) documentModel.getPropertyValue("dc:modified");
                 long modificationTime = modificationDate != null ? modificationDate.getTimeInMillis() : 0;
                 SynchronizableDocument syncDoc = documentModel.getAdapter(SynchronizableDocument.class);
-                tuple = new NuxeoSynchroTuple(syncDoc.getId(),
+                tuple = new NuxeoSynchroTuple(documentModel.getId(),
+                        documentModel.getId(),
+                        syncDoc.getId(),
                         documentModel.getType(),
                         documentModel.getPathAsString(), modificationTime,
                         documentModel.isProxy(), documentModel.isVersion());
@@ -111,7 +113,9 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
             for (DocumentModel documentModel : unrestrictedDocs) {
                 long modificationTime = 0;
                 SynchronizableDocument syncDoc = documentModel.getAdapter(SynchronizableDocument.class);
-                tuple = new NuxeoSynchroTuple(syncDoc.getId(),
+                tuple = new NuxeoSynchroTuple(documentModel.getId(),
+                        documentModel.getId(),
+                        syncDoc.getId(),
                         documentModel.getType(),
                         documentModel.getPathAsString(), modificationTime,
                         documentModel.isProxy(), documentModel.isVersion());
@@ -130,7 +134,9 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
                     modificationDate = workspaceReader.getModificationDate();
                     long modificationTime = modificationDate != null ? modificationDate.getTimeInMillis() : 0;
                     SynchronizableDocument syncDoc = userWorkspaceRoot.getAdapter(SynchronizableDocument.class);
-                    tuple = new NuxeoSynchroTuple(syncDoc.getId(),
+                    tuple = new NuxeoSynchroTuple(userWorkspaceRoot.getId(),
+                            userWorkspaceRoot.getId(),
+                            syncDoc.getId(),
                             userWorkspaceRoot.getType(),
                             userWorkspaceRoot.getPathAsString(),
                             modificationTime, userWorkspaceRoot.isProxy(),

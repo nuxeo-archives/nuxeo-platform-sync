@@ -20,6 +20,7 @@ package org.nuxeo.ecm.platform.sync.manager;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 
@@ -191,6 +192,12 @@ public class DocumentsSynchronizeManager {
             if (documentDifferencesPolicy != null) {
                 documentDifferencesPolicy.process(availableDocs, tuples,
                         addedTuples, modifiedTuples, deletedIds);
+            }
+
+            if (importConfiguration != null && importConfiguration.getGenerateNewId()) {
+                for (NuxeoSynchroTuple tuple : addedTuples) {
+                    tuple.setClientId(UUID.randomUUID().toString());
+                }
             }
         } catch (Exception e) {
             throw new ClientException(e);

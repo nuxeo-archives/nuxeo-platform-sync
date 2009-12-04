@@ -48,7 +48,7 @@ public class TupleProcessorAddProxy extends TupleProcessorAdd {
         // in case there is a proxy, the document model will have the type
         // ecm:proxy
         localDocument = new DocumentModelImpl((String) null,
-                CoreSession.IMPORT_PROXY_TYPE, tuple.getId(), new Path(name),
+                CoreSession.IMPORT_PROXY_TYPE, tuple.getClientId(), new Path(name),
                 null, null, new PathRef(parentPath), null, null, null, null);
         localDocument.putContextData(CoreSession.IMPORT_PROXY_TARGET_ID,
                 ImportUtils.getContextDataInfo(contextData,

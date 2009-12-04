@@ -29,8 +29,14 @@ public class NuxeoSynchroTuple implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    // document unique ID
-    private String id;
+    // server document unique ID
+    private String serverId;
+
+    // client document unique ID
+    private String clientId;
+
+    // server document applicative ID
+    private String adaptedId;
 
     // document type
     private String type;
@@ -54,18 +60,16 @@ public class NuxeoSynchroTuple implements Serializable {
 
     }
 
-    public NuxeoSynchroTuple(String id, String type, String path,
+    public NuxeoSynchroTuple(String serverId, String clientId, String adaptedId, String type, String path,
             Long lastModification, boolean isProxy, boolean isVersion) {
-        this.id = id;
+        this.serverId = serverId;
+        this.clientId = clientId;
+        this.adaptedId = adaptedId;
         this.type = type;
         this.path = path;
         this.lastModification = lastModification;
         this.isProxy = isProxy;
         this.isVersion = isVersion;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public Long getLastModification() {
@@ -82,10 +86,6 @@ public class NuxeoSynchroTuple implements Serializable {
 
     public boolean isVersion() {
         return isVersion;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public void setPath(String path) {
@@ -118,6 +118,30 @@ public class NuxeoSynchroTuple implements Serializable {
 
     public void setContextData(ContextDataInfo[] contextData) {
         this.contextData = contextData;
+    }
+
+    public String getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(String serverId) {
+        this.serverId = serverId;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getAdaptedId() {
+        return adaptedId;
+    }
+
+    public void setAdaptedId(String adaptedId) {
+        this.adaptedId = adaptedId;
     }
 
 }
