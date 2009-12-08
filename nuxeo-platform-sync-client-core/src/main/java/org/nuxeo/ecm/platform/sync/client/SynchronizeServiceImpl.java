@@ -129,7 +129,7 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
     }
 
     public void doSynchronizeDocuments(CoreSession session, String queryName) throws Exception {
-        doSynchronize(session, getDefaultSynchronizeDetails(), queryName);
+        doSynchronizeDocuments(session, getDefaultSynchronizeDetails(), queryName);
     }
 
     public void doSynchronizeRelations(SynchronizeDetails details)
