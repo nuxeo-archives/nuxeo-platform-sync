@@ -17,6 +17,7 @@
 
 package org.nuxeo.ecm.platform.sync.jaxrs;
 
+import javax.ejb.TransactionAttribute;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -37,6 +38,7 @@ public class SynchronizationHandler extends DefaultObject {
 
     @POST
     @Path("synchronize")
+    @TransactionAttribute
     public String synchronize(@QueryParam("queryName") String queryName) throws Exception {
         WebContext ctx = WebEngine.getActiveContext();
         CoreSession session = ctx.getCoreSession();
