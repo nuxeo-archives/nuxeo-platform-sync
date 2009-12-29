@@ -26,7 +26,7 @@ import org.nuxeo.common.xmap.annotation.XObject;
 @XObject("documentPath")
 public class DocumentPathDescriptor {
 
-    @XNode
+    @XNode("@path")
     private String path;
 
     public String getPath() {
