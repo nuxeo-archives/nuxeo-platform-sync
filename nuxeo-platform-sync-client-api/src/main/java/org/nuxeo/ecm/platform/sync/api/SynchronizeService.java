@@ -19,8 +19,6 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 
-import java.util.List;
-
 /**
  * The Synchronize Service interface. It contains the service API. <li>
  * synchronize documents <li>synchronize relations <li>synchronize vocabularies
@@ -40,7 +38,8 @@ public interface SynchronizeService {
             throws Exception;
 
     /**
-     * Synchronizes all the documents by using the default synchronization details.
+     * Synchronizes all the documents by using the default synchronization
+     * details.
      *
      * @param session - the Nuxeo core session received from the web context
      * @throws ClientException
@@ -55,11 +54,12 @@ public interface SynchronizeService {
      * @param queryName - the query name to use server side
      * @throws ClientException
      */
-    void doSynchronizeDocuments(CoreSession session, SynchronizeDetails details, String queryName)
-            throws Exception;
+    void doSynchronizeDocuments(CoreSession session,
+            SynchronizeDetails details, String queryName) throws Exception;
 
     /**
-     * Synchronizes all the documents by using the default synchronization details.
+     * Synchronizes all the documents by using the default synchronization
+     * details.
      *
      * @param session - the Nuxeo core session received from the web context
      * @param queryName - the query name to use server side
@@ -135,8 +135,8 @@ public interface SynchronizeService {
      * @param details - the details about the synchronization process
      * @throws Exception
      */
-    void doSynchronize(CoreSession session, SynchronizeDetails details, String queryName)
-            throws Exception;
+    void doSynchronize(CoreSession session, SynchronizeDetails details,
+            String queryName) throws Exception;
 
     /**
      * Performs the whole synchronization process including the documents
@@ -148,7 +148,15 @@ public interface SynchronizeService {
      */
     void doSynchronize(CoreSession session, String queryName) throws Exception;
 
-    List<String> getDocumentPathsToAvoidSecurityPolicy();
-
     SynchronizeDetails getDefaultSynchronizeDetails();
+
+    /**
+     * Test if the ReadSecurityPolicy should be disabled or not.
+     *
+     * @param docPath the document path to test
+     * @param permission the permission to test
+     * @return {@code true} if the ReadSecurityPolicy must be disabled, {@code
+     *         false otherwise}
+     */
+    boolean shouldDisableReadSP(String docPath, String permission);
 }

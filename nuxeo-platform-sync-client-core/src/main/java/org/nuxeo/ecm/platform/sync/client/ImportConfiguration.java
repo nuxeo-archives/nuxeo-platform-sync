@@ -17,6 +17,10 @@
 
 package org.nuxeo.ecm.platform.sync.client;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.nuxeo.common.xmap.annotation.XNodeMap;
 import org.nuxeo.common.xmap.annotation.XObject;
 import org.nuxeo.common.xmap.annotation.XNode;
 import org.nuxeo.common.utils.Path;
@@ -33,11 +37,11 @@ public class ImportConfiguration {
     @XNode("@pathSegmentsToRemove")
     private int pathSegmentsToRemove;
 
-    @XNode("@defaultImportLifeCycle")
-    private String defaultImportLifeCycle;
-
     @XNode("@generateNewId")
     private boolean generateNewId;
+
+    @XNodeMap(value = "lifeCycleStateMapping", key = "@serverState", type = HashMap.class, componentType = String.class)
+    Map<String, String> lifeCycleStateMapping = new HashMap<String, String>();
 
     public Path getDocumentRootPath() {
         return new Path(documentRootPath);
@@ -47,8 +51,8 @@ public class ImportConfiguration {
         return pathSegmentsToRemove;
     }
 
-    public String getDefaultImportLifeCycle() {
-        return defaultImportLifeCycle;
+    public String getClientLifeCycleStateFor(String serverLifeCycleState) {
+        return lifeCycleStateMapping.get(serverLifeCycleState);
     }
 
     public boolean getGenerateNewId() {

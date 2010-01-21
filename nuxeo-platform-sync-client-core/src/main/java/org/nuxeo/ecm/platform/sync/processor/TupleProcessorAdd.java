@@ -29,9 +29,9 @@ import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 /**
  * The base class for processing a tuple when adding a new document. It holds
  * the common processing for this case.
- * 
+ *
  * @author rux
- * 
+ *
  */
 public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
 
@@ -43,7 +43,7 @@ public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
 
     /**
      * Runs the import of a new document in unrestricted mode.
-     * 
+     *
      * @throws ClientException
      */
     protected void runUnrestrictedImport() throws ClientException {
@@ -52,9 +52,9 @@ public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
 
     /**
      * The unrestricted runner for running the import of a document.
-     * 
+     *
      * @author rux
-     * 
+     *
      */
     protected static class UnrestrictedImport extends UnrestrictedSessionRunner {
         DocumentModel documentModel;
@@ -81,7 +81,7 @@ public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
         String lifecycle = ImportUtils.getContextDataInfo(contextData,
                 CoreSession.IMPORT_LIFECYCLE_STATE);
         if (importConfiguration != null) {
-            String importLC = importConfiguration.getDefaultImportLifeCycle();
+            String importLC = importConfiguration.getClientLifeCycleStateFor(lifecycle);
             if (importLC != null && importLC.length() > 0)
                 lifecycle = importLC;
         }

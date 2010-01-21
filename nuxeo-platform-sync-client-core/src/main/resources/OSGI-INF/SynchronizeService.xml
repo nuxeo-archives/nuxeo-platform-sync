@@ -15,8 +15,22 @@
     <object class="org.nuxeo.ecm.platform.sync.client.ImportConfiguration" />
   </extension-point>
 
-  <extension-point name="pathToAvoidSecurityPolicy">
-    <object class="org.nuxeo.ecm.platform.sync.client.DocumentPathDescriptor" />
+  <extension-point name="disableReadSecurityPolicy">
+    <documentation>
+      Used to register path(s) and/or permission(s) on which the ReadSecurityPolicy
+      should be disabled.
+
+      <code>
+        <disableReadSecurityPolicy>
+          <path>/default-domain/workspaces/specific-workspace</path>
+          <path>/default-domain/workspaces/ws2</path>
+          <permission>REMOVE</permission>
+        </disableReadSecurityPolicy>
+      </code>
+
+    </documentation>
+
+    <object class="org.nuxeo.ecm.platform.sync.client.DisableReadSecurityPolicyDescriptor" />
   </extension-point>
 
   <extension-point name="defaultSynchronizeDetails">

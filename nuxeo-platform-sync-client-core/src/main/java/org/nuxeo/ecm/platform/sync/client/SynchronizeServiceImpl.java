@@ -46,7 +46,7 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
 
     private static final String IMPORT_CONFIGURATION_EP = "importConfiguration";
 
-    private static final String PATH_TO_AVOID_SP_EP = "pathToAvoidSecurityPolicy";
+    private static final String DISABLE_READ_SP_EP = "disableReadSecurityPolicy";
 
     private static final String DEFAULT_SYNCHRONIZE_DETAILS_EP = "defaultSynchronizeDetails";
 
@@ -58,23 +58,18 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
 
     private ImportConfiguration importConfiguration;
 
-    private List<String> documentPaths;
+    private DisableReadSecurityPolicyDescriptor disableReadSecurityPolicyDescriptor;
 
     private SynchronizeDetails defaultSynchronizeDetails;
 
     private DocumentDifferencesPolicy documentDifferencesPolicy;
 
     @Override
-    public void activate(ComponentContext componentContext) throws Exception {
-        documentPaths = new ArrayList<String>();
-    }
-
-    @Override
     public void registerContribution(Object contribution, String extensionPoint, ComponentInstance contributor) throws Exception {
         if (IMPORT_CONFIGURATION_EP.equals(extensionPoint)) {
             importConfiguration = (ImportConfiguration) contribution;
-        } else if (PATH_TO_AVOID_SP_EP.equals(extensionPoint)) {
-            documentPaths.add(((DocumentPathDescriptor) contribution).getPath());
+        } else if (DISABLE_READ_SP_EP.equals(extensionPoint)) {
+            disableReadSecurityPolicyDescriptor = (DisableReadSecurityPolicyDescriptor) contribution;
         } else if (DEFAULT_SYNCHRONIZE_DETAILS_EP.equals(extensionPoint)) {
             SynchronizeDetailsDescriptor desc = (SynchronizeDetailsDescriptor) contribution;
             defaultSynchronizeDetails = new SynchronizeDetails(
@@ -194,12 +189,15 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
         return importConfiguration;
     }
 
-    public List<String> getDocumentPathsToAvoidSecurityPolicy() {
-        return new ArrayList<String>(documentPaths);
-    }
-
     public SynchronizeDetails getDefaultSynchronizeDetails() {
         return defaultSynchronizeDetails;
+    }
+
+    public boolean shouldDisableReadSP(String docPath, String permission) {
+        if (disableReadSecurityPolicyDescriptor != null) {
+            return disableReadSecurityPolicyDescriptor.shouldDisable(docPath, permission);
+        }
+        return false;
     }
 
 }

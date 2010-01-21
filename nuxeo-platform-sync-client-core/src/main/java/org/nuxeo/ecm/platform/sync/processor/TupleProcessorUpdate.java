@@ -135,7 +135,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
         String destState = ImportUtils.getContextDataInfo(contextData,
                 CoreSession.IMPORT_LIFECYCLE_STATE);
         if (importConfiguration != null) {
-            String importLC = importConfiguration.getDefaultImportLifeCycle();
+            String importLC = importConfiguration.getClientLifeCycleStateFor(destState);
             if (importLC != null && importLC.length() > 0)
                 destState = importLC;
         }

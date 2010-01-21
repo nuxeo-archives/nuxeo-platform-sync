@@ -58,7 +58,7 @@ public class ReadSecurityPolicy extends AbstractSecurityPolicy {
             return Access.DENY;
         }
 
-        if (shouldAvoidSecurityPolicy(doc)) {
+        if (shouldDisableSecurityPolicy(doc, permission)) {
             return access;
         }
 
@@ -74,15 +74,11 @@ public class ReadSecurityPolicy extends AbstractSecurityPolicy {
         return access;
     }
 
-    protected boolean shouldAvoidSecurityPolicy(Document doc) {
+    protected boolean shouldDisableSecurityPolicy(Document doc, String permission) {
         SynchronizeService service = getSynchronizeService();
         try {
             String docPath = doc.getPath();
-            for (String path : service.getDocumentPathsToAvoidSecurityPolicy()) {
-                if (docPath.startsWith(path)) {
-                    return true;
-                }
-            }
+            return service.shouldDisableReadSP(docPath, permission);
         } catch (DocumentException e) {
             // Do nothing, will return false
         }
