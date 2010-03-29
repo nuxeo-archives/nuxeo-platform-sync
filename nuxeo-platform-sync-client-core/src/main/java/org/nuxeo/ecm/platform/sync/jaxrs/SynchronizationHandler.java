@@ -33,6 +33,7 @@ import org.nuxeo.runtime.api.Framework;
 /**
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
  */
+@Path("sync")
 @Produces("text/html;charset=UTF-8")
 public class SynchronizationHandler extends DefaultObject {
 
