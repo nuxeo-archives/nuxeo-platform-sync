@@ -32,6 +32,7 @@ import org.nuxeo.ecm.platform.sync.manager.VocabularySynchronizeManager;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoWSMainEntrancePointService;
 import org.nuxeo.ecm.platform.sync.webservices.generated.WSSynchroServerModuleService;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
+import org.nuxeo.ecm.platform.web.common.vh.VirtualHostHelper;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.model.ComponentContext;
 import org.nuxeo.runtime.model.ComponentInstance;
@@ -98,12 +99,12 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
         URL baseUrl;
         baseUrl = NuxeoWSMainEntrancePointService.class.getResource(".");
         URL url = new URL(baseUrl, "http://" + details.getHost() + ":"
-                + details.getPort() + "/nuxeo/webservices/wssyncroentry?wsdl");
+                + details.getPort() + VirtualHostHelper.getContextPathProperty() + "/webservices/wssyncroentry?wsdl");
         NuxeoWSMainEntrancePointService.NUXEOWSMAINENTRANCEPOINTSERVICE_WSDL_LOCATION = url;
 
         baseUrl = WSSynchroServerModuleService.class.getResource(".");
         url = new URL(baseUrl, "http://" + details.getHost() + ":"
-                + details.getPort() + "/nuxeo/webservices/wssyncroserver?wsdl");
+                + details.getPort() + VirtualHostHelper.getContextPathProperty() + "/webservices/wssyncroserver?wsdl");
         WSSynchroServerModuleService.WSSYNCHROSERVERMODULESERVICE_WSDL_LOCATION = url;
         if (getUserManager().getPrincipal(details.getUsername()) == null) {
             log.debug("In case user does not exists on the local machine, then register it...");
