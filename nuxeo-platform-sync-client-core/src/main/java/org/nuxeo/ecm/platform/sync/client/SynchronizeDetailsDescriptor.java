@@ -12,6 +12,9 @@ public class SynchronizeDetailsDescriptor {
     @XNode("@password")
     private String password;
 
+    @XNode("@protocol")
+    private String protocol = "http";
+
     @XNode("@host")
     private String host;
 
@@ -32,6 +35,10 @@ public class SynchronizeDetailsDescriptor {
 
     public int getPort() {
         return port;
+    }
+
+    public String getProtocol() {
+        return protocol;
     }
 
 }

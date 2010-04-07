@@ -34,9 +34,9 @@ import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 /**
  * simple http client using basic authentication that executes a get call !!
  * Don't forget to close the connection after using it
- * 
+ *
  * @author mcedica
- * 
+ *
  */
 public class SynchHttpClient {
 
@@ -52,7 +52,8 @@ public class SynchHttpClient {
 
     public SynchHttpClient(SynchronizeDetails synchronizeDetails) {
         this.synchronizeDetails = synchronizeDetails;
-        StringBuilder url = new StringBuilder("http://");
+        StringBuilder url = new StringBuilder(synchronizeDetails.getProtocol());
+        url.append("://");
         url.append(synchronizeDetails.getHost());
         url.append(":");
         url.append(synchronizeDetails.getPort());

@@ -16,8 +16,6 @@
 package org.nuxeo.ecm.platform.sync.client;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -34,7 +32,6 @@ import org.nuxeo.ecm.platform.sync.webservices.generated.WSSynchroServerModuleSe
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.ecm.platform.web.common.vh.VirtualHostHelper;
 import org.nuxeo.runtime.api.Framework;
-import org.nuxeo.runtime.model.ComponentContext;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
 
@@ -74,7 +71,7 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
         } else if (DEFAULT_SYNCHRONIZE_DETAILS_EP.equals(extensionPoint)) {
             SynchronizeDetailsDescriptor desc = (SynchronizeDetailsDescriptor) contribution;
             defaultSynchronizeDetails = new SynchronizeDetails(
-                    desc.getUsername(), desc.getPassword(), desc.getHost(),
+                    desc.getUsername(), desc.getPassword(), desc.getProtocol(), desc.getHost(),
                     desc.getPort());
         } else if (DOCUMENT_DIFFERENCES_POLICY_EP.equals(extensionPoint)) {
             DocumentDifferencesPolicyDescriptor desc = (DocumentDifferencesPolicyDescriptor) contribution;
@@ -98,12 +95,12 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
 
         URL baseUrl;
         baseUrl = NuxeoWSMainEntrancePointService.class.getResource(".");
-        URL url = new URL(baseUrl, "http://" + details.getHost() + ":"
+        URL url = new URL(baseUrl, details.getProtocol() + "://" + details.getHost() + ":"
                 + details.getPort() + VirtualHostHelper.getContextPathProperty() + "/webservices/wssyncroentry?wsdl");
         NuxeoWSMainEntrancePointService.NUXEOWSMAINENTRANCEPOINTSERVICE_WSDL_LOCATION = url;
 
         baseUrl = WSSynchroServerModuleService.class.getResource(".");
-        url = new URL(baseUrl, "http://" + details.getHost() + ":"
+        url = new URL(baseUrl, details.getProtocol() + "://" + details.getHost() + ":"
                 + details.getPort() + VirtualHostHelper.getContextPathProperty() + "/webservices/wssyncroserver?wsdl");
         WSSynchroServerModuleService.WSSYNCHROSERVERMODULESERVICE_WSDL_LOCATION = url;
         if (getUserManager().getPrincipal(details.getUsername()) == null) {
