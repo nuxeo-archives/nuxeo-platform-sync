@@ -22,6 +22,7 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.platform.sync.api.SynchronizeService;
+import org.nuxeo.ecm.platform.sync.api.util.MonitorProvider;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 import org.nuxeo.ecm.platform.sync.manager.DocumentDifferencesPolicy;
 import org.nuxeo.ecm.platform.sync.manager.DocumentsSynchronizeManager;
@@ -93,15 +94,23 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
             throw new IllegalArgumentException("Cannot synchronize without synchronization details");
         }
 
+        MonitorProvider.getMonitor().setTaskName("Synchronizing Documents");
+        
         URL baseUrl;
         baseUrl = NuxeoWSMainEntrancePointService.class.getResource(".");
-        URL url = new URL(baseUrl, details.getProtocol() + "://" + details.getHost() + ":"
-                + details.getPort() + VirtualHostHelper.getContextPathProperty() + "/webservices/wssyncroentry?wsdl");
+        
+        StringBuilder baseSpec = new StringBuilder(details.getProtocol());
+        baseSpec.append("://");
+        baseSpec.append(details.getHost());
+        baseSpec.append(":");
+        baseSpec.append(details.getPort());
+        baseSpec.append(VirtualHostHelper.getContextPathProperty());
+        
+        URL url = new URL(baseUrl, baseSpec.toString() + "/webservices/wssyncroentry?wsdl");
         NuxeoWSMainEntrancePointService.NUXEOWSMAINENTRANCEPOINTSERVICE_WSDL_LOCATION = url;
 
         baseUrl = WSSynchroServerModuleService.class.getResource(".");
-        url = new URL(baseUrl, details.getProtocol() + "://" + details.getHost() + ":"
-                + details.getPort() + VirtualHostHelper.getContextPathProperty() + "/webservices/wssyncroserver?wsdl");
+        url = new URL(baseUrl, baseSpec.toString() + "/webservices/wssyncroserver?wsdl");
         WSSynchroServerModuleService.WSSYNCHROSERVERMODULESERVICE_WSDL_LOCATION = url;
         if (getUserManager().getPrincipal(details.getUsername()) == null) {
             log.debug("In case user does not exists on the local machine, then register it...");
@@ -112,8 +121,7 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
                     details.getUsername());
             userModel.setProperty(userSchemaName, "password",
                     details.getPassword());
-            userModel.setProperty(userSchemaName, "groups",
-                    new String[] { "administrators" });
+            userModel.setProperty(userSchemaName, "groups", getUserManager().getAdministratorsGroups().toArray());
             getUserManager().createUser(userModel);
         }
         DocumentsSynchronizeManager documentSynchronizeManager = new DocumentsSynchronizeManager(
@@ -131,6 +139,8 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
             throw new IllegalArgumentException("Cannot synchronize without synchronization details");
         }
 
+        MonitorProvider.getMonitor().setTaskName("Synchronizing relations");
+        
         RelationsSynchronizeManager relationSynchronizer = new RelationsSynchronizeManager(
                 details);
         relationSynchronizer.performChanges();
@@ -145,6 +155,8 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
         if (details == null) {
             throw new IllegalArgumentException("Cannot synchronize without synchronization details");
         }
+        
+        MonitorProvider.getMonitor().setTaskName("Synchronizing Vocabularies");
 
         VocabularySynchronizeManager vocabularySynchronizer = new VocabularySynchronizeManager(
                 details);

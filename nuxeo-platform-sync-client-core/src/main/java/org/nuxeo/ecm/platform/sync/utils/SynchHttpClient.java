@@ -30,6 +30,7 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
+import org.nuxeo.ecm.platform.web.common.vh.VirtualHostHelper;
 
 /**
  * simple http client using basic authentication that executes a get call !!
@@ -57,8 +58,7 @@ public class SynchHttpClient {
         url.append(synchronizeDetails.getHost());
         url.append(":");
         url.append(synchronizeDetails.getPort());
-        url.append("/");
-        url.append("nuxeo");
+        url.append(VirtualHostHelper.getContextPathProperty());
         this.baseURL = url.toString();
         this.httpGet = null;
 

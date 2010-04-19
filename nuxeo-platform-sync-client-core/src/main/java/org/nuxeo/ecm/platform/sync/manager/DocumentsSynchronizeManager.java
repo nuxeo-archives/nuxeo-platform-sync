@@ -17,20 +17,27 @@
  */
 package org.nuxeo.ecm.platform.sync.manager;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 
 import org.apache.log4j.Logger;
+import org.nuxeo.common.utils.Path;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.event.EventServiceAdmin;
+import org.nuxeo.ecm.platform.sync.api.exception.SynchronizationException;
+import org.nuxeo.ecm.platform.sync.api.util.MonitorProvider;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 import org.nuxeo.ecm.platform.sync.client.ImportConfiguration;
 import org.nuxeo.ecm.platform.sync.processor.TupleProcessor;
@@ -72,6 +79,9 @@ public class DocumentsSynchronizeManager {
     private ImportConfiguration importConfiguration;
 
     private DocumentDifferencesPolicy documentDifferencesPolicy;
+    
+    // this list will keep the documents that need to be move
+    private List<NuxeoSynchroTuple> movedTuples;
 
     public DocumentsSynchronizeManager(CoreSession session,
             SynchronizeDetails synchronizeDetails, String queryName,
@@ -89,6 +99,11 @@ public class DocumentsSynchronizeManager {
     public void run() throws ClientException {
         // first obtain the list of tuples from server based on the custom query
         NuxeoWSMainEntrancePoint entrance = new NuxeoWSMainEntrancePointService().getNuxeoWSMainEntrancePointPort();
+        
+        String address = NuxeoWSMainEntrancePointService.NUXEOWSMAINENTRANCEPOINTSERVICE_WSDL_LOCATION.toString().replace("wssyncroentry?wsdl", "");
+        
+        ((BindingProvider) entrance).getRequestContext().put(
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY, address + "wssyncroentry");
         WSSynchroServerModule wsas = null;
         List<NuxeoSynchroTuple> tuples = null;
         String query = null;
@@ -97,6 +112,9 @@ public class DocumentsSynchronizeManager {
                     session.getRepositoryName(),
                     synchronizeDetails.getUsername(),
                     synchronizeDetails.getPassword());
+            
+            SetPrivateAdressUriFromEndPointReference(ref, address + "wssyncroserver");
+            
             wsas = new WSSynchroServerModuleService().getPort(ref,
                     WSSynchroServerModule.class);
 
@@ -115,7 +133,7 @@ public class DocumentsSynchronizeManager {
         }
         // computes the diffs
         processDifferences(tuples, query);
-        // first remove documents no more availanle on online server
+        // first remove documents no more available on online server
         removeDocuments();
         // disable the listener in order to keep the original dc:modified
         EventServiceAdmin eventAdmin = Framework.getLocalService(EventServiceAdmin.class);
@@ -123,6 +141,8 @@ public class DocumentsSynchronizeManager {
         try {
             // add the new documents
             addDocuments(wsas);
+            // then move documents
+            moveDocuments();
             // and update the modified ones
             updateDocuments(wsas);
         } catch (ClientException e) {
@@ -137,12 +157,15 @@ public class DocumentsSynchronizeManager {
     private void addDocuments(WSSynchroServerModule wsas)
             throws ClientException {
         // first add normal documents
+        MonitorProvider.getMonitor().beginTask("Adding documents (" + addedTuples.size() + ")", addedTuples.size());
         for (NuxeoSynchroTuple tuple : addedTuples) {
             if (!tuple.isVersion() && !tuple.isProxy()) {
                 TupleProcessor tupleProcessor = TupleProcessor.createProcessor(
                         session, tuple, wsas, true, synchronizeDetails, importConfiguration);
                 tupleProcessor.process();
+                MonitorProvider.getMonitor().worked(1);
             }
+            checkSynchronizeStatus();
         }
         // second add versions
         for (NuxeoSynchroTuple tuple : addedTuples) {
@@ -150,7 +173,9 @@ public class DocumentsSynchronizeManager {
                 TupleProcessor tupleProcessor = TupleProcessor.createProcessor(
                         session, tuple, wsas, true, synchronizeDetails, importConfiguration);
                 tupleProcessor.process();
+                MonitorProvider.getMonitor().worked(1);
             }
+            checkSynchronizeStatus();
         }
         // last add proxies
         for (NuxeoSynchroTuple tuple : addedTuples) {
@@ -158,18 +183,29 @@ public class DocumentsSynchronizeManager {
                 TupleProcessor tupleProcessor = TupleProcessor.createProcessor(
                         session, tuple, wsas, true, synchronizeDetails, importConfiguration);
                 tupleProcessor.process();
+                MonitorProvider.getMonitor().worked(1);
             }
+            checkSynchronizeStatus();
         }
     }
 
+    private void moveDocuments() throws ClientException {
+
+        // move documents
+        new MoveDocumentsUnrestricted(session, movedTuples).runUnrestricted();
+
+    }        
+    
     private void updateDocuments(WSSynchroServerModule wsas)
             throws ClientException {
 
         // update modified documents
+        MonitorProvider.getMonitor().beginTask("Updating documents", modifiedTuples.size());
         for (NuxeoSynchroTuple tuple : modifiedTuples) {
             TupleProcessor tupleProcessor = TupleProcessor.createProcessor(
                     session, tuple, wsas, false, synchronizeDetails, importConfiguration);
             tupleProcessor.process();
+            MonitorProvider.getMonitor().worked(1);
         }
 
     }
@@ -191,7 +227,7 @@ public class DocumentsSynchronizeManager {
 
             if (documentDifferencesPolicy != null) {
                 documentDifferencesPolicy.process(availableDocs, tuples,
-                        addedTuples, modifiedTuples, deletedIds);
+                        addedTuples, modifiedTuples, deletedIds, movedTuples);
             }
 
             if (importConfiguration != null && importConfiguration.getGenerateNewId()) {
@@ -208,6 +244,7 @@ public class DocumentsSynchronizeManager {
         addedTuples = new LinkedList<NuxeoSynchroTuple>();
         modifiedTuples = new LinkedList<NuxeoSynchroTuple>();
         deletedIds = new LinkedList<String>();
+        movedTuples  = new LinkedList<NuxeoSynchroTuple>();
     }
 
     protected static class RemoveDocumentsUnrestricted extends
@@ -224,20 +261,76 @@ public class DocumentsSynchronizeManager {
         @Override
         public void run() throws ClientException {
 
-            List<IdRef> refs = new ArrayList<IdRef>(deletedIds.size());
+            MonitorProvider.getMonitor().beginTask("Removing obsolete documents", 4);
+            List<IdRef> refs = new ArrayList<IdRef>();
+            List<IdRef> proxyRefs = new ArrayList<IdRef>();
+            List<IdRef> versionRefs = new ArrayList<IdRef>();
             for (String id : deletedIds) {
-                refs.add(new IdRef(id));
+                IdRef docRef = new IdRef(id);
+                DocumentModel model = session.getDocument(docRef);
+                if (model.isProxy()) {
+                    // versions need to be removed after proxies
+                    proxyRefs.add(docRef);
+                } else if (model.isVersion()) {
+                    if (session.getProxies(docRef, null).size() == 0
+                            && model.getPath() != null) {
+                        versionRefs.add(docRef);
+                    }
+                } else {
+                    refs.add(docRef);
+                }
             }
+            MonitorProvider.getMonitor().worked(1);
 
             try {
+                session.removeDocuments(proxyRefs.toArray(new IdRef[0]));
+                session.save();
+                MonitorProvider.getMonitor().worked(1);
+                session.removeDocuments(versionRefs.toArray(new IdRef[0]));
+                session.save();
+                MonitorProvider.getMonitor().worked(1);
                 session.removeDocuments(refs.toArray(new IdRef[0]));
                 session.save();
+                MonitorProvider.getMonitor().worked(1);
             } catch (Exception e) {
                 log.warn(e);
             }
         }
     }
 
+    
+        protected static class MoveDocumentsUnrestricted extends
+                UnrestrictedSessionRunner {
+    
+            List<NuxeoSynchroTuple> movedTuples;
+    
+            public MoveDocumentsUnrestricted(CoreSession session,
+                    List<NuxeoSynchroTuple> tuples) {
+                super(session);
+                movedTuples = tuples;
+            }
+    
+            @Override
+            public void run() throws ClientException {
+                MonitorProvider.getMonitor().beginTask("Moving documents", movedTuples.size());
+                for (NuxeoSynchroTuple tuple : movedTuples) {
+                    DocumentModel localDocument = session.getDocument(new IdRef(tuple.getAdaptedId()));
+                    if (localDocument.isVersion()) {
+                        continue;
+                    }
+                    Path tuplePath = new Path(tuple.getPath());
+                    String documentName = tuplePath.lastSegment();
+                    Path parentPath = tuplePath.removeLastSegments(1);
+                    session.move(localDocument.getRef(), new PathRef(parentPath.toString()), documentName);
+                    
+                    MonitorProvider.getMonitor().worked(1);
+                }
+    
+            }
+        }
+    
+    
+    
     /**
      * The unrestricted runner for running a query.
      *
@@ -265,5 +358,28 @@ public class DocumentsSynchronizeManager {
         }
 
     }
+    
+    public void checkSynchronizeStatus() throws SynchronizationException {
+        if (MonitorProvider.getMonitor().isCanceled()) {
+            throw new SynchronizationException("Synchronization canceled by user");
+        }
+    }
 
+    
+    private void SetPrivateAdressUriFromEndPointReference(W3CEndpointReference ref, String value) {
+        if (ref == null) {
+            return;
+        }
+        try {
+            Field addressField = W3CEndpointReference.class.getDeclaredField("address");
+            addressField.setAccessible(true);
+            Object address = addressField.get(ref);
+            Field uriField = addressField.getType().getDeclaredField("uri");
+            uriField.setAccessible(true);
+            uriField.set(address, value);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+    
 }
