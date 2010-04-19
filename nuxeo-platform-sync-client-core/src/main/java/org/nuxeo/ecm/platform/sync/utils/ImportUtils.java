@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.nuxeo.ecm.core.lifecycle.LifeCycle;
 import org.nuxeo.ecm.core.lifecycle.LifeCycleException;
 import org.nuxeo.ecm.core.lifecycle.LifeCycleTransition;
@@ -74,6 +75,9 @@ public class ImportUtils {
      * @return the parent path
      */
     public static String getParentPath(String path) {
+        if (path == null) {
+            return "/";
+        }
         int index = path.lastIndexOf('/');
         String parent = path.substring(0, index);
         return parent.equals("") ? "/" : parent;
@@ -86,6 +90,9 @@ public class ImportUtils {
      * @return the name of the document
      */
     public static String getName(String path) {
+        if (path == null) {
+            return RandomStringUtils.random(15, "abcdefghijklmnopqrstuvwxyz");
+        }
         int index = path.lastIndexOf('/');
         return path.substring(index + 1, path.length());
     }

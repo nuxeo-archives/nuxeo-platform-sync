@@ -18,9 +18,12 @@
 package org.nuxeo.ecm.platform.sync.manager;
 
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.tools.ant.filters.StringInputStream;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.platform.relations.api.Graph;
 import org.nuxeo.ecm.platform.relations.api.RelationManager;
@@ -72,7 +75,17 @@ public class RelationsSynchronizeManager {
                 }
 
                 graph.clear();
-                graph.read(inputStream, null, null);
+
+                try {
+                    Charset utf8charset = Charset.forName("UTF-8");
+                    String inputString = IOUtils.toString(inputStream,
+                            "ISO-8859-1");
+                    InputStream inStream = new StringInputStream(new String(
+                            inputString.getBytes(), utf8charset));
+                    graph.read(inStream, null, null);
+                } catch (Exception e) {
+                    throw new ClientException("Can't parse stream in UTF-8", e);
+                }
             } finally {
                 // close connection
                 httpClient.closeConnection();

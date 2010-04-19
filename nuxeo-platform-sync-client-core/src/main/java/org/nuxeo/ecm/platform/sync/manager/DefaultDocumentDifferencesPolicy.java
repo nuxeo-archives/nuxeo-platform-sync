@@ -1,5 +1,6 @@
 package org.nuxeo.ecm.platform.sync.manager;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.platform.sync.adapter.SynchronizableDocument;
+import org.nuxeo.ecm.platform.sync.api.util.MonitorProvider;
 import org.nuxeo.ecm.platform.sync.utils.ImportUtils;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 
@@ -15,12 +17,21 @@ public class DefaultDocumentDifferencesPolicy implements
 
     public void process(DocumentModelList availableDocs, List<NuxeoSynchroTuple> tuples,
             List<NuxeoSynchroTuple> addedTuples,
-            List<NuxeoSynchroTuple> modifiedTuples, List<String> deletedIds)
+            List<NuxeoSynchroTuple> modifiedTuples, List<String> deletedIds, List<NuxeoSynchroTuple> movedTuples)
             throws Exception {
 
-        addedTuples.addAll(tuples);
+        MonitorProvider.getMonitor().beginTask("Computing the differences", availableDocs.size());
+        List<String> tupleIds = new ArrayList<String>();
+        for (NuxeoSynchroTuple tuple : tuples) {
+            if (!tupleIds.contains(tuple.getAdaptedId())) {
+                tupleIds.add(tuple.getAdaptedId());
+                addedTuples.add(tuple);
+            }
+        }
+        
+        boolean remove;
         for (DocumentModel doc : availableDocs) {
-            boolean remove = true;
+            remove = true;
             SynchronizableDocument syncDoc = doc.getAdapter(SynchronizableDocument.class);
             for (NuxeoSynchroTuple tuple : tuples) {
                 String lifecycleState = ImportUtils.getContextDataInfo(
@@ -28,6 +39,8 @@ public class DefaultDocumentDifferencesPolicy implements
                 if (syncDoc.getId().equals(tuple.getAdaptedId())) {
                     addedTuples.remove(tuple);
                     remove = false;
+                    tuples.remove(tuple);
+                    
                     // document was modified
                     Calendar modificationDate = (Calendar) doc.getPropertyValue("dc:modified");
                     // MC : test made using seconds instead of millis due to
@@ -40,12 +53,17 @@ public class DefaultDocumentDifferencesPolicy implements
                         tuple.setClientId(doc.getId());
                         modifiedTuples.add(tuple);
                     }
+                    if (tuple.getPath() != null
+                            && !tuple.getPath().equals(doc.getPathAsString())) {
+                        movedTuples.add(tuple);
+                    }
                     break;
                 }
             }
             if (remove) {
                 deletedIds.add(doc.getId());
             }
+            MonitorProvider.getMonitor().worked(1);
         }
     }
 

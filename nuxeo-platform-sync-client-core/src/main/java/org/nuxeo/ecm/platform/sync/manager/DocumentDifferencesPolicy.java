@@ -10,7 +10,7 @@ public interface DocumentDifferencesPolicy {
     void process(DocumentModelList availableDocs,
             List<NuxeoSynchroTuple> tuples,
             List<NuxeoSynchroTuple> addedTuples,
-            List<NuxeoSynchroTuple> modifiedTuples, List<String> deletedIds)
-            throws Exception;
+            List<NuxeoSynchroTuple> modifiedTuples, List<String> deletedIds,
+            List<NuxeoSynchroTuple> movedTuples) throws Exception;
 
 }

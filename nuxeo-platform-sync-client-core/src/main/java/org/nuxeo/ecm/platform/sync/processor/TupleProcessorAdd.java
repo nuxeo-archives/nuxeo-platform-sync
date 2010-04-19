@@ -22,6 +22,7 @@ import java.util.Collections;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.platform.sync.utils.ImportUtils;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
@@ -68,6 +69,17 @@ public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
         @Override
         public void run() throws ClientException {
             session.importDocuments(Collections.singletonList(documentModel));
+            try {
+                if (documentModel.getId() != null
+                        && session.exists(new IdRef(documentModel.getId()))) {
+                    System.out.println(documentModel.getName()
+                            + " already exists");
+                } else {
+                    session.importDocuments(Collections.singletonList(documentModel));
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
             session.save();
         }
     }

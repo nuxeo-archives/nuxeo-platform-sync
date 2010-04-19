@@ -3,10 +3,10 @@ package org.nuxeo.ecm.platform;
 import java.io.File;
 import java.net.URL;
 
+import junit.framework.TestCase;
+
 import org.apache.log4j.BasicConfigurator;
 import org.nuxeo.ecm.platform.sync.processor.TupleProcessorUpdate;
-
-import junit.framework.TestCase;
 
 public class TestZipProc extends TestCase {
     public TestZipProc() {

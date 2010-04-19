@@ -71,6 +71,7 @@ import org.nuxeo.ecm.platform.sync.utils.xpath.XPathUtils;
 import org.nuxeo.ecm.platform.sync.webservices.generated.DocumentProperty;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 import org.nuxeo.ecm.platform.sync.webservices.generated.WsACE;
+import org.nuxeo.runtime.api.Framework;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -406,6 +407,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                 File blobFile = File.createTempFile(blobId, "blob");
                 FileUtils.copyToFile(zipFile.getInputStream(entry), blobFile);
                 blobData.blobFile = blobFile;
+                Framework.trackFile(blobFile,this);
             }
         }
         for (String blobId : collect.keySet()) {
@@ -427,6 +429,9 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             } else {
                 log.warn("Couldn't import blob " + blobData.xpath);
             }
+        }
+        if (zipFile != null) {            
+            zipFile.close();
         }
     }
 
@@ -538,6 +543,10 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             processZippedDocument(zipHandle);
         } catch (Exception e) {
             throw new ClientException(e);
+        } finally {
+            if (zipHandle != null) {
+                zipHandle.delete();
+            }
         }
     }
 
