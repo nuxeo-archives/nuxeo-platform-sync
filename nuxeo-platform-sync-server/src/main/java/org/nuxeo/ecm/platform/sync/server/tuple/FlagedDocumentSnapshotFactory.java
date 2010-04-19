@@ -68,6 +68,8 @@ public class FlagedDocumentSnapshotFactory {
         if (acp != null) {
             ACL acl = acp.getMergedACLs("MergedACL");
             resACP = acl.toArray(new ACE[acl.size()]);
+        } else {
+            resACP = new ACE[0];
         }
         return new FlagedDocumentSnapshot(props, null, document.getPathAsString(),
                 WsACE.wrap(resACP), hasBlobs);

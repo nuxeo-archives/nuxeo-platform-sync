@@ -31,13 +31,13 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.DocumentRef;
-import org.nuxeo.ecm.core.api.DocumentSecurityException;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.api.VersionModel;
 import org.nuxeo.ecm.core.api.facet.VersioningDocument;
 import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
+import org.nuxeo.ecm.core.api.security.SecurityConstants;
 import org.nuxeo.ecm.core.schema.types.primitives.DateType;
 import org.nuxeo.ecm.core.search.api.client.querymodel.QueryModelService;
 import org.nuxeo.ecm.core.search.api.client.querymodel.descriptor.QueryModelDescriptor;
@@ -96,18 +96,23 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
                 availableDocIds.add(documentModel.getId());
             }
             for (DocumentModel documentModel : availableDocs) {
-                modificationDate = (Calendar) documentModel.getPropertyValue("dc:modified");
-                long modificationTime = modificationDate != null ? modificationDate.getTimeInMillis() : 0;
-                SynchronizableDocument syncDoc = documentModel.getAdapter(SynchronizableDocument.class);
-                tuple = new NuxeoSynchroTuple(documentModel.getId(),
-                        documentModel.getId(),
-                        syncDoc.getId(),
-                        documentModel.getType(),
-                        documentModel.getPathAsString(), modificationTime,
-                        documentModel.isProxy(), documentModel.isVersion());
-                tuple.setContextData(getContextData(documentManager,
-                        documentModel, availableDocIds, unrestrictedDocs));
-                availableTuples.add(tuple);
+                if (documentManager.hasPermission(documentModel.getRef(),
+                        SecurityConstants.READ)) {
+                    modificationDate = (Calendar) documentModel.getPropertyValue("dc:modified");
+                    long modificationTime = modificationDate != null ? modificationDate.getTimeInMillis()
+                            : 0;
+                    SynchronizableDocument syncDoc = documentModel.getAdapter(SynchronizableDocument.class);
+                    tuple = new NuxeoSynchroTuple(documentModel.getId(),
+                            documentModel.getId(), syncDoc.getId(),
+                            documentModel.getType(),
+                            documentModel.getPathAsString(), modificationTime,
+                            documentModel.isProxy(), documentModel.isVersion());
+                    tuple.setContextData(getContextData(documentManager,
+                            documentModel, availableDocIds, unrestrictedDocs));
+                    availableTuples.add(tuple);
+                } else {
+                    unrestrictedDocs.add(documentModel);
+                }
             }
             // add also the unrestricted documents
             for (DocumentModel documentModel : unrestrictedDocs) {
@@ -253,26 +258,32 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
             String importProxyTargetId = null;
 
             String importProxyVersionableId = null;
-            try {
-                // first try to get the version from which the proxy was made
-                version = documentManager.getSourceDocument(ref);
-                if (version != null) {
-                    importProxyTargetId = version.getId();
-                    // second try to get the source of the version from which
-                    // the proxy was made
-                    sourceDocument = documentManager.getSourceDocument(version.getRef());
-                    if (sourceDocument != null) {
-                        importProxyVersionableId = sourceDocument.getId();
+            
+            // first try to get the version from which the proxy was made
+            version = documentManager.getSourceDocument(ref);
+
+            if (version != null) {
+                importProxyTargetId = version.getId();
+                // second try to get the source of the version from which
+                // the proxy was made
+                if (documentManager.hasPermission(version.getRef(),
+                        SecurityConstants.VERSION)) {
+                    if (version.getSourceId() != null) {
+                        // TODO: importProxyVersionableId = version.getSourceId()
+                        sourceDocument = documentManager.getSourceDocument(version.getRef());
+                        if (sourceDocument != null) {
+                            importProxyVersionableId = sourceDocument.getId();
+                        }
                     }
+                } else {
+                    log.debug("Current logged user does not have Version security ...");
+                    // an restricted user needs to get information about the proxy
+                    // sources
+                    DocumentSourceUnrestricted usr = new DocumentSourceUnrestricted(
+                            documentManager, ref);
+                    usr.runUnrestricted();
+                    importProxyVersionableId = usr.sourceId;
                 }
-            } catch (DocumentSecurityException e) {
-                log.debug("Current logged user does not have Version security ...");
-                // an restricted user needs to get information about the proxy
-                // sources
-                DocumentSourceUnrestricted usr = new DocumentSourceUnrestricted(
-                        documentManager, ref);
-                usr.runUnrestricted();
-                importProxyVersionableId = usr.sourceId;
             }
             if (!availableDocIds.contains(importProxyTargetId)) {
                 unrestrictedDocs.add(version);
@@ -289,64 +300,82 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
             List<VersionModel> versions = null;
             String minorVer = null;
             String majorVer = null;
-            try {
-                sourceDocument = documentManager.getSourceDocument(ref);
-            } catch (DocumentSecurityException e) {
-                log.debug("Current logged user does not have Version security ...");
-                DocumentSourceUnrestricted usr = new DocumentSourceUnrestricted(
-                        documentManager, ref);
-                usr.runUnrestricted();
-                importVersionVersionableId = usr.sourceId;
-                versions = usr.versionsForSourceDocument;
-                minorVer = usr.minorVer;
-                majorVer = usr.majorVer;
-            }
-            if (importVersionVersionableId == null) {
-                importVersionVersionableId = sourceDocument.getId();
-            }
-            // add versionable id(source id)
-            listContextData.add(generateDataContextInfo(
-                    CoreSession.IMPORT_VERSION_VERSIONABLE_ID,
-                    importVersionVersionableId));
-            // add version label
-            listContextData.add(generateDataContextInfo(
-                    CoreSession.IMPORT_VERSION_LABEL,
-                    document.getVersionLabel()));
-
-            if (versions == null) {
-                versions = documentManager.getVersionsForDocument(sourceDocument.getRef());
-            }
-            for (VersionModel versionModel : versions) {
-                if (versionModel.getLabel().equals(document.getVersionLabel())) {
-                    // add version description
-                    listContextData.add(generateDataContextInfo(
-                            CoreSession.IMPORT_VERSION_DESCRIPTION,
-                            versionModel.getDescription()));
-                    // add version creation date
-                    listContextData.add(generateDataContextInfo(
-                            CoreSession.IMPORT_VERSION_CREATED,
-                            new DateType().encode(versionModel.getCreated())));
-                    break;
+            if (document.getSourceId() == null) {
+                // add version description
+                listContextData.add(generateDataContextInfo(
+                        CoreSession.IMPORT_VERSION_MAJOR, "1"));
+                // add version description
+                listContextData.add(generateDataContextInfo(
+                        CoreSession.IMPORT_VERSION_MINOR, "0"));
+                listContextData.add(generateDataContextInfo(
+                        CoreSession.IMPORT_VERSION_VERSIONABLE_ID,
+                        document.getId()));
+                // add version label
+                listContextData.add(generateDataContextInfo(
+                        CoreSession.IMPORT_VERSION_LABEL,
+                        document.getVersionLabel()));
+            } else {
+                if (documentManager.hasPermission(new IdRef(
+                        document.getSourceId()), SecurityConstants.READ)) {
+                    sourceDocument = documentManager.getSourceDocument(ref);
+                } else {
+                    log.debug("Current logged user does not have Version security ...");
+                    DocumentSourceUnrestricted usr = new DocumentSourceUnrestricted(
+                            documentManager, ref);
+                    usr.runUnrestricted();
+                    importVersionVersionableId = usr.sourceId;
+                    versions = usr.versionsForSourceDocument;
+                    minorVer = usr.minorVer;
+                    majorVer = usr.majorVer;
                 }
-            }
 
-            if (minorVer == null || majorVer == null) {
-                VersioningDocument docVer = document.getAdapter(VersioningDocument.class);
-                minorVer = docVer.getMinorVersion().toString();
-                majorVer = docVer.getMajorVersion().toString();
-            }
-            // add version description
-            listContextData.add(generateDataContextInfo(
-                    CoreSession.IMPORT_VERSION_MAJOR, majorVer));
-            // add version description
-            listContextData.add(generateDataContextInfo(
-                    CoreSession.IMPORT_VERSION_MINOR, minorVer));
+                if (importVersionVersionableId == null) {
+                    importVersionVersionableId = sourceDocument.getId();
+                }
+                // add versionable id(source id)
+                listContextData.add(generateDataContextInfo(
+                        CoreSession.IMPORT_VERSION_VERSIONABLE_ID,
+                        importVersionVersionableId));
+                // add version label
+                listContextData.add(generateDataContextInfo(
+                        CoreSession.IMPORT_VERSION_LABEL,
+                        document.getVersionLabel()));
 
+                if (versions == null) {
+                    versions = documentManager.getVersionsForDocument(sourceDocument.getRef());
+                }
+                for (VersionModel versionModel : versions) {
+                    if (versionModel.getLabel().equals(
+                            document.getVersionLabel())) {
+                        // add version description
+                        listContextData.add(generateDataContextInfo(
+                                CoreSession.IMPORT_VERSION_DESCRIPTION,
+                                versionModel.getDescription()));
+                        // add version creation date
+                        listContextData.add(generateDataContextInfo(
+                                CoreSession.IMPORT_VERSION_CREATED,
+                                new DateType().encode(versionModel.getCreated())));
+                        break;
+                    }
+                }
+
+                if (minorVer == null || majorVer == null) {
+                    VersioningDocument docVer = document.getAdapter(VersioningDocument.class);
+                    minorVer = docVer.getMinorVersion().toString();
+                    majorVer = docVer.getMajorVersion().toString();
+                }
+                // add version description
+                listContextData.add(generateDataContextInfo(
+                        CoreSession.IMPORT_VERSION_MAJOR, majorVer));
+                // add version description
+                listContextData.add(generateDataContextInfo(
+                        CoreSession.IMPORT_VERSION_MINOR, minorVer));
+            }
         } else {
             // add lock status
             listContextData.add(generateDataContextInfo(
                     CoreSession.IMPORT_LOCK, document.getLock()));
-            if (document.isVersionable()) {
+            if (document.isVersionable() && documentManager.hasPermission(ref, SecurityConstants.READ)) {
                 listContextData.add(generateDataContextInfo(
                         CoreSession.IMPORT_CHECKED_IN, Boolean.FALSE.toString()));
                 // add the id of the last version, which represents the base for
@@ -402,6 +431,7 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
         }
         return null;
     }
+
 
     /**
      * Helper class to run code with an unrestricted session.The code that will
@@ -460,16 +490,23 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
         public void run() throws ClientException {
             DocumentModel sourceDocument = null;
             try {
+                document = session.getDocument(ref);
                 // first the source of the version is retrieved
-                sourceDocument = session.getSourceDocument(ref);
-                if (sourceDocument != null) {
-                    sourceId = sourceDocument.getId();
-                    this.sourceDocument = sourceDocument;
-                    versionsForSourceDocument = session.getVersionsForDocument(sourceDocument.getRef());
-                    document = session.getDocument(ref);
-                    VersioningDocument docVer = document.getAdapter(VersioningDocument.class);
-                    minorVer = docVer.getMinorVersion().toString();
-                    majorVer = docVer.getMajorVersion().toString();
+                try {
+                    if (document.getSourceId() == null) {
+                        throw new ClientException("Document has null source document");
+                    }
+                    sourceDocument = session.getSourceDocument(ref);
+                    if (sourceDocument != null) {
+                        sourceId = sourceDocument.getId();
+                        this.sourceDocument = sourceDocument;
+                        versionsForSourceDocument = session.getVersionsForDocument(sourceDocument.getRef());
+                        VersioningDocument docVer = document.getAdapter(VersioningDocument.class);
+                        minorVer = docVer.getMinorVersion().toString();
+                        majorVer = docVer.getMajorVersion().toString();
+                    }
+                } catch (ClientException e) {
+                    log.error(e.getMessage(), e);
                 }
                 documentSnapshot = new FlagedDocumentSnapshotFactory().newDocumentSnapshot(document);
             } catch (Exception e) {
@@ -486,7 +523,7 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
 
         private Calendar modificationDate;
 
-        private String domainName;
+        private final String domainName;
 
         public UnrestrictedUserWorkspaceReader(CoreSession userCoreSession,
                 String domainName) {
@@ -514,4 +551,5 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
             return modificationDate;
         }
     }
+
 }
