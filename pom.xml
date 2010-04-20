@@ -12,10 +12,10 @@
   <name>Nuxeo Platform Synchronization Parent</name>
   <packaging>pom</packaging>
   <description>Nuxeo Enterprise Platform: Synchro Parent</description>
-  <version>5.3.1-SNAPSHOT</version>
+  <version>5.3.1-20100420</version>
 
   <properties>
-    <nuxeo.platform.sync.version>5.3.1-SNAPSHOT</nuxeo.platform.sync.version>
+    <nuxeo.platform.sync.version>5.3.1-20100420</nuxeo.platform.sync.version>
   </properties>
 
   <modules>
