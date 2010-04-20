@@ -68,7 +68,6 @@ public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
 
         @Override
         public void run() throws ClientException {
-            session.importDocuments(Collections.singletonList(documentModel));
             try {
                 if (documentModel.getId() != null
                         && session.exists(new IdRef(documentModel.getId()))) {

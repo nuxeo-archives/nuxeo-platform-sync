@@ -21,13 +21,7 @@ public class DefaultDocumentDifferencesPolicy implements
             throws Exception {
 
         MonitorProvider.getMonitor().beginTask("Computing the differences", availableDocs.size());
-        List<String> tupleIds = new ArrayList<String>();
-        for (NuxeoSynchroTuple tuple : tuples) {
-            if (!tupleIds.contains(tuple.getAdaptedId())) {
-                tupleIds.add(tuple.getAdaptedId());
-                addedTuples.add(tuple);
-            }
-        }
+        addedTuples.addAll(tuples);
         
         boolean remove;
         for (DocumentModel doc : availableDocs) {

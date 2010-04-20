@@ -44,6 +44,12 @@ public class TupleProcessorAddDocument extends TupleProcessorAdd {
 
     @Override
     public void process() throws ClientException {
+        if (!session.exists(new PathRef(parentPath))) {
+            log.warn("Parent path " + parentPath
+                    + " doesn't exist => Document " + tuple.getClientId()
+                    + " will not be created");
+            return;
+        }
         log.debug("Starting the process of adding document on the client side: " + name);
         // a normal document model will be created
         localDocument = new DocumentModelImpl((String) null, tuple.getType(),
