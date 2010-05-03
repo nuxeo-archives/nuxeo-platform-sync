@@ -2,6 +2,8 @@ package org.nuxeo.ecm.platform.sync.api.util;
 
 import java.io.Serializable;
 
+import org.nuxeo.ecm.platform.web.common.vh.VirtualHostHelper;
+
 /**
  * Utility class that will keep all the details needed in the process of
  * synchronization
@@ -23,15 +25,28 @@ public class SynchronizeDetails implements Serializable {
 
     private String protocol = "http";
 
+    private String contextPath;
+
     public SynchronizeDetails() {}
 
     public SynchronizeDetails(String username, String password, String protocol, String host,
-            int port) {
+            int port, String contextPath) {
         this.username = username;
         this.password = password;
         this.protocol = protocol;
         this.host = host;
         this.port = port;
+        this.contextPath = contextPath;
+    }
+
+    public String getUrl() {
+        StringBuilder url = new StringBuilder(getProtocol());
+        url.append("://");
+        url.append(getHost());
+        url.append(":");
+        url.append(getPort());
+        url.append(getContextPath());
+        return url.toString();
     }
 
     public String getUsername() {
@@ -80,6 +95,20 @@ public class SynchronizeDetails implements Serializable {
 
     public void setProtocol(String protocol) {
         this.protocol = protocol;
+    }
+
+    public String getContextPath() {
+        if (contextPath == null || "".equals(contextPath)) {
+            contextPath = VirtualHostHelper.getContextPathProperty();
+        }
+        if (!contextPath.startsWith("/")) {
+            contextPath = "/" + contextPath;
+        }
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
     }
 
 }

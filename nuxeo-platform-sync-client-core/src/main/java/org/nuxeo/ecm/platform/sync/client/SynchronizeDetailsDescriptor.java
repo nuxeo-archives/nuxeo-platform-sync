@@ -21,6 +21,9 @@ public class SynchronizeDetailsDescriptor {
     @XNode("@port")
     private int port = 8080;
 
+    @XNode("@contextPath")
+    private String contextPath;
+
     public String getUsername() {
         return username;
     }
@@ -39,6 +42,10 @@ public class SynchronizeDetailsDescriptor {
 
     public String getProtocol() {
         return protocol;
+    }
+
+    public String getContextPath() {
+        return contextPath;
     }
 
 }

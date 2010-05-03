@@ -31,7 +31,6 @@ import org.nuxeo.ecm.platform.sync.manager.VocabularySynchronizeManager;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoWSMainEntrancePointService;
 import org.nuxeo.ecm.platform.sync.webservices.generated.WSSynchroServerModuleService;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
-import org.nuxeo.ecm.platform.web.common.vh.VirtualHostHelper;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
@@ -73,7 +72,7 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
             SynchronizeDetailsDescriptor desc = (SynchronizeDetailsDescriptor) contribution;
             defaultSynchronizeDetails = new SynchronizeDetails(
                     desc.getUsername(), desc.getPassword(), desc.getProtocol(), desc.getHost(),
-                    desc.getPort());
+                    desc.getPort(), desc.getContextPath());
         } else if (DOCUMENT_DIFFERENCES_POLICY_EP.equals(extensionPoint)) {
             DocumentDifferencesPolicyDescriptor desc = (DocumentDifferencesPolicyDescriptor) contribution;
             documentDifferencesPolicy = desc.getPolicyClass().newInstance();
@@ -95,22 +94,17 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
         }
 
         MonitorProvider.getMonitor().setTaskName("Synchronizing Documents");
-        
+
         URL baseUrl;
         baseUrl = NuxeoWSMainEntrancePointService.class.getResource(".");
-        
-        StringBuilder baseSpec = new StringBuilder(details.getProtocol());
-        baseSpec.append("://");
-        baseSpec.append(details.getHost());
-        baseSpec.append(":");
-        baseSpec.append(details.getPort());
-        baseSpec.append(VirtualHostHelper.getContextPathProperty());
-        
-        URL url = new URL(baseUrl, baseSpec.toString() + "/webservices/wssyncroentry?wsdl");
+
+        String baseSpec = details.getUrl();
+
+        URL url = new URL(baseUrl, baseSpec + "/webservices/wssyncroentry?wsdl");
         NuxeoWSMainEntrancePointService.NUXEOWSMAINENTRANCEPOINTSERVICE_WSDL_LOCATION = url;
 
         baseUrl = WSSynchroServerModuleService.class.getResource(".");
-        url = new URL(baseUrl, baseSpec.toString() + "/webservices/wssyncroserver?wsdl");
+        url = new URL(baseUrl, baseSpec + "/webservices/wssyncroserver?wsdl");
         WSSynchroServerModuleService.WSSYNCHROSERVERMODULESERVICE_WSDL_LOCATION = url;
         if (getUserManager().getPrincipal(details.getUsername()) == null) {
             log.debug("In case user does not exists on the local machine, then register it...");
@@ -140,7 +134,7 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
         }
 
         MonitorProvider.getMonitor().setTaskName("Synchronizing relations");
-        
+
         RelationsSynchronizeManager relationSynchronizer = new RelationsSynchronizeManager(
                 details);
         relationSynchronizer.performChanges();
@@ -155,7 +149,7 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
         if (details == null) {
             throw new IllegalArgumentException("Cannot synchronize without synchronization details");
         }
-        
+
         MonitorProvider.getMonitor().setTaskName("Synchronizing Vocabularies");
 
         VocabularySynchronizeManager vocabularySynchronizer = new VocabularySynchronizeManager(
