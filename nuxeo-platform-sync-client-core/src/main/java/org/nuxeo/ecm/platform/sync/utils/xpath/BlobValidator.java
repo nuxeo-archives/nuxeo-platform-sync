@@ -42,7 +42,6 @@ public class BlobValidator implements XPathFunction {
         NodeList nl = ((NodeList) args.get(0));
         Node element = (Node) nl.item(0);
         
-        LOG.info(element.getTextContent());
         return (element.getTextContent().endsWith(".blob"));
 
     }
