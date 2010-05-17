@@ -430,7 +430,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                 log.warn("Couldn't import blob " + blobData.xpath);
             }
         }
-        if (zipFile != null) {            
+        if (zipFile != null) {
             zipFile.close();
         }
     }
@@ -513,7 +513,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
         //first get blobs through export restlet
         SynchHttpClient httpClient = new SynchHttpClient(synchronizeDetails);
         String repoName = session.getRepositoryName();
-        String docId = tuple.getClientId();
+        String docId = tuple.getServerId();
         List<String> pathParams = Arrays.asList(repoName, docId, "exportSingle");
         Map<String, String> params = new HashMap<String, String>();
         params.put("format", "zip");
@@ -524,7 +524,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             InputStream inputStream = httpClient.executeGetCall(pathParams,
                     params);
 
-            zipHandle = File.createTempFile("ZipFile", "zip");
+            zipHandle = File.createTempFile("ZipFile", ".zip");
             FileUtils.copyToFile(inputStream, zipHandle);
             finished = true;
         } catch (Exception e) {
