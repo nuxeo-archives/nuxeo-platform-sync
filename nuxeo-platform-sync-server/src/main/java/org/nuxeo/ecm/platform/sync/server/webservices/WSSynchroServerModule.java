@@ -84,6 +84,8 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
         try {
             session.login();
             CoreSession documentManager = session.getDocumentManager();
+            // invalidate cache
+            documentManager.save();
 
             String queryString = getQuery(queryName);
             DocumentModelList availableDocs = documentManager.query(queryString);
@@ -258,7 +260,7 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
             String importProxyTargetId = null;
 
             String importProxyVersionableId = null;
-            
+
             // first try to get the version from which the proxy was made
             version = documentManager.getSourceDocument(ref);
 
