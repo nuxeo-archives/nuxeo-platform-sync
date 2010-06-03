@@ -100,10 +100,10 @@ public class DocumentsSynchronizeManager {
         // first obtain the list of tuples from server based on the custom query
         NuxeoWSMainEntrancePoint entrance = new NuxeoWSMainEntrancePointService().getNuxeoWSMainEntrancePointPort();
         
-        String address = NuxeoWSMainEntrancePointService.NUXEOWSMAINENTRANCEPOINTSERVICE_WSDL_LOCATION.toString().replace("wssyncroentry?wsdl", "");
+        String wsaddress = NuxeoWSMainEntrancePointService.NUXEOWSMAINENTRANCEPOINTSERVICE_WSDL_LOCATION.toString().replace("wssyncroentry?wsdl", "");
         
         ((BindingProvider) entrance).getRequestContext().put(
-                BindingProvider.ENDPOINT_ADDRESS_PROPERTY, address + "wssyncroentry");
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY, wsaddress + "wssyncroentry");
         WSSynchroServerModule wsas = null;
         List<NuxeoSynchroTuple> tuples = null;
         String query = null;
@@ -113,7 +113,7 @@ public class DocumentsSynchronizeManager {
                     synchronizeDetails.getUsername(),
                     synchronizeDetails.getPassword());
             
-            SetPrivateAdressUriFromEndPointReference(ref, address + "wssyncroserver");
+            SetPrivateAdressUriFromEndPointReference(ref, wsaddress + "wssyncroserver");
             
             wsas = new WSSynchroServerModuleService().getPort(ref,
                     WSSynchroServerModule.class);

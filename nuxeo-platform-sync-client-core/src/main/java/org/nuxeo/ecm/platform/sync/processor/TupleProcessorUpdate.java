@@ -101,11 +101,15 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
     protected void setACE() throws ClientException {
         ACL newACL = localDocument.getACP().getOrCreateACL();
         newACL.clear();
-        List<WsACE> aces = getDocumentSnapshot().getAcl();
-        for (WsACE wsACE : aces) {
-            ACE ace = new ACE(wsACE.getUsername(), wsACE.getPermission(),
-                    wsACE.isGranted());
-            newACL.add(ace);
+        try {
+            List<WsACE> aces = getDocumentSnapshot().getAcl();
+            for (WsACE wsACE : aces) {
+                ACE ace = new ACE(wsACE.getUsername(), wsACE.getPermission(),
+                        wsACE.isGranted());
+                newACL.add(ace);
+            }
+        } catch (Exception e) {
+            log.error("Could not set ACE for document " + localDocument.getPathAsString());
         }
     }
 
@@ -118,9 +122,13 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
     protected void setProperties() throws ClientException {
         setLifeCycle();
 
-        setPropertiesOnDocument();
+        try {
+            setPropertiesOnDocument();
+        } catch (Exception e) {
+            log.error("Could not set properties on document " + localDocument.getPathAsString(), e);
+        }
 
-        if (documentSnapshot.isHasBlobs()) {
+        if (documentSnapshot != null && documentSnapshot.isHasBlobs()) {
             updateBlobs();
         }
     }
