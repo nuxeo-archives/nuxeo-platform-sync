@@ -136,7 +136,7 @@ public abstract class TupleProcessor {
     }
 
     protected String translatePath(String path) {
-        if (importConfiguration == null) {
+        if (importConfiguration == null || importConfiguration.getDocumentRootPath() == null) {
             return path;
         }
         Path p = new Path(path).removeFirstSegments(importConfiguration.getPathSegmentsToRemove());

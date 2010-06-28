@@ -18,8 +18,11 @@
 package org.nuxeo.ecm.platform.sync.client;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+import org.nuxeo.common.xmap.annotation.XNodeList;
 import org.nuxeo.common.xmap.annotation.XNodeMap;
 import org.nuxeo.common.xmap.annotation.XObject;
 import org.nuxeo.common.xmap.annotation.XNode;
@@ -43,7 +46,13 @@ public class ImportConfiguration {
     @XNodeMap(value = "lifeCycleStateMapping", key = "@serverState", type = HashMap.class, componentType = String.class)
     Map<String, String> lifeCycleStateMapping = new HashMap<String, String>();
 
+    @XNodeList(value = "exclude/field", type = HashSet.class, componentType = String.class)
+    private Set<String> excludedFields = new HashSet<String>();
+
     public Path getDocumentRootPath() {
+        if (documentRootPath == null) {
+            return null;
+        }
         return new Path(documentRootPath);
     }
 
@@ -57,6 +66,10 @@ public class ImportConfiguration {
 
     public boolean getGenerateNewId() {
         return generateNewId;
+    }
+
+    public Set<String> getExcludedFields() {
+        return excludedFields;
     }
 
 }

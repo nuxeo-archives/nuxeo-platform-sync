@@ -193,6 +193,16 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                     log.warn(topProperty + " not in schema" + part.getName());
                     continue;
                 }
+                if (importConfiguration != null) {
+                    String xpath = field.getName().getPrefix();
+                    if (xpath == null || "".equals(xpath)) {
+                        xpath = part.getSchema().getName();
+                    }
+                    xpath += ":" + field.getName().getLocalName();
+                    if (importConfiguration.getExcludedFields().contains(xpath)) {
+                        continue;
+                    }
+                }
                 Object value = null;
                 try {
                     value = getSegmentData(subTree, topProperty, field.getType());
@@ -426,16 +436,20 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                 log.warn("Can't import blob" + blobId + " for " + blobData.xpath);
                 continue;
             }
-            Blob blob = StreamingBlob.createFromStream(
-                    new FileInputStream(blobData.blobFile),
-                    blobData.mimeType).persist();
-            blob.setEncoding(blobData.enconding);
-            blob.setMimeType(blobData.mimeType);
-            String correctedXPath = correctXPath(blobData.xpath);
-            if (correctedXPath != null) {
-                localDocument.setPropertyValue(correctedXPath, (Serializable)blob);
-            } else {
-                log.warn("Couldn't import blob " + blobData.xpath);
+            String firstLevelXPath = blobData.xpath.split("/")[0];
+            if (importConfiguration == null
+                    || !importConfiguration.getExcludedFields().contains(firstLevelXPath)) {
+                Blob blob = StreamingBlob.createFromStream(
+                        new FileInputStream(blobData.blobFile),
+                        blobData.mimeType).persist();
+                blob.setEncoding(blobData.enconding);
+                blob.setMimeType(blobData.mimeType);
+                String correctedXPath = correctXPath(blobData.xpath);
+                if (correctedXPath != null) {
+                    localDocument.setPropertyValue(correctedXPath, (Serializable)blob);
+                } else {
+                    log.warn("Couldn't import blob " + blobData.xpath);
+                }
             }
         }
         if (zipFile != null) {
