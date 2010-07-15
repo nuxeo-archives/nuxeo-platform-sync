@@ -18,7 +18,6 @@
 package org.nuxeo.ecm.platform.sync.manager;
 
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -77,11 +76,10 @@ public class RelationsSynchronizeManager {
                 graph.clear();
 
                 try {
-                    Charset utf8charset = Charset.forName("UTF-8");
                     String inputString = IOUtils.toString(inputStream,
                             "ISO-8859-1");
                     InputStream inStream = new StringInputStream(new String(
-                            inputString.getBytes(), utf8charset));
+                            inputString.getBytes(), "UTF-8"));
                     graph.read(inStream, null, null);
                 } catch (Exception e) {
                     throw new ClientException("Can't parse stream in UTF-8", e);
