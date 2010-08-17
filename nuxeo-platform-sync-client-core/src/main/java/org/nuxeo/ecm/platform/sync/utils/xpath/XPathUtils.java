@@ -19,6 +19,8 @@ package org.nuxeo.ecm.platform.sync.utils.xpath;
 
 import java.io.IOException;
 
+import org.nuxeo.ecm.core.schema.SchemaManager;
+import org.nuxeo.runtime.api.Framework;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -75,7 +77,19 @@ public class XPathUtils {
                             + getElementIdx(parent) + ']' + path;
                 }
             } else {
-                path = parent.getAttribute("name") + ':' + path.substring(1);
+                String schema = parent.getAttribute("name");
+                SchemaManager schemaManager;
+                try {
+                    schemaManager = Framework.getService(SchemaManager.class);
+                    if ("".equals(schemaManager.getSchema(schema).getNamespace().prefix)) {
+                        path = schema + ':' + path.substring(1);
+                    } else {
+                        path = path.substring(1);
+                    }
+                } catch (Exception e) {
+                    // Unable to get the schema service : do the default stuff
+                    path = schema + ':'  + path.substring(1);
+                }
                 return path;
             }
 
