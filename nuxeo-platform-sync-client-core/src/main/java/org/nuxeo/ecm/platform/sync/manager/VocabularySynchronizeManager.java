@@ -41,9 +41,9 @@ import org.nuxeo.ecm.platform.ui.web.directory.VocabularyEntry;
 /**
  * The manager to take care the vocabulary set synchronization. It simple
  * replaces the local vocabularies with the ones from server.
- * 
+ *
  * @author mcedica
- * 
+ *
  */
 public class VocabularySynchronizeManager {
     SynchHttpClient httpClient = null;
@@ -122,7 +122,7 @@ public class VocabularySynchronizeManager {
             log.error("Unable to read vocabulary " + vocabularyName);
             return null;
         }
-        Entries vocabularyXML = (Entries) ((JAXBElement) unmarshaller.unmarshal(
+        Entries vocabularyXML = (Entries) ((JAXBElement<Entries>) unmarshaller.unmarshal(
                 new StreamSource(new StringReader(res)), Entries.class)).getValue();
         return vocabularyXML.getEntry();
     }

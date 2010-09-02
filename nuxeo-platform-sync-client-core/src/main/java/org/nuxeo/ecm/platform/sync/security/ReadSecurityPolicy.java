@@ -49,6 +49,7 @@ public class ReadSecurityPolicy extends AbstractSecurityPolicy {
 
     protected SynchronizeService synchronizeService;
 
+    @Override
     public Access checkPermission(Document doc, ACP mergedAcp,
             Principal principal, String permission,
             String[] resolvedPermissions, String[] additionalPrincipals)

@@ -17,6 +17,7 @@ public class DefaultDocumentDifferencesPolicy implements
 
     private static final Logger log = Logger.getLogger(DefaultDocumentDifferencesPolicy.class);
 
+    @Override
     public void process(DocumentModelList availableDocs,
             List<NuxeoSynchroTuple> tuples,
             List<NuxeoSynchroTuple> addedTuples,

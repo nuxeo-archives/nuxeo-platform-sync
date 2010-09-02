@@ -79,15 +79,18 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
         }
     }
 
+    @Override
     public void doSynchronizeDocuments(CoreSession session,
             SynchronizeDetails details) throws Exception {
         doSynchronizeDocuments(session, details, null);
     }
 
+    @Override
     public void doSynchronizeDocuments(CoreSession session) throws Exception {
         doSynchronizeDocuments(session, getDefaultSynchronizeDetails(), null);
     }
 
+    @Override
     public void doSynchronizeDocuments(CoreSession session, SynchronizeDetails details, String queryName) throws Exception {
         if (details == null) {
             throw new IllegalArgumentException("Cannot synchronize without synchronization details");
@@ -123,10 +126,12 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
         documentSynchronizeManager.run();
     }
 
+    @Override
     public void doSynchronizeDocuments(CoreSession session, String queryName) throws Exception {
         doSynchronizeDocuments(session, getDefaultSynchronizeDetails(), queryName);
     }
 
+    @Override
     public void doSynchronizeRelations(SynchronizeDetails details)
             throws ClientException {
         if (details == null) {
@@ -140,10 +145,12 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
         relationSynchronizer.performChanges();
     }
 
+    @Override
     public void doSynchronizeRelations() throws ClientException {
         doSynchronizeRelations(getDefaultSynchronizeDetails());
     }
 
+    @Override
     public void doSynchronizeVocabularies(SynchronizeDetails details)
             throws ClientException {
         if (details == null) {
@@ -157,10 +164,12 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
         vocabularySynchronizer.performChanges();
     }
 
+    @Override
     public void doSynchronizeVocabularies() throws ClientException {
         doSynchronizeVocabularies(getDefaultSynchronizeDetails());
     }
 
+    @Override
     public void doSynchronize(CoreSession session, SynchronizeDetails details)
             throws Exception {
         doSynchronizeDocuments(session, details);
@@ -168,16 +177,19 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
         doSynchronizeVocabularies(details);
     }
 
+    @Override
     public void doSynchronize(CoreSession session) throws Exception {
         doSynchronize(session, getDefaultSynchronizeDetails());
     }
 
+    @Override
     public void doSynchronize(CoreSession session, SynchronizeDetails details, String queryName) throws Exception {
         doSynchronizeDocuments(session, details, queryName);
         doSynchronizeRelations(details);
         doSynchronizeVocabularies(details);
     }
 
+    @Override
     public void doSynchronize(CoreSession session, String queryName) throws Exception {
         doSynchronize(session, getDefaultSynchronizeDetails(), queryName);
     }
@@ -193,10 +205,12 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
         return importConfiguration;
     }
 
+    @Override
     public SynchronizeDetails getDefaultSynchronizeDetails() {
         return defaultSynchronizeDetails;
     }
 
+    @Override
     public boolean shouldDisableReadSP(String docPath, String permission) {
         if (disableReadSecurityPolicyDescriptor != null) {
             return disableReadSecurityPolicyDescriptor.shouldDisable(docPath, permission);

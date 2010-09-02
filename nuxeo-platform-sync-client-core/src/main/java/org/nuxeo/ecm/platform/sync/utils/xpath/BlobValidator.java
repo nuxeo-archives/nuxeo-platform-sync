@@ -35,13 +35,14 @@ public class BlobValidator implements XPathFunction {
 
     public static final Logger LOG = Logger.getLogger(BlobValidator.class);
 
+    @Override
     @SuppressWarnings("unchecked")
     public Object evaluate(List args) throws XPathFunctionException {
         if (args.size() > 1 || args.size() == 0)
             throw new XPathFunctionException("Wrong parameters count.");
         NodeList nl = ((NodeList) args.get(0));
         Node element = (Node) nl.item(0);
-        
+
         return (element.getTextContent().endsWith(".blob"));
 
     }

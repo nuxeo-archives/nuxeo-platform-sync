@@ -109,6 +109,16 @@
   </distributionManagement>
 
   <profiles>
+     <profile>
+      <id>no-osgi</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+	<module>nuxeo-platform-sync-server</module>
+        <module>nuxeo-platform-sync-client-web</module>
+      </modules>
+    </profile>
     <!-- For use by Nuxeo internal QA -->
     <profile>
       <id>qa</id>

@@ -24,11 +24,12 @@ import javax.xml.namespace.NamespaceContext;
 
 /**
  * Context resolver for the DOM parser.
- * 
+ *
  * @author price
  *
  */
 public class NXNSContext implements NamespaceContext {
+    @Override
     public String getNamespaceURI(String prefix) {
         if (prefix.equals("nx"))
             return "http://www.nuxeo.org/blob";
@@ -36,6 +37,7 @@ public class NXNSContext implements NamespaceContext {
             return XMLConstants.NULL_NS_URI;
     }
 
+    @Override
     public String getPrefix(String namespace) {
         if (namespace.equals("http://www.nuxeo.org/blob"))
             return "nx";

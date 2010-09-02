@@ -1,10 +1,17 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 1
-Bundle-Name: Nuxeo Platform Sync API
-Bundle-SymbolicName: org.nuxeo.ecm.platform.sync.client.api;singleton=true
-Bundle-Vendor: Nuxeo
-Bundle-Localization: plugin
 Bundle-Category: core
-Require-Bundle: org.nuxeo.ecm.core.schema,
- org.nuxeo.ecm.core.api
+Bundle-Name: Nuxeo Platform Sync API
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Nuxeo
+Bundle-Version: 0.0.0.SNAPSHOT
+Bundle-ManifestVersion: 1
+Bundle-SymbolicName: org.nuxeo.ecm.platform.sync.client.api;singleton=true
 Provide-Package: org.nuxeo.ecm.platform.sync.api
+Import-Package: org.nuxeo.ecm.platform.web.common.vh,
+  org.nuxeo.ecm.core.api 
+Nuxeo-Require: org.nuxeo.ecm.core.schema,
+ org.nuxeo.ecm.core.api
+Export-Package: org.nuxeo.ecm.platform.sync.api.exception,
+ org.nuxeo.ecm.platform.sync.api.util
+Bundle-ActivationPolicy: lazy
