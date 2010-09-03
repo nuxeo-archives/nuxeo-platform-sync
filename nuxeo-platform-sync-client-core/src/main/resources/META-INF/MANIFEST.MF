@@ -9,7 +9,7 @@ Bundle-Version: 0.0.0.SNAPSHOT
 Nuxeo-Component: OSGI-INF/sync-client-security-contrib.xml,
  OSGI-INF/SynchronizeService.xml,
  OSGI-INF/sync-client-synchronize-contrib.xml
-Bundle-ManifestVersion: 1
+Bundle-ManifestVersion: 2
 Import-Package: javax.ejb,
  javax.ws.rs,
  javax.ws.rs.core,
@@ -53,8 +53,8 @@ Import-Package: javax.ejb,
  org.nuxeo.ecm.webengine.model.impl,
  org.nuxeo.runtime.api,
  org.nuxeo.runtime.model
-Provide-Package: org.nuxeo.ecm.platform.sync.manager
-Bundle-SymbolicName: org.nuxeo.ecm.platform.sync.client.core;singleton=true
+Export-Package: org.nuxeo.ecm.platform.sync.manager
+Bundle-SymbolicName: org.nuxeo.ecm.platform.sync.client.core;singleton:=true
 Nuxeo-Require: org.nuxeo.ecm.core.schema,
  org.nuxeo.ecm.core.api,
  org.nuxeo.ecm.platform.sync.client.api

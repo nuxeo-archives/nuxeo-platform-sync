@@ -6,13 +6,13 @@ Manifest-Version: 1.0
 Bundle-Name: Nuxeo Platform Synchronization Common Plugin
 Nuxeo-Component: OSGI-INF/syncdocument-framework.xml,
  OSGI-INF/sync-common-adapter-contrib.xml
-Bundle-ManifestVersion: 1
+Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.nuxeo.ecm.platform.sync.common;singleton=true
 Import-Package: org.apache.commons.logging,
  org.nuxeo.common.xmap.annotation,
  org.nuxeo.runtime,
  org.nuxeo.runtime.api,
  org.nuxeo.runtime.model
-Provide-Package: org.nuxeo.ecm.platform.sync.adapter,
+Export-Package: org.nuxeo.ecm.platform.sync.adapter,
  org.nuxeo.ecm.platform.sync.adapter.service
 Bundle-ActivationPolicy: lazy
