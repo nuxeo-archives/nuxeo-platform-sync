@@ -46,7 +46,6 @@ Import-Package: javax.ejb,
  org.nuxeo.ecm.platform.sync.api,
  org.nuxeo.ecm.platform.sync.api.exception,
  org.nuxeo.ecm.platform.sync.api.util,
- org.nuxeo.ecm.platform.ui.web.directory,
  org.nuxeo.ecm.platform.usermanager,
  org.nuxeo.ecm.webengine,
  org.nuxeo.ecm.webengine.model,
@@ -55,10 +54,8 @@ Import-Package: javax.ejb,
  org.nuxeo.runtime.model
 Export-Package: org.nuxeo.ecm.platform.sync.manager
 Bundle-SymbolicName: org.nuxeo.ecm.platform.sync.client.core;singleton:=true
-Nuxeo-Require: org.nuxeo.ecm.core.schema,
+Nuxeo-Require: org.nuxeo.runtime,
+ org.nuxeo.ecm.core.schema,
  org.nuxeo.ecm.core.api,
- org.nuxeo.ecm.platform.sync.client.api
-Require-Bundle: org.nuxeo.runtime,
- javax.ws.rs.jsr311-api,
  org.nuxeo.ecm.platform.sync.client.api
 Bundle-ActivationPolicy: lazy

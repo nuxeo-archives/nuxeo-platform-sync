@@ -33,10 +33,10 @@ import org.apache.poi.util.IOUtils;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 import org.nuxeo.ecm.platform.sync.utils.SynchHttpClient;
+import org.nuxeo.ecm.platform.sync.utils.VocabularyEntry;
 import org.nuxeo.ecm.platform.sync.utils.VocabularyUtils;
 import org.nuxeo.ecm.platform.sync.vocabularies.generated.Entries;
 import org.nuxeo.ecm.platform.sync.vocabularies.generated.Entry;
-import org.nuxeo.ecm.platform.ui.web.directory.VocabularyEntry;
 
 /**
  * The manager to take care the vocabulary set synchronization. It simple
