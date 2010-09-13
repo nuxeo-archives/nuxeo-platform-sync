@@ -11,8 +11,8 @@ Nuxeo-Component: OSGI-INF/sync-client-security-contrib.xml,
  OSGI-INF/sync-client-synchronize-contrib.xml
 Bundle-ManifestVersion: 2
 Import-Package: javax.ejb,
- javax.ws.rs,
- javax.ws.rs.core,
+ javax.ws.rs;resolution:=optional,
+ javax.ws.rs.core;resolution:=optional,
  org.apache.commons.httpclient,
  org.apache.commons.httpclient.auth,
  org.apache.commons.httpclient.methods,
@@ -47,9 +47,9 @@ Import-Package: javax.ejb,
  org.nuxeo.ecm.platform.sync.api.exception,
  org.nuxeo.ecm.platform.sync.api.util,
  org.nuxeo.ecm.platform.usermanager,
- org.nuxeo.ecm.webengine,
- org.nuxeo.ecm.webengine.model,
- org.nuxeo.ecm.webengine.model.impl,
+ org.nuxeo.ecm.webengine;resolution:=optional,
+ org.nuxeo.ecm.webengine.model;resolution:=optional,
+ org.nuxeo.ecm.webengine.model.impl;resolution:=optional,
  org.nuxeo.runtime.api,
  org.nuxeo.runtime.model
 Export-Package: org.nuxeo.ecm.platform.sync.manager
