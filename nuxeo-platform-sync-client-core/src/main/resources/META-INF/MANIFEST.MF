@@ -1,19 +1,24 @@
+Export-Package: org.nuxeo.ecm.platform.sync.client,
+ org.nuxeo.ecm.platform.sync.manager,
+ org.nuxeo.ecm.platform.sync.processor,
+ org.nuxeo.ecm.platform.sync.security,
+ org.nuxeo.ecm.platform.sync.utils,
+ org.nuxeo.ecm.platform.sync.utils.xpath,
+ org.nuxeo.ecm.platform.sync.vocabularies.generated,
+ org.nuxeo.ecm.platform.sync.webservices.generated
+Bundle-ActivationPolicy: lazy
 Manifest-Version: 1.0
 Bundle-Category: core
 Bundle-Localization: plugin
 Bundle-Name: Nuxeo Platform Sync Core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Nuxeo-WebModule: org.nuxeo.ecm.platform.sync.jaxrs.SynchronizationApp
 Bundle-Vendor: Nuxeo
 Bundle-Version: 0.0.0.SNAPSHOT
 Nuxeo-Component: OSGI-INF/sync-client-security-contrib.xml,
  OSGI-INF/SynchronizeService.xml,
  OSGI-INF/sync-client-synchronize-contrib.xml
 Bundle-ManifestVersion: 2
-Import-Package: javax.ejb,
- javax.ws.rs;resolution:=optional,
- javax.ws.rs.core;resolution:=optional,
- org.apache.commons.httpclient,
+Import-Package: org.apache.commons.httpclient,
  org.apache.commons.httpclient.auth,
  org.apache.commons.httpclient.methods,
  org.apache.commons.io,
@@ -34,7 +39,6 @@ Import-Package: javax.ejb,
  org.nuxeo.ecm.core.event,
  org.nuxeo.ecm.core.lifecycle,
  org.nuxeo.ecm.core.model,
- org.nuxeo.ecm.core.query.sql.model,
  org.nuxeo.ecm.core.schema,
  org.nuxeo.ecm.core.schema.types,
  org.nuxeo.ecm.core.schema.types.primitives,
@@ -47,15 +51,10 @@ Import-Package: javax.ejb,
  org.nuxeo.ecm.platform.sync.api.exception,
  org.nuxeo.ecm.platform.sync.api.util,
  org.nuxeo.ecm.platform.usermanager,
- org.nuxeo.ecm.webengine;resolution:=optional,
- org.nuxeo.ecm.webengine.model;resolution:=optional,
- org.nuxeo.ecm.webengine.model.impl;resolution:=optional,
  org.nuxeo.runtime.api,
  org.nuxeo.runtime.model
-Export-Package: org.nuxeo.ecm.platform.sync.manager
 Bundle-SymbolicName: org.nuxeo.ecm.platform.sync.client.core;singleton:=true
 Nuxeo-Require: org.nuxeo.runtime,
  org.nuxeo.ecm.core.schema,
  org.nuxeo.ecm.core.api,
  org.nuxeo.ecm.platform.sync.client.api
-Bundle-ActivationPolicy: lazy
