@@ -499,7 +499,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * @param index
      * @return
      */
-    protected String recursiveCorrectPath(Type type, String[] segments, int index) {
+    protected static String recursiveCorrectPath(Type type, String[] segments, int index) {
         if (index >= (segments.length - 1)) {
             //for blobs no need of last segment
             return "";

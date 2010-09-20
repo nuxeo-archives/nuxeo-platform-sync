@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<xs:schema targetNamespace="http://www.nuxeo.org/ecm/schemas/custom_file/"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:nxs="http://www.nuxeo.org/ecm/schemas/file/">
+
+  <xs:include schemaLocation="core-types.xsd" />
+
+  <xs:element name="sourceFile" type="nxs:content" />
+  <xs:element name="sourceFileUploadDate" type="xs:date" />
+  
+  <xs:element name="frameMakerPdfFile" type="nxs:content" />
+  <xs:element name="frameMakerPdfFileUploadDate" type="xs:date" />
+  
+  <xs:element name="viewablePdfFile" type="nxs:content" />
+  <xs:element name="printablePdfFile" type="nxs:content" />
+
+  <xs:element name="sourceFileName" type="xs:string" />
+  <xs:element name="frameMakerPdfFileName" type="xs:string" />
+  <xs:element name="viewablePdfFileName" type="xs:string" />
+  <xs:element name="printablePdfFileName" type="xs:string" />
+</xs:schema>

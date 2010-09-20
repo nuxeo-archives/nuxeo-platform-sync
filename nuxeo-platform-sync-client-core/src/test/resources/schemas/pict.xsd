@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<xs:schema targetNamespace="http://www.nuxeo.org/ecm/schemas/pict/"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:sf="http://www.nuxeo.org/ecm/schemas/pict/">
+
+  <xs:include schemaLocation="core-types.xsd" />
+
+  <xs:element name="pictname" type="xs:string" />
+  <xs:element name="pictfile" type="sf:content" />
+
+</xs:schema>
