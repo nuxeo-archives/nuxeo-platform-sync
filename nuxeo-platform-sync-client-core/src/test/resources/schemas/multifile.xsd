@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<xs:schema targetNamespace="http://www.nuxeo.org/ecm/schemas/multifile/"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:mf="http://www.nuxeo.org/ecm/schemas/multifile/">
+
+  <xs:include schemaLocation="core-types.xsd" />
+
+  <xs:element name="originalname" type="xs:string" />
+  <xs:element name="originalfile" type="mf:content" />
+  <xs:element name="pdfname" type="xs:string" />
+  <xs:element name="pdffile" type="mf:content" />
+
+</xs:schema>

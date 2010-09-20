@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document repository="default" id="a802380b-8e36-4c0e-b338-6f9247e14433">
+  <system>
+    <type>Book</type>
+    <path>sample-book</path>
+    <lifecycle-state>project</lifecycle-state>
+    <lifecycle-policy>default</lifecycle-policy>
+    <access-control>
+      <acl name="inherited">
+        <entry principal="administrators" permission="Everything" grant="true"/>
+        <entry principal="Administrator" permission="Everything" grant="true"/>
+        <entry principal="members" permission="Read" grant="true"/>
+      </acl>
+    </access-control>
+  </system>
+  <schema xmlns="http://project.nuxeo.com/geide/schemas/uid/" name="uid">
+    <uid/>
+    <minor_version>0</minor_version>
+    <major_version>1</major_version>
+  </schema>
+  <schema xmlns:dc="http://www.nuxeo.org/ecm/schemas/dublincore/" name="dublincore">
+    <dc:creator>Administrator</dc:creator>
+    <dc:contributors>
+      <item>Administrator</item>
+    </dc:contributors>
+    <dc:source/>
+    <dc:created>2010-09-18T19:44:33Z</dc:created>
+    <dc:description>(Created on 2010-09-18)</dc:description>
+    <dc:rights/>
+    <dc:subjects/>
+    <dc:valid/>
+    <dc:format/>
+    <dc:issued/>
+    <dc:modified>2010-09-18T19:44:33Z</dc:modified>
+    <dc:language/>
+    <dc:expired/>
+    <dc:coverage/>
+    <dc:title>Sample Book</dc:title>
+  </schema>
+  <schema xmlns="http://www.nuxeo.org/ecm/schemas/common/" name="common">
+    <icon>/icons/application.png</icon>
+    <icon-expanded/>
+    <size>4278</size>
+  </schema>
+  <schema xmlns="http://www.nuxeo.org/ecm/schemas/file/" name="file">
+    <content>
+      <encoding></encoding>
+      <mime-type>application/x-bash</mime-type>
+      <filename>get-all-sources</filename>
+      <data>69f6d809.blob</data>
+    </content>
+    <filename>get-all-sources</filename>
+  </schema>
+  <schema xmlns:bk="http://sample.nuxeo.org/sample/schemas/book/" name="book">
+    <bk:isbn></bk:isbn>
+    <bk:publicationDate/>
+    <bk:rating/>
+    <bk:keywords/>
+  </schema>
+  <schema xmlns:mfile="http://www.nuxeo.org/ecm/schemas/multifile/" name="multifile">
+    <mfile:pdffile>
+      <encoding></encoding>
+      <mime-type>application/pdf</mime-type>
+      <filename>releve_00036904734_20100911.pdf</filename>
+      <data>9c39ac18.blob</data>
+    </mfile:pdffile>
+    <mfile:originalfile>
+      <encoding></encoding>
+      <mime-type>text/xml</mime-type>
+      <filename>settings.xml</filename>
+      <data>d5f54ace.blob</data>
+    </mfile:originalfile>
+    <mfile:pdfname>releve_00036904734_20100911.pdf</mfile:pdfname>
+    <mfile:originalname>settings.xml</mfile:originalname>
+  </schema>
+  <schema xmlns:pict="http://www.nuxeo.org/ecm/schemas/pict/" name="pict">
+    <pict:pictfile>
+      <encoding></encoding>
+      <mime-type>application/png</mime-type>
+      <filename>duck.png</filename>
+      <data>9c39ac18.blob</data>
+    </pict:pictfile>
+    <pict:pictname>duck.png</pict:pictname>
+  </schema>
+</document>
