@@ -8,11 +8,9 @@
     <version>5.4.1-SNAPSHOT</version>
   </parent>
 
-
   <artifactId>nuxeo-platform-sync-server</artifactId>
   <name>Nuxeo Platform Synchronization Server</name>
   <description>Nuxeo Platform Synchronization Server.</description>
-
 
   <dependencies>
     <dependency>
@@ -38,7 +36,6 @@
     <dependency>
       <groupId>javax.ejb</groupId>
       <artifactId>ejb-api</artifactId>
-      <version>3.0</version>
     </dependency>
 
     <dependency>
@@ -67,6 +64,10 @@
       <groupId>metro.webservices</groupId>
       <artifactId>webservices-rt</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
     </dependency>
   </dependencies>
 
@@ -102,9 +103,7 @@
           <downloadSources>false</downloadSources>
         </configuration>
       </plugin>
-
     </plugins>
-
   </build>
 
 </project>
