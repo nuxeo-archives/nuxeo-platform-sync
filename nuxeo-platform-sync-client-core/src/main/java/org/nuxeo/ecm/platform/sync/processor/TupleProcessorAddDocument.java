@@ -18,6 +18,8 @@
 package org.nuxeo.ecm.platform.sync.processor;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.common.utils.Path;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -57,10 +59,18 @@ public class TupleProcessorAddDocument extends TupleProcessorAdd {
                         parentPath), null, null, null,
                 session.getRepositoryName());
 
-        localDocument.putContextData(CoreSession.IMPORT_LOCK,
-                ImportUtils.getContextDataInfo(contextData,
-                        CoreSession.IMPORT_LOCK));
-
+        propertyValue = ImportUtils.getContextDataInfo(contextData,
+                CoreSession.IMPORT_LOCK_OWNER);
+        if (propertyValue != null) {
+            localDocument.putContextData(CoreSession.IMPORT_LOCK_OWNER,
+                    propertyValue);
+            String createdString = ImportUtils.getContextDataInfo(contextData,
+                    CoreSession.IMPORT_LOCK_OWNER);
+            localDocument.putContextData(
+                    CoreSession.IMPORT_LOCK_CREATED,
+                    ISODateTimeFormat.dateTimeParser().parseDateTime(
+                            createdString).toGregorianCalendar());
+        }
         propertyValue = ImportUtils.getContextDataInfo(contextData,
                 CoreSession.IMPORT_CHECKED_IN);
         if (propertyValue != null) {

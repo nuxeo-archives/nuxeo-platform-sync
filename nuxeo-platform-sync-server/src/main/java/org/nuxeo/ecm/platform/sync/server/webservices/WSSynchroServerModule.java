@@ -26,12 +26,15 @@ import javax.xml.ws.soap.Addressing;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.Lock;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.api.VersionModel;
@@ -375,8 +378,15 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
             }
         } else {
             // add lock status
-            listContextData.add(generateDataContextInfo(
-                    CoreSession.IMPORT_LOCK, document.getLock()));
+            Lock lock = document.getLockInfo();
+            if (lock != null) {
+                listContextData.add(generateDataContextInfo(
+                        CoreSession.IMPORT_LOCK_OWNER, lock.getOwner()));
+                String createdString = ISODateTimeFormat.dateTime().print(
+                        new DateTime(lock.getCreated()));
+                listContextData.add(generateDataContextInfo(
+                        CoreSession.IMPORT_LOCK_CREATED, createdString));
+            }
             if (document.isVersionable() && documentManager.hasPermission(ref, SecurityConstants.READ)) {
                 listContextData.add(generateDataContextInfo(
                         CoreSession.IMPORT_CHECKED_IN, Boolean.FALSE.toString()));
