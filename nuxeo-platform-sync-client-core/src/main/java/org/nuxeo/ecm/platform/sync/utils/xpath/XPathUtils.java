@@ -75,8 +75,8 @@ public class XPathUtils {
                             + getElementIdx(parent) + ']' + path;
                 }
             } else {
-                path = parent.getAttribute("name") + ':' + path.substring(1);
-                return path;
+                String[] segments = path.substring(1).split(":", 2);
+                return parent.getAttribute("name") + ':' +  segments[segments.length - 1];
             }
 
             currentNode = currentNode.getParentNode();
