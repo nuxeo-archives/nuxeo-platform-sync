@@ -49,6 +49,9 @@ public class DefaultDocumentDifferencesPolicy implements
                     if (modificationDate == null) {
                         log.debug(doc.getPathAsString()
                                 + " is skipped because it has no modification date - problem at first import");
+                    } else if (tuple.getLastModification() == 0) {
+                        log.debug(tuple.getClientId()
+                                + " is skipped because it is a version without read access - got from a proxy");
                     } else if (modificationDate.getTimeInMillis() / 1000 != (long) tuple.getLastModification() / 1000
                             || !doc.getCurrentLifeCycleState().equals(
                                     lifecycleState)) {
