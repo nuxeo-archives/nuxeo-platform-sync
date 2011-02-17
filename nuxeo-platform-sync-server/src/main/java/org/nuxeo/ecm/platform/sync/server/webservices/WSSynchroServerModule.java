@@ -292,6 +292,7 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
             }
             if (!availableDocIds.contains(importProxyTargetId)) {
                 unrestrictedDocs.add(version);
+                availableDocIds.add(importProxyTargetId);
             }
             // add proxy targetId
             listContextData.add(generateDataContextInfo(
