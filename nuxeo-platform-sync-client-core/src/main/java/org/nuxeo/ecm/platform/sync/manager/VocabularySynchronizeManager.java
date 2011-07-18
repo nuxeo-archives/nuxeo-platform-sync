@@ -8,7 +8,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNUo
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
  * Contributors:
@@ -18,24 +18,32 @@
 package org.nuxeo.ecm.platform.sync.manager;
 
 import java.io.InputStream;
-import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.util.IOUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Node;
 import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.schema.SchemaManager;
+import org.nuxeo.ecm.core.schema.types.Field;
+import org.nuxeo.ecm.core.schema.types.Schema;
+import org.nuxeo.ecm.core.schema.types.Type;
+import org.nuxeo.ecm.core.schema.types.primitives.IntegerType;
+import org.nuxeo.ecm.core.schema.types.primitives.LongType;
+import org.nuxeo.ecm.core.schema.types.primitives.StringType;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 import org.nuxeo.ecm.platform.sync.utils.SynchHttpClient;
-import org.nuxeo.ecm.platform.sync.utils.VocabularyEntry;
 import org.nuxeo.ecm.platform.sync.utils.VocabularyUtils;
-import org.nuxeo.ecm.platform.sync.vocabularies.generated.Entries;
-import org.nuxeo.ecm.platform.sync.vocabularies.generated.Entry;
+import org.nuxeo.runtime.api.Framework;
 
 /**
  * The manager to take care the vocabulary set synchronization. It simple
@@ -82,28 +90,13 @@ public class VocabularySynchronizeManager {
             }
             String xmlRep = null;
             xmlRep = new String(bytesRead);
-            // System.out.print(xmlRep);
-            String directorySchema = VocabularyUtils.getDirectorySchema(vocabularyName);
 
-            List<Entry> entries = getEntries(vocabularyName, xmlRep);
-            for (Entry entry : entries) {
-                Integer obsolete = entry.getObsolete();
-                if (obsolete == null) {
-                    obsolete = 0;
-                }
-                if (directorySchema.equals("vocabulary")) {
-                    VocabularyEntry ventry = new VocabularyEntry(entry.getId(),
-                            entry.getLabel());
-                    ventry.setObsolete(obsolete == 1 ? true : false);
-                    VocabularyUtils.addVocabularyEntry(vocabularyName, ventry);
-                }
-                if (directorySchema.equals("xvocabulary")) {
-                    VocabularyEntry ventry = new VocabularyEntry(entry.getId(),
-                            entry.getLabel(), entry.getParent());
-                    ventry.setObsolete(obsolete == 1 ? true : false);
-                    VocabularyUtils.addVocabularyEntry(vocabularyName, ventry);
-                }
+            List<Map<String, Object>> mappedEntries = getMappedEntries(
+                    vocabularyName, xmlRep);
+            for (Map<String, Object> map : mappedEntries) {
+                VocabularyUtils.addVocabularyEntry(vocabularyName, map);
             }
+
         } catch (Exception e) {
             log.error("Unable to syncronize vocabularies...", e);
         } finally {
@@ -113,17 +106,62 @@ public class VocabularySynchronizeManager {
 
     }
 
-    private List<Entry> getEntries(String vocabularyName, String res)
-            throws Exception {
-        JAXBContext jaxbContext = JAXBContext.newInstance("org.nuxeo.ecm.platform.sync.vocabularies.generated");
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        if (res == null) {
-            log.error("Unable to read vocabulary " + vocabularyName);
-            return null;
+    protected List<Map<String, Object>> getMappedEntries(String vocabularyName,
+            String res) {
+        try {
+            String directorySchema = VocabularyUtils.getDirectorySchema(vocabularyName);
+            return extractVocabulary(directorySchema, res);
+        } catch (DocumentException e) {
+            throw new Error(
+                    "Unexpected error occured while parsing the vocabularies",
+                    e);
+        } catch (ClientException e) {
+            throw new Error(
+                    "Unexpected error occured while parsing the vocabularies",
+                    e);
         }
-        Entries vocabularyXML = (unmarshaller.unmarshal(new StreamSource(
-                new StringReader(res)), Entries.class)).getValue();
-        return vocabularyXML.getEntry();
+
+    }
+
+    @SuppressWarnings("rawtypes")
+    protected List<Map<String, Object>> extractVocabulary(
+            String directorySchema, String res) throws DocumentException {
+        ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        Document domDoc = DocumentHelper.parseText(res);
+        List nodes = domDoc.selectNodes("//entries/entry");
+
+        SchemaManager schemaManager = Framework.getLocalService(SchemaManager.class);
+        Schema vocSchema = schemaManager.getSchema(directorySchema);
+        Collection<Field> vocSchemaField = vocSchema.getFields();
+        for (Object object : nodes) {
+            Node nodeEntry = ((Node) object);
+            Map<String, Object> entryMap = new HashMap<String, Object>();
+            for (Field field : vocSchemaField) {
+                String fieldName = field.getName().getLocalName();
+                Type type = field.getType();
+                String entryValue = nodeEntry.valueOf("@" + fieldName);
+                if (!entryValue.trim().isEmpty()) {
+                    if (type instanceof StringType) {
+                        entryMap.put(fieldName, entryValue);
+                    } else if (type instanceof LongType) {
+                        Long longEntry = Long.valueOf(entryValue);
+                        entryMap.put(fieldName, longEntry);
+                    } else if (type instanceof IntegerType) {
+                        Integer integerEntry = Integer.valueOf(entryValue);
+                        entryMap.put(fieldName, integerEntry);
+                    } else {
+                        log.warn("Vocabulary sychronizer only serialize int, long or string fields type. "
+                                + fieldName
+                                + "("
+                                + type.getName()
+                                + ") has been ignored");
+                    }
+                }
+            }
+
+            list.add(entryMap);
+        }
+        return list;
     }
 
 }

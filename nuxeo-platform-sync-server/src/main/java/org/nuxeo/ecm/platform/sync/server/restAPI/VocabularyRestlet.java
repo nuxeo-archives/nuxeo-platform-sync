@@ -17,10 +17,21 @@
  */
 package org.nuxeo.ecm.platform.sync.server.restAPI;
 
+import java.util.Collection;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.dom.DOMDocument;
 import org.dom4j.dom.DOMDocumentFactory;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.schema.SchemaManager;
+import org.nuxeo.ecm.core.schema.types.Field;
+import org.nuxeo.ecm.core.schema.types.Schema;
+import org.nuxeo.ecm.core.schema.types.Type;
+import org.nuxeo.ecm.core.schema.types.primitives.IntegerType;
+import org.nuxeo.ecm.core.schema.types.primitives.LongType;
+import org.nuxeo.ecm.core.schema.types.primitives.StringType;
 import org.nuxeo.ecm.directory.Session;
 import org.nuxeo.ecm.directory.api.DirectoryService;
 import org.nuxeo.ecm.platform.ui.web.restAPI.BaseStatelessNuxeoRestlet;
@@ -36,24 +47,15 @@ import org.w3c.dom.Element;
  * intercharged.
  *
  * @author mariana
+ * @author Sun Seng David TAN <stan@nuxeo.com>
  */
 public class VocabularyRestlet extends BaseStatelessNuxeoRestlet {
-
-    public static final String VOCABULARY_PARENT = "parent";
 
     public static final String VOCABULARY_TYPE_HIER = "xvocabulary";
 
     public static final String VOCABULARY_TYPE_SIMPLE = "vocabulary";
 
-    public static final String VOCABULARY_ID = "id";
-
-    public static final String VOCABULARY_LABEL = "label";
-
-    public static final String VOCABULARY_OBSOLETE = "obsolete";
-
-    public static final String VOCABULARY_ORDERING = "ordering";
-
-    public static final Integer DEFAULT_OBSOLETE = 0;
+    public static final Log log = LogFactory.getLog(VocabularyRestlet.class);
 
     @Override
     public void handle(Request req, Response res) {
@@ -85,37 +87,43 @@ public class VocabularyRestlet extends BaseStatelessNuxeoRestlet {
             String directorySchema = directoryService.getDirectorySchema(vocName);
             Element current = result.createElement("entries");
             result.setRootElement((org.dom4j.Element) current);
-            if (directorySchema.equals(VOCABULARY_TYPE_SIMPLE)) {
+            if (directorySchema.equals(VOCABULARY_TYPE_SIMPLE)
+                    || directorySchema.equals(VOCABULARY_TYPE_HIER)) {
+
+                SchemaManager schemaManager = Framework.getLocalService(SchemaManager.class);
+                Schema vocSchema = schemaManager.getSchema(directorySchema);
+                Collection<Field> vocSchemaField = vocSchema.getFields();
 
                 for (DocumentModel entry : dirSession.getEntries()) {
                     Element el = result.createElement("entry");
-                    el.setAttribute(VOCABULARY_ID, entry.getId());
-                    el.setAttribute(VOCABULARY_LABEL,
-                            (String) entry.getProperty(VOCABULARY_TYPE_SIMPLE,
-                                    VOCABULARY_LABEL));
-                    Long obsolete = (Long) (entry.getProperty(
-                            VOCABULARY_TYPE_SIMPLE, VOCABULARY_OBSOLETE) != null ? entry.getProperty(
-                            VOCABULARY_TYPE_SIMPLE, VOCABULARY_OBSOLETE) : 0);
+                    for (Field field : vocSchemaField) {
+                        String fieldName = field.getName().getLocalName();
+                        Type type = field.getType();
+                        if (type instanceof StringType) {
+                            el.setAttribute(fieldName,
+                                    (String) entry.getProperty(directorySchema,
+                                            fieldName));
+                        } else if (type instanceof LongType) {
+                            el.setAttribute(
+                                    fieldName,
+                                    ((Long) (entry.getProperty(directorySchema,
+                                            fieldName) != null ? entry.getProperty(
+                                            directorySchema, fieldName) : 0)).toString());
+                        } else if (type instanceof IntegerType) {
+                            el.setAttribute(
+                                    fieldName,
+                                    ((Integer) (entry.getProperty(
+                                            directorySchema, fieldName) != null ? entry.getProperty(
+                                            directorySchema, fieldName) : 0)).toString());
+                        } else {
+                            log.warn("Vocabulary Restlet serializer only serialize int, long or string fields type. "
+                                    + fieldName
+                                    + "("
+                                    + type.getName()
+                                    + ") has been ignored");
+                        }
+                    }
 
-                    el.setAttribute(VOCABULARY_OBSOLETE,
-                            Long.toString(obsolete));
-                    current.appendChild(el);
-                }
-            } else if (directorySchema.equals(VOCABULARY_TYPE_HIER)) {
-                for (DocumentModel entry : dirSession.getEntries()) {
-                    Element el = result.createElement("entry");
-                    el.setAttribute(VOCABULARY_ID, entry.getId());
-                    el.setAttribute(VOCABULARY_LABEL,
-                            (String) entry.getProperty(VOCABULARY_TYPE_HIER,
-                                    VOCABULARY_LABEL));
-                    Long obsolete = (Long) (entry.getProperty(
-                            VOCABULARY_TYPE_HIER, VOCABULARY_OBSOLETE) != null ? entry.getProperty(
-                            VOCABULARY_TYPE_HIER, VOCABULARY_OBSOLETE) : 0);
-                    el.setAttribute(VOCABULARY_OBSOLETE,
-                            Long.toString(obsolete));
-                    el.setAttribute(VOCABULARY_PARENT,
-                            (String) entry.getProperty(VOCABULARY_TYPE_HIER,
-                                    VOCABULARY_PARENT));
                     current.appendChild(el);
                 }
             } else {

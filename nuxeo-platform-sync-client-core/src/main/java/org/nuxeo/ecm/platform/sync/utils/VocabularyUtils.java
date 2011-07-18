@@ -104,31 +104,12 @@ public class VocabularyUtils {
     }
 
     public static void addVocabularyEntry(String vocabularyName,
-            VocabularyEntry selectedVocabularyEntry) {
+            Map<String, Object> entry) {
         Session vocabulary = null;
         try {
             vocabulary = openVocabulary(vocabularyName);
             if (vocabulary != null) {
-                Map<String, Object> values = new HashMap<String, Object>();
-                values.put(VOCABULARY_ID, selectedVocabularyEntry.getId());
-                values.put(VOCABULARY_LABEL, selectedVocabularyEntry.getLabel());
-                values.put(
-                        VOCABULARY_OBSOLETE,
-                        Boolean.TRUE.equals(selectedVocabularyEntry.getObsolete()) ? 1L
-                                : DEFAULT_OBSOLETE);
-                if (getDirectoryService().getDirectorySchema(vocabularyName).equals(
-                        VOCABULARY_TYPE_HIER)) {
-                    String parent = selectedVocabularyEntry.getParent();
-                    if ("".equals(parent)) {
-                        parent = null;
-                    }
-                    values.put(VOCABULARY_PARENT, parent);
-                }
-                values.put(
-                        VOCABULARY_ORDERING,
-                        selectedVocabularyEntry.getOrdering() != null ? selectedVocabularyEntry.getOrdering()
-                                : DEFAULT_VOCABULARY_ORDER);
-                vocabulary.createEntry(values);
+                vocabulary.createEntry(entry);
                 vocabulary.commit();
             }
         } catch (Exception e) {
