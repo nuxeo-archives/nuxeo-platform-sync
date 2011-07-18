@@ -26,7 +26,7 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-    </dependency> 
+    </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.platform</groupId>
       <artifactId>nuxeo-platform-directory-api</artifactId>
@@ -85,51 +85,5 @@
       <artifactId>ejb-api</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-
-<!--      <plugin>-->
-<!--        <groupId>org.codehaus.mojo</groupId>-->
-<!--        <artifactId>jaxb2-maven-plugin</artifactId>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <goals>-->
-<!--              <goal>xjc</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--        <configuration>-->
-<!--          <clearOutputDir>false</clearOutputDir>-->
-<!--          <packageName>org.nuxeo.ecm.platform.sync.vocabularies.generated</packageName>-->
-<!--          <schemaDirectory>${basedir}/src/main/resources/org/nuxeo</schemaDirectory>-->
-<!--          <outputDirectory>${basedir}/src/main/java</outputDirectory>-->
-<!--        </configuration>-->
-<!--      </plugin>-->
-<!---->
-<!--      <plugin>-->
-<!--        <groupId>org.codehaus.mojo</groupId>-->
-<!--        <artifactId>jaxws-maven-plugin</artifactId>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <goals>-->
-<!--              <goal>wsimport</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--        <configuration>-->
-<!--          <keep>true</keep>-->
-<!--          <wsdlUrls>-->
-<!--            <wsdlUrl>http://localhost:8080/nuxeo/webservices/wssyncroentry?wsdl</wsdlUrl>-->
-<!--            <wsdlUrl>http://localhost:8080/nuxeo/webservices/wssyncroserver?wsdl</wsdlUrl>-->
-<!--          </wsdlUrls>-->
-<!--          <bindingDirectory>${basedir}/src/</bindingDirectory>-->
-<!--          <packageName>org.nuxeo.ecm.platform.sync.webservices.generated</packageName>-->
-<!--        </configuration>-->
-<!--      </plugin>-->
-
-
-    </plugins>
-  </build>
 
 </project>

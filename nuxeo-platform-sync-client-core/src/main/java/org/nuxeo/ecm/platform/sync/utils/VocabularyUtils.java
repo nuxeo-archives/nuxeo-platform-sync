@@ -74,7 +74,7 @@ public class VocabularyUtils {
     }
 
     public static void deleteVocabularyEntry(String vocabularyName,
-            VocabularyEntry selectedVocabularyEntry){
+            VocabularyEntry selectedVocabularyEntry) {
         Session vocabulary = null;
         try {
             vocabulary = openVocabulary(vocabularyName);
@@ -97,14 +97,14 @@ public class VocabularyUtils {
                 try {
                     vocabulary.close();
                 } catch (DirectoryException e) {
-                   log.error(e);
+                    log.error(e);
                 }
             }
         }
     }
 
     public static void addVocabularyEntry(String vocabularyName,
-            VocabularyEntry selectedVocabularyEntry)  {
+            VocabularyEntry selectedVocabularyEntry) {
         Session vocabulary = null;
         try {
             vocabulary = openVocabulary(vocabularyName);
@@ -132,7 +132,7 @@ public class VocabularyUtils {
                 vocabulary.commit();
             }
         } catch (Exception e) {
-                log.error("Unable to insert entry into vocabulary", e);
+            log.error("Unable to insert entry into vocabulary", e);
         } finally {
             if (vocabulary != null) {
                 try {
@@ -162,9 +162,9 @@ public class VocabularyUtils {
         }
     }
 
-    public static String getDirectorySchema(String vocabularyName) throws  ClientException {
-        return getDirectoryService().getDirectorySchema(
-                vocabularyName);
+    public static String getDirectorySchema(String vocabularyName)
+            throws ClientException {
+        return getDirectoryService().getDirectorySchema(vocabularyName);
     }
 
     public static Session openVocabulary(String vocabularyName)
