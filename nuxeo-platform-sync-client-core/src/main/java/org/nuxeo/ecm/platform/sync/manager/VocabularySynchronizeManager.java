@@ -8,7 +8,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNUo
  * Lesser General Public License for more details.
  *
  * Contributors:
@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
@@ -122,8 +121,8 @@ public class VocabularySynchronizeManager {
             log.error("Unable to read vocabulary " + vocabularyName);
             return null;
         }
-        Entries vocabularyXML = (Entries) ((JAXBElement<Entries>) unmarshaller.unmarshal(
-                new StreamSource(new StringReader(res)), Entries.class)).getValue();
+        Entries vocabularyXML = (unmarshaller.unmarshal(new StreamSource(
+                new StringReader(res)), Entries.class)).getValue();
         return vocabularyXML.getEntry();
     }
 

@@ -31,9 +31,10 @@ import org.restlet.data.Response;
 import org.w3c.dom.Element;
 
 /**
- * Simple restlet to export vocabularies content. This reslet is similar to 
- * {@link VocabularyRestlet} but as the goals are different they can't be intercharged.
- * 
+ * Simple restlet to export vocabularies content. This reslet is similar to
+ * {@link VocabularyRestlet} but as the goals are different they can't be
+ * intercharged.
+ *
  * @author mariana
  */
 public class VocabularyRestlet extends BaseStatelessNuxeoRestlet {
@@ -41,7 +42,7 @@ public class VocabularyRestlet extends BaseStatelessNuxeoRestlet {
     public static final String VOCABULARY_PARENT = "parent";
 
     public static final String VOCABULARY_TYPE_HIER = "xvocabulary";
-    
+
     public static final String VOCABULARY_TYPE_SIMPLE = "vocabulary";
 
     public static final String VOCABULARY_ID = "id";
@@ -53,8 +54,6 @@ public class VocabularyRestlet extends BaseStatelessNuxeoRestlet {
     public static final String VOCABULARY_ORDERING = "ordering";
 
     public static final Integer DEFAULT_OBSOLETE = 0;
-    
-    
 
     @Override
     public void handle(Request req, Response res) {
@@ -91,29 +90,32 @@ public class VocabularyRestlet extends BaseStatelessNuxeoRestlet {
                 for (DocumentModel entry : dirSession.getEntries()) {
                     Element el = result.createElement("entry");
                     el.setAttribute(VOCABULARY_ID, entry.getId());
-                    el.setAttribute(VOCABULARY_LABEL, (String) entry.getProperty(
-                            VOCABULARY_TYPE_SIMPLE, VOCABULARY_LABEL));
-                     Long obsolete = ( Long )(entry.getProperty(
+                    el.setAttribute(VOCABULARY_LABEL,
+                            (String) entry.getProperty(VOCABULARY_TYPE_SIMPLE,
+                                    VOCABULARY_LABEL));
+                    Long obsolete = (Long) (entry.getProperty(
                             VOCABULARY_TYPE_SIMPLE, VOCABULARY_OBSOLETE) != null ? entry.getProperty(
-                            VOCABULARY_TYPE_SIMPLE, VOCABULARY_OBSOLETE)
-                            : 0);
-                  
-                    el.setAttribute(VOCABULARY_OBSOLETE, Long.toString(obsolete));
+                            VOCABULARY_TYPE_SIMPLE, VOCABULARY_OBSOLETE) : 0);
+
+                    el.setAttribute(VOCABULARY_OBSOLETE,
+                            Long.toString(obsolete));
                     current.appendChild(el);
                 }
             } else if (directorySchema.equals(VOCABULARY_TYPE_HIER)) {
                 for (DocumentModel entry : dirSession.getEntries()) {
                     Element el = result.createElement("entry");
                     el.setAttribute(VOCABULARY_ID, entry.getId());
-                    el.setAttribute(VOCABULARY_LABEL, (String) entry.getProperty(
-                            VOCABULARY_TYPE_HIER, VOCABULARY_LABEL));
-                    Long obsolete = ( Long )(entry.getProperty(
+                    el.setAttribute(VOCABULARY_LABEL,
+                            (String) entry.getProperty(VOCABULARY_TYPE_HIER,
+                                    VOCABULARY_LABEL));
+                    Long obsolete = (Long) (entry.getProperty(
                             VOCABULARY_TYPE_HIER, VOCABULARY_OBSOLETE) != null ? entry.getProperty(
-                                    VOCABULARY_TYPE_HIER, VOCABULARY_OBSOLETE)
-                            : 0);
-                    el.setAttribute(VOCABULARY_OBSOLETE, Long.toString(obsolete));
-                    el.setAttribute(VOCABULARY_PARENT, (String) entry.getProperty(
-                            VOCABULARY_TYPE_HIER, VOCABULARY_PARENT));
+                            VOCABULARY_TYPE_HIER, VOCABULARY_OBSOLETE) : 0);
+                    el.setAttribute(VOCABULARY_OBSOLETE,
+                            Long.toString(obsolete));
+                    el.setAttribute(VOCABULARY_PARENT,
+                            (String) entry.getProperty(VOCABULARY_TYPE_HIER,
+                                    VOCABULARY_PARENT));
                     current.appendChild(el);
                 }
             } else {
