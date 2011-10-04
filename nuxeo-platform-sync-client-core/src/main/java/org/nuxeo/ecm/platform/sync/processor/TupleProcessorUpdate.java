@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -226,7 +225,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      */
     @SuppressWarnings("unchecked")
     private static Map<String, Object> transformList(List<DocumentProperty> properties) {
-        Map<String, Object> ret = new LinkedHashMap<String, Object>();
+        Map<String, Object> ret = new HashMap<String, Object>();
         for (DocumentProperty property : properties) {
             //get schema name: it has to be the first part before :
             String[] tokens = property.getName().split(":");
@@ -244,7 +243,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             }
             //schema name  - map
             if (ret.get(tokens[0]) == null) {
-                ret.put(tokens[0], new LinkedHashMap<String, Object>());
+                ret.put(tokens[0], new HashMap<String, Object>());
             }
             Map<String, Object> tempMap = (Map<String, Object>) ret.get(tokens[0]);
             for (int i = 0; ; i++) {
@@ -256,7 +255,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                 //further segments, so need to have map
                 if (tempMap.get(segments[i]) == null) {
                     //first time seen this property
-                    tempMap.put(segments[i], new LinkedHashMap<String, Object>());
+                    tempMap.put(segments[i], new HashMap<String, Object>());
                 }
                 Object obj = tempMap.get(segments[i]);
                 if (obj instanceof String) {
