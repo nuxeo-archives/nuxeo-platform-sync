@@ -69,17 +69,14 @@
     <dependency>
       <groupId>metro.webservices</groupId>
       <artifactId>webservices-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>metro.webservices</groupId>
       <artifactId>webservices-rt</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>metro.webservices</groupId>
       <artifactId>webservices-tools</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.ws.rs</groupId>
