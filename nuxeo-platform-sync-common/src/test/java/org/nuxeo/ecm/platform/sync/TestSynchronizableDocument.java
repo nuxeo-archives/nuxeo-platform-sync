@@ -36,6 +36,12 @@ public class TestSynchronizableDocument extends SQLRepositoryTestCase {
         openSession();
     }
 
+    @Override
+    public void tearDown() throws Exception {
+        closeSession();
+        super.tearDown();
+    }
+
     public void testDefaultSyncDoc() throws ClientException {
         DocumentModel folder = session.createDocumentModel("/", "folder", "Folder");
         folder = session.createDocument(folder);
