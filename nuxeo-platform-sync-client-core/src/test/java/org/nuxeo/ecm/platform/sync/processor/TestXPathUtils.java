@@ -13,7 +13,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Test;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -51,7 +50,12 @@ public class TestXPathUtils extends SQLRepositoryTestCase {
         nodes = getNodesFromDocument();
     }
 
-    @Test
+    @Override
+    public void tearDown() throws Exception {
+        closeSession();
+        super.tearDown();
+    }
+
     public void testGetElementXPath() throws Exception {
 
         // There should be 4 'blob' nodes in document.xml
@@ -129,7 +133,7 @@ public class TestXPathUtils extends SQLRepositoryTestCase {
     /**
      * Copy of TupleProcessorUpdate#correctXPath which is not static due to a
      * reference on localDocument
-     * 
+     *
      * @param initialXPath
      * @param localDocument
      * @return
