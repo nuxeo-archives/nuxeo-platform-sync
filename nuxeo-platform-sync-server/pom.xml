@@ -39,21 +39,17 @@
     </dependency>
 
     <dependency>
-      <groupId>metro.webservices</groupId>
-      <artifactId>webservices-api</artifactId>
+      <groupId>javax.xml.ws</groupId>
+      <artifactId>jaxws-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>metro.webservices</groupId>
-      <artifactId>webservices-rt</artifactId>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-rt</artifactId>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>osgi-core</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>metro.webservices</groupId>
-      <artifactId>webservices-tools</artifactId>
     </dependency>
     <dependency>
       <groupId>dom4j</groupId>
