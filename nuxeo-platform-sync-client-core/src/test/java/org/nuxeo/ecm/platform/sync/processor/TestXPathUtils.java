@@ -1,5 +1,6 @@
 package org.nuxeo.ecm.platform.sync.processor;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +98,7 @@ public class TestXPathUtils extends SQLRepositoryTestCase {
 
         sampleDoc = session.getDocument(sampleDoc.getRef());
 
-        assertEquals(2941,
+        assertEquals(new File(documentUrl.getFile()).length(),
                 ((Blob) sampleDoc.getPropertyValue("file:content")).getLength());
         assertEquals(
                 "document.xml",
