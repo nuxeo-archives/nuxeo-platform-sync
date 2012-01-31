@@ -27,8 +27,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -278,7 +281,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * @param part the schema
      * @throws ClientException
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Object getSegmentData(Map<String, Object> tree, String propertySegment,
             Type type) throws ClientException {
         Object obj = tree.get(propertySegment);
@@ -299,11 +302,34 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                 //one single value?
                 list.add(ltype.getFieldType().decode((String) obj));
             } else {
+                // Maybe the keys are integers, which means they are indexes of list items
+                // => in this case we need to sort the keys to keep the list order
+                // This fixes https://jira.nuxeo.com/browse/NXP-8754
+                Set<Integer> subTreeSortedIntKeys = new TreeSet<Integer>();
+                boolean isIntegerKeys = true;
+                
                 Map<String, Object> subTree = (Map<String, Object>) obj;
-                for (String subSegment : subTree.keySet()) {
-                    //add elements to list
+                Set<String> subTreeStringKeys = subTree.keySet();
+                Iterator<String> subTreeStringKeysIt = subTreeStringKeys.iterator();
+                while (subTreeStringKeysIt.hasNext()) {
+                    String subTreeKey = subTreeStringKeysIt.next();
+                    if (subTreeKey.matches("[0-9]+")) {
+                        subTreeSortedIntKeys.add(Integer.parseInt(subTreeKey));
+                    } else {
+                        isIntegerKeys = false;
+                        break;
+                    }
+                }
+                Set subTreeKeys;
+                if (isIntegerKeys) {
+                    subTreeKeys = subTreeSortedIntKeys;
+                } else {
+                    subTreeKeys = subTreeStringKeys;
+                }
+                for (Object subSegment : subTreeKeys) {
+                    // add elements to list
                     try {
-                        list.add(getSegmentData(subTree, subSegment, ltype.getFieldType()));
+                        list.add(getSegmentData(subTree, subSegment.toString(), ltype.getFieldType()));
                     } catch (ClientException ce) {
                         //don't break, go further
                         log.warn(subSegment + " couldn't be imported", ce);
