@@ -60,9 +60,9 @@
   </repositories>
 
   <scm>
-    <connection>scm:hg:http://hg.nuxeo.org/addons/nuxeo-platform-sync</connection>
-    <developerConnection>scm:hg:https://hg.nuxeo.org/addons/nuxeo-platform-sync</developerConnection>
-    <url>http://hg.nuxeo.org/addons/nuxeo-platform-sync</url>
+    <connection>scm:git:git://github.com/nuxeo/nuxeo-platform-sync.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:nuxeo/nuxeo-platform-sync.git</developerConnection>
+    <url>https://github.com/nuxeo/nuxeo-platform-sync</url>
   </scm>
 
 </project>
