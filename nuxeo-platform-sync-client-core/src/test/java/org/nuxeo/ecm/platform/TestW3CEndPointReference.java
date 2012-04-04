@@ -5,10 +5,12 @@ import java.lang.reflect.Field;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class TestW3CEndPointReference extends TestCase {
-    
+public class TestW3CEndPointReference {
+
+    @Test
     public void testSetPrivateField() throws Exception {
         W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
         builder.address("http://www.nuxeo.com");

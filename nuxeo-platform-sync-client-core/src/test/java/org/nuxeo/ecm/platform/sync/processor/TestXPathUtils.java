@@ -12,6 +12,13 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.Blob;
@@ -23,8 +30,6 @@ import org.nuxeo.ecm.core.storage.sql.SQLRepositoryTestCase;
 import org.nuxeo.ecm.platform.sync.utils.xpath.NXFunctionResolver;
 import org.nuxeo.ecm.platform.sync.utils.xpath.NXNSContext;
 import org.nuxeo.ecm.platform.sync.utils.xpath.XPathUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
 public class TestXPathUtils extends SQLRepositoryTestCase {
 
@@ -37,7 +42,7 @@ public class TestXPathUtils extends SQLRepositoryTestCase {
     URL documentUrl = getClass().getClassLoader().getResource(
             "org/nuxeo/test/document.xml");
 
-    @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         deployBundle("org.nuxeo.ecm.core.api");
@@ -51,12 +56,13 @@ public class TestXPathUtils extends SQLRepositoryTestCase {
         nodes = getNodesFromDocument();
     }
 
-    @Override
+    @After
     public void tearDown() throws Exception {
         closeSession();
         super.tearDown();
     }
 
+    @Test
     public void testGetElementXPath() throws Exception {
 
         // There should be 4 'blob' nodes in document.xml
@@ -74,6 +80,7 @@ public class TestXPathUtils extends SQLRepositoryTestCase {
 
     }
 
+    @Test
     public void testSetBlobProperties() throws Exception {
 
         // There should be 4 'blob' nodes in document.xml

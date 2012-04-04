@@ -19,6 +19,11 @@
 
 package org.nuxeo.ecm.platform.sync;
 
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.storage.sql.SQLRepositoryTestCase;
@@ -26,7 +31,7 @@ import org.nuxeo.ecm.platform.sync.adapter.SynchronizableDocument;
 
 public class TestSynchronizableDocument extends SQLRepositoryTestCase {
 
-    @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         deployBundle("org.nuxeo.ecm.core.api");
@@ -36,12 +41,13 @@ public class TestSynchronizableDocument extends SQLRepositoryTestCase {
         openSession();
     }
 
-    @Override
+    @After
     public void tearDown() throws Exception {
         closeSession();
         super.tearDown();
     }
 
+    @Test
     public void testDefaultSyncDoc() throws ClientException {
         DocumentModel folder = session.createDocumentModel("/", "folder", "Folder");
         folder = session.createDocument(folder);
@@ -49,6 +55,7 @@ public class TestSynchronizableDocument extends SQLRepositoryTestCase {
         assertEquals(folder.getId(), synDoc.getId());
     }
 
+    @Test
     public void testCustomSyncDoc() throws Exception {
         DocumentModel file = session.createDocumentModel("/", "file", "File");
         file.setPropertyValue("uid:uid", "1234567890");
