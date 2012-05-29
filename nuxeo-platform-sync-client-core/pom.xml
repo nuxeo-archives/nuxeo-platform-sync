@@ -88,6 +88,11 @@
       <artifactId>ejb-api</artifactId>
       <version>3.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.core</groupId>
+      <artifactId>nuxeo-core-storage-sql-test</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
