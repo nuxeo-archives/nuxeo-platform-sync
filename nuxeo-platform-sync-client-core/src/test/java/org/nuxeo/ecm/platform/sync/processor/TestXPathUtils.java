@@ -49,6 +49,7 @@ public class TestXPathUtils extends SQLRepositoryTestCase {
         deployBundle("org.nuxeo.ecm.core");
         deployContrib("org.nuxeo.ecm.platform.sync.client.core.test",
                 "OSGI-INF/test-core-contrib.xml");
+        fireFrameworkStarted();
         openSession();
 
         xpathList = new ArrayList<String>();
