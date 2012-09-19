@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 1
+Bundle-Name: Nuxeo Platform Sync Automation
+Bundle-SymbolicName: org.nuxeo.ecm.platform.sync.client.automation;singleton=true
+Bundle-Vendor: Nuxeo
+Nuxeo-Component: OSGI-INF/operation-contrib.xml

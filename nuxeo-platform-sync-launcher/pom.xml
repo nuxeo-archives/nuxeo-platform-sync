@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.nuxeo.ecm.platform</groupId>
+    <artifactId>nuxeo-platform-sync-parent</artifactId>
+    <version>5.7-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <groupId>org.nuxeo.ecm.platform</groupId>
+  <artifactId>nuxeo-sync-launcher</artifactId>
+  <name>Nuxeo multi-OS startup with synchronization</name>
+  <description>Build a Nuxeo launcher working with all Nuxeo products with synchronization tab</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.nuxeo</groupId>
+      <artifactId>nuxeo-launcher</artifactId>
+      <classifier>jar-with-dependencies</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.automation</groupId>
+      <artifactId>nuxeo-automation-client</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <!-- <createDependencyReducedPom>false</createDependencyReducedPom> -->
+              <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>meta-inf/*.sf</exclude>
+                    <exclude>meta-inf/*.rsa</exclude>
+                    <exclude>meta-inf/*.dsa</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

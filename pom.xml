@@ -16,6 +16,7 @@
   <modules>
     <module>nuxeo-platform-sync-common</module>
     <module>nuxeo-platform-sync-server</module>
+    <module>nuxeo-platform-sync-client-automation</module>
     <module>nuxeo-platform-sync-client-api</module>
     <module>nuxeo-platform-sync-client-core</module>
     <module>nuxeo-platform-sync-client-web</module>
@@ -23,14 +24,22 @@
 
   <profiles>
     <profile>
-      <id>no-osgi</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <modules>
-        <module>nuxeo-platform-sync-server</module>
-        <module>nuxeo-platform-sync-client-web</module>
-      </modules>
+       <id>launcher</id>
+       <dependencyManagement>
+         <dependencies>
+           <dependency>
+             <groupId>org.nuxeo</groupId>
+             <artifactId>nuxeo-launcher</artifactId>
+             <version>${nuxeo.addons.version}</version>
+             <classifier>jar-with-dependencies</classifier>
+             <type>jar</type>
+           </dependency>
+         </dependencies>
+       </dependencyManagement>
+
+       <modules>
+         <module>nuxeo-platform-sync-launcher</module>
+       </modules>
     </profile>
   </profiles>
 
