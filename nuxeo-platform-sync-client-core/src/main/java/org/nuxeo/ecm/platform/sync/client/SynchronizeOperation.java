@@ -14,7 +14,7 @@
  * Contributors:
  *     Sun Seng David TAN <stan@nuxeo.com>
  */
-package org.nuxeo.ecm.platform.sync.client.operations;
+package org.nuxeo.ecm.platform.sync.client;
 
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Context;
@@ -32,8 +32,8 @@ import org.nuxeo.runtime.api.Framework;
  * @author Sun Seng David TAN <stan@nuxeo.com>
  *
  */
-@Operation(id = SyncClientOperation.ID, category = Constants.CAT_SERVICES, label = "Synchronize with another nuxeo server", description = "Synchronize with another nuxeo server")
-public class SyncClientOperation {
+@Operation(id = SynchronizeOperation.ID, category = Constants.CAT_SERVICES, label = "Synchronize with another nuxeo server", description = "Synchronize with another nuxeo server")
+public class SynchronizeOperation {
 
     public final static String ID = "Synchronization.ClientSync";
 
@@ -48,21 +48,25 @@ public class SyncClientOperation {
 
     @Param(name = "password", required = false)
     protected String password;
+    
+    @Param(name = "diffPolicy", required = false)
+    protected String diffPolicy;
 
     @Param(name = "port", required = false)
-    protected int port;
+    protected int port = -1;
 
     @OperationMethod
     public void test() throws Exception {
         SynchronizeDetails syncDetails = new SynchronizeDetails();
-        syncDetails.setHost(host);
-        syncDetails.setUsername(username);
-        syncDetails.setPassword(password);
-        syncDetails.setPort(port);
-
+        if (host != null) syncDetails.setHost(host);
+        if (username != null) syncDetails.setUsername(username);
+        if (password != null) syncDetails.setPassword(password);
+        if (port != 01) syncDetails.setPort(port);
+        if (diffPolicy != null) syncDetails.setDiffPolicy(diffPolicy);
+        
         SynchronizeService frameworkService = Framework.getLocalService(SynchronizeService.class);
 
-        frameworkService.doSynchronize(session, syncDetails);
+        frameworkService.synchronize(session, syncDetails, "QUERY_ALL");
 
     }
 

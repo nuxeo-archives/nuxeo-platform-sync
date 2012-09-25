@@ -16,14 +16,19 @@
 package org.nuxeo.ecm.platform.sync.client;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.platform.sync.api.SynchronizeReport;
 import org.nuxeo.ecm.platform.sync.api.SynchronizeService;
 import org.nuxeo.ecm.platform.sync.api.util.MonitorProvider;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
+import org.nuxeo.ecm.platform.sync.manager.DefaultDocumentDifferencesPolicy;
 import org.nuxeo.ecm.platform.sync.manager.DocumentDifferencesPolicy;
 import org.nuxeo.ecm.platform.sync.manager.DocumentsSynchronizeManager;
 import org.nuxeo.ecm.platform.sync.manager.RelationsSynchronizeManager;
@@ -37,10 +42,11 @@ import org.nuxeo.runtime.model.DefaultComponent;
 
 /**
  * The Synchronize Service implementation.
- *
+ * 
  * @author rux
  */
-public class SynchronizeServiceImpl extends DefaultComponent implements SynchronizeService {
+public class SynchronizeServiceImpl extends DefaultComponent implements
+        SynchronizeService {
 
     private static final String IMPORT_CONFIGURATION_EP = "importConfiguration";
 
@@ -58,12 +64,14 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
 
     private DisableReadSecurityPolicyDescriptor disableReadSecurityPolicyDescriptor;
 
-    private SynchronizeDetails defaultSynchronizeDetails;
+    private SynchronizeDetails defaultSynchronizeDetails = SynchronizeDetails.DEFAULTS;
 
-    private DocumentDifferencesPolicy documentDifferencesPolicy;
+    private DocumentDifferencesPolicy diffPolicy = new DefaultDocumentDifferencesPolicy();
 
     @Override
-    public void registerContribution(Object contribution, String extensionPoint, ComponentInstance contributor) throws Exception {
+    public void registerContribution(Object contribution,
+            String extensionPoint, ComponentInstance contributor)
+            throws Exception {
         if (IMPORT_CONFIGURATION_EP.equals(extensionPoint)) {
             importConfiguration = (ImportConfiguration) contribution;
         } else if (DISABLE_READ_SP_EP.equals(extensionPoint)) {
@@ -71,29 +79,21 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
         } else if (DEFAULT_SYNCHRONIZE_DETAILS_EP.equals(extensionPoint)) {
             SynchronizeDetailsDescriptor desc = (SynchronizeDetailsDescriptor) contribution;
             defaultSynchronizeDetails = new SynchronizeDetails(
-                    desc.getUsername(), desc.getPassword(), desc.getProtocol(), desc.getHost(),
-                    desc.getPort(), desc.getContextPath());
+                    desc.getUsername(), desc.getPassword(), desc.getProtocol(),
+                    desc.getHost(), desc.getPort(), desc.getContextPath());
         } else if (DOCUMENT_DIFFERENCES_POLICY_EP.equals(extensionPoint)) {
             DocumentDifferencesPolicyDescriptor desc = (DocumentDifferencesPolicyDescriptor) contribution;
-            documentDifferencesPolicy = desc.getPolicyClass().newInstance();
+            diffPolicy =
+                    desc.getPolicyClass().newInstance();
         }
     }
 
     @Override
-    public void doSynchronizeDocuments(CoreSession session,
-            SynchronizeDetails details) throws Exception {
-        doSynchronizeDocuments(session, details, null);
-    }
-
-    @Override
-    public void doSynchronizeDocuments(CoreSession session) throws Exception {
-        doSynchronizeDocuments(session, getDefaultSynchronizeDetails(), null);
-    }
-
-    @Override
-    public void doSynchronizeDocuments(CoreSession session, SynchronizeDetails details, String queryName) throws Exception {
+    public SynchronizeReport synchronizeDocuments(CoreSession session,
+            SynchronizeDetails details, String queryName) throws Exception {
         if (details == null) {
-            throw new IllegalArgumentException("Cannot synchronize without synchronization details");
+            throw new IllegalArgumentException(
+                    "Cannot synchronize without synchronization details");
         }
 
         MonitorProvider.getMonitor().setTaskName("Synchronizing Documents");
@@ -118,80 +118,53 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
                     details.getUsername());
             userModel.setProperty(userSchemaName, "password",
                     details.getPassword());
-            userModel.setProperty(userSchemaName, "groups", getUserManager().getAdministratorsGroups().toArray());
+            userModel.setProperty(userSchemaName, "groups",
+                    getUserManager().getAdministratorsGroups().toArray());
             getUserManager().createUser(userModel);
         }
         DocumentsSynchronizeManager documentSynchronizeManager = new DocumentsSynchronizeManager(
-                session, details, queryName, importConfiguration, documentDifferencesPolicy);
+                session, details, queryName, importConfiguration,
+                diffPolicy);
         documentSynchronizeManager.run();
+        return documentSynchronizeManager.getReport();
     }
 
     @Override
-    public void doSynchronizeDocuments(CoreSession session, String queryName) throws Exception {
-        doSynchronizeDocuments(session, getDefaultSynchronizeDetails(), queryName);
-    }
-
-    @Override
-    public void doSynchronizeRelations(SynchronizeDetails details)
+    public SynchronizeReport synchronizeRelations(SynchronizeDetails details)
             throws ClientException {
         if (details == null) {
-            throw new IllegalArgumentException("Cannot synchronize without synchronization details");
+            throw new IllegalArgumentException(
+                    "Cannot synchronize without synchronization details");
         }
 
         MonitorProvider.getMonitor().setTaskName("Synchronizing relations");
 
         RelationsSynchronizeManager relationSynchronizer = new RelationsSynchronizeManager(
                 details);
-        relationSynchronizer.performChanges();
+        return relationSynchronizer.performChanges();
     }
 
     @Override
-    public void doSynchronizeRelations() throws ClientException {
-        doSynchronizeRelations(getDefaultSynchronizeDetails());
-    }
-
-    @Override
-    public void doSynchronizeVocabularies(SynchronizeDetails details)
-            throws ClientException {
+    public SynchronizeReport synchronizeVocabularies(
+            SynchronizeDetails details) throws ClientException {
         if (details == null) {
-            throw new IllegalArgumentException("Cannot synchronize without synchronization details");
+            throw new IllegalArgumentException(
+                    "Cannot synchronize without synchronization details");
         }
 
         MonitorProvider.getMonitor().setTaskName("Synchronizing Vocabularies");
 
         VocabularySynchronizeManager vocabularySynchronizer = new VocabularySynchronizeManager(
                 details);
-        vocabularySynchronizer.performChanges();
+        return vocabularySynchronizer.performChanges();
     }
 
     @Override
-    public void doSynchronizeVocabularies() throws ClientException {
-        doSynchronizeVocabularies(getDefaultSynchronizeDetails());
-    }
-
-    @Override
-    public void doSynchronize(CoreSession session, SynchronizeDetails details)
-            throws Exception {
-        doSynchronizeDocuments(session, details);
-        doSynchronizeRelations(details);
-        doSynchronizeVocabularies(details);
-    }
-
-    @Override
-    public void doSynchronize(CoreSession session) throws Exception {
-        doSynchronize(session, getDefaultSynchronizeDetails());
-    }
-
-    @Override
-    public void doSynchronize(CoreSession session, SynchronizeDetails details, String queryName) throws Exception {
-        doSynchronizeDocuments(session, details, queryName);
-        doSynchronizeRelations(details);
-        doSynchronizeVocabularies(details);
-    }
-
-    @Override
-    public void doSynchronize(CoreSession session, String queryName) throws Exception {
-        doSynchronize(session, getDefaultSynchronizeDetails(), queryName);
+    public SynchronizeReport synchronize(CoreSession session, SynchronizeDetails details,
+            String queryName) throws Exception {
+        return synchronizeDocuments(session, details, queryName).merge(
+                synchronizeRelations(details)).merge(
+                synchronizeVocabularies(details));
     }
 
     protected UserManager getUserManager() throws Exception {
@@ -206,14 +179,15 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
     }
 
     @Override
-    public SynchronizeDetails getDefaultSynchronizeDetails() {
+    public SynchronizeDetails getDefaultDetails() {
         return defaultSynchronizeDetails;
     }
 
     @Override
     public boolean shouldDisableReadSP(String docPath, String permission) {
         if (disableReadSecurityPolicyDescriptor != null) {
-            return disableReadSecurityPolicyDescriptor.shouldDisable(docPath, permission);
+            return disableReadSecurityPolicyDescriptor.shouldDisable(docPath,
+                    permission);
         }
         return false;
     }
