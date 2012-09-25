@@ -32,41 +32,12 @@ public interface SynchronizeService {
      *
      * @param session - the Nuxeo core session received from the web context
      * @param details - the details about the synchronization process
-     * @throws ClientException
-     */
-    void doSynchronizeDocuments(CoreSession session, SynchronizeDetails details)
-            throws Exception;
-
-    /**
-     * Synchronizes all the documents by using the default synchronization
-     * details.
-     *
-     * @param session - the Nuxeo core session received from the web context
-     * @throws ClientException
-     */
-    void doSynchronizeDocuments(CoreSession session) throws Exception;
-
-    /**
-     * Synchronizes all the documents by using the synchronization details.
-     *
-     * @param session - the Nuxeo core session received from the web context
-     * @param details - the details about the synchronization process
      * @param queryName - the query name to use server side
      * @throws ClientException
      */
-    void doSynchronizeDocuments(CoreSession session,
+    SynchronizeReport synchronizeDocuments(CoreSession session,
             SynchronizeDetails details, String queryName) throws Exception;
 
-    /**
-     * Synchronizes all the documents by using the default synchronization
-     * details.
-     *
-     * @param session - the Nuxeo core session received from the web context
-     * @param queryName - the query name to use server side
-     * @throws ClientException
-     */
-    void doSynchronizeDocuments(CoreSession session, String queryName)
-            throws Exception;
 
     /**
      * Synchronizes all the relations defined on the documents by using the
@@ -76,36 +47,20 @@ public interface SynchronizeService {
      * @param details - the details about the synchronization process
      * @throws ClientException
      */
-    void doSynchronizeRelations(SynchronizeDetails details)
+    SynchronizeReport synchronizeRelations(SynchronizeDetails details)
             throws ClientException;
 
-    /**
-     * Synchronizes all the relations defined on the documents by using the
-     * default synchronization details.This should happen after the documents
-     * synchronization.
-     *
-     * @throws ClientException
-     */
-    void doSynchronizeRelations() throws ClientException;
-
-    /**
+     /**
      * Synchronizes all the vocabularies by using the synchronization
      * details.This should happen after the documents synchronization.
      *
      * @param details
      * @throws ClientException
      */
-    void doSynchronizeVocabularies(SynchronizeDetails details)
+    SynchronizeReport synchronizeVocabularies(SynchronizeDetails details)
             throws ClientException;
 
-    /**
-     * Synchronizes all the vocabularies by using the default synchronization
-     * details.This should happen after the documents synchronization.
-     *
-     * @throws ClientException
-     */
-    void doSynchronizeVocabularies() throws ClientException;
-
+ 
     /**
      * Performs the whole synchronization process including the documents
      * relations and vocabularies synchronizations.
@@ -114,41 +69,16 @@ public interface SynchronizeService {
      * @param details - the details about the synchronization process
      * @throws Exception
      */
-    void doSynchronize(CoreSession session, SynchronizeDetails details)
-            throws Exception;
-
-    /**
-     * Performs the whole synchronization process including the documents
-     * relations and vocabularies synchronizations using the default
-     * synchronization details.
-     *
-     * @param session - the Nuxeo core session received from the web context
-     * @throws Exception
-     */
-    void doSynchronize(CoreSession session) throws Exception;
-
-    /**
-     * Performs the whole synchronization process including the documents
-     * relations and vocabularies synchronizations.
-     *
-     * @param session - the Nuxeo core session received from the web context
-     * @param details - the details about the synchronization process
-     * @throws Exception
-     */
-    void doSynchronize(CoreSession session, SynchronizeDetails details,
+    SynchronizeReport synchronize(CoreSession session, SynchronizeDetails details,
             String queryName) throws Exception;
 
+  
     /**
-     * Performs the whole synchronization process including the documents
-     * relations and vocabularies synchronizations using the default
-     * synchronization details.
-     *
-     * @param session - the Nuxeo core session received from the web context
-     * @throws Exception
+     * Return the pre-configured connection parameters
+     * 
+     * @return
      */
-    void doSynchronize(CoreSession session, String queryName) throws Exception;
-
-    SynchronizeDetails getDefaultSynchronizeDetails();
+    SynchronizeDetails getDefaultDetails();
 
     /**
      * Test if the ReadSecurityPolicy should be disabled or not.

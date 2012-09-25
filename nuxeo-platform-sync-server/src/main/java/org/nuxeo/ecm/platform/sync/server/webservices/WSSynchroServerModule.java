@@ -90,7 +90,10 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
             // invalidate cache
             documentManager.save();
 
-            String queryString = getQuery(queryName);
+            String queryString = getInlinedQuery(queryName);
+            if (queryString == null) {
+                queryString = getQuery(queryName);
+            }
             DocumentModelList availableDocs = documentManager.query(queryString);
             DocumentModelList unrestrictedDocs = new DocumentModelListImpl();
             List<String> availableDocIds = new ArrayList<String>();
@@ -186,8 +189,10 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
     @WebMethod(operationName = "getQueryAvailableDocumentListWithQuery")
     public String getQueryAvailableDocumentListWithQuery(String queryName)
             throws ClientException {
-        String qmName = queryName + "_CLIENT_SIDE";
-        String query = getQuery(qmName);
+        String query = getInlinedQuery(queryName);
+        if (query == null) {
+            query = getQuery(queryName + "_CLIENT_SIDE");
+        }
         if (query == null) {
             query = getQuery(queryName);
         }
@@ -432,7 +437,19 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
                  QueryModelService.NAME);
      }
 
+    private String getInlinedQuery(String query) {
+        final String upperCase = query.toUpperCase();
+        if (upperCase.startsWith("SELECT *")) {
+            if (!upperCase.endsWith(" ORDER BY ECM:PATH")) {
+                query = query.concat(" ORDER BY ecm:path");
+            }
+            return query;
+        }        
+        return null;
+    }
+    
     private String getQuery(String queryName) throws ClientException {
+        // check for inline queries
         QueryModelService queryModelService = getQueryModelService();
         if (queryModelService == null) {
             throw new ClientException("Unable to get queryModelService");

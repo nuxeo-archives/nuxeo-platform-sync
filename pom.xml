@@ -16,7 +16,6 @@
   <modules>
     <module>nuxeo-platform-sync-common</module>
     <module>nuxeo-platform-sync-server</module>
-    <module>nuxeo-platform-sync-client-automation</module>
     <module>nuxeo-platform-sync-client-api</module>
     <module>nuxeo-platform-sync-client-core</module>
     <module>nuxeo-platform-sync-client-web</module>

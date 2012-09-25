@@ -45,7 +45,7 @@ public class NXNSContext implements NamespaceContext {
             return null;
     }
 
-    public Iterator getPrefixes(String namespace) {
+    public Iterator<?> getPrefixes(String namespace) {
         return null;
     }
 }

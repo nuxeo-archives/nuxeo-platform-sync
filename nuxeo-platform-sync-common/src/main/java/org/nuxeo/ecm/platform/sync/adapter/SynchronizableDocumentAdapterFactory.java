@@ -43,7 +43,7 @@ public class SynchronizableDocumentAdapterFactory implements DocumentAdapterFact
         return syncDocumentService;
     }
 
-    public Object getAdapter(DocumentModel doc, Class itf) {
+    public Object getAdapter(DocumentModel doc, Class<?> itf) {
         try {
             return getService().getSynchronizableDocument(doc);
         } catch (Exception e) {

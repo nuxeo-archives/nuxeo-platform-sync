@@ -20,7 +20,6 @@
 package org.nuxeo.ecm.platform.sync.api.exception;
 
 import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.WrappedException;
 
 /**
  * Class for Synchronization Exceptions
@@ -37,7 +36,7 @@ public class SynchronizationException extends ClientException {
     }
 
     public SynchronizationException(String message, Throwable cause) {
-        super(message, WrappedException.wrap(cause));
+        super(message, cause);
     }
 
 

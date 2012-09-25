@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2009 Nuxeo SA (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2011 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -12,26 +12,24 @@
  * Lesser General Public License for more details.
  *
  * Contributors:
- *     Thomas Roger
+ *     "Stephane Lacoin (aka matic) slacoin@nuxeo.com"
  */
-
 package org.nuxeo.ecm.platform.sync.jaxrs;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.ws.rs.core.Application;
+import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
 
 /**
- * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
+ * @author "Stephane Lacoin (aka matic) slacoin@nuxeo.com"
+ *
  */
-public class SynchronizationApp extends Application {
+public class SyncOp extends DefaultObject {
 
-    @Override
-    public Set<Class<?>> getClasses() {
-        HashSet<Class<?>> set = new HashSet<Class<?>>();
-        set.add(SynchronizationHandler.class);
-        return set;
+    public SyncHost host() {
+        return (SyncHost)getPrevious();
+    }
+
+    public SyncRoot root() {
+        return host().syncRoot();
     }
 
 }
