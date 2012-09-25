@@ -30,8 +30,15 @@ public class DocumentDifferencesPolicyDescriptor {
     @XNode("@policyClass")
     private Class<DocumentDifferencesPolicy> policyClass;
 
+    @XNode("@name")
+    private String name;
+    
     public Class<DocumentDifferencesPolicy> getPolicyClass() {
         return policyClass;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

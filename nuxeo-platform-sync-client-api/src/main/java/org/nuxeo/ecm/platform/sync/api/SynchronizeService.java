@@ -34,7 +34,7 @@ public interface SynchronizeService {
      * @param details - the details about the synchronization process
      * @throws ClientException
      */
-    void doSynchronizeDocuments(CoreSession session, SynchronizeDetails details)
+    SynchronizeReport doSynchronizeDocuments(CoreSession session, SynchronizeDetails details)
             throws Exception;
 
     /**
@@ -44,7 +44,7 @@ public interface SynchronizeService {
      * @param session - the Nuxeo core session received from the web context
      * @throws ClientException
      */
-    void doSynchronizeDocuments(CoreSession session) throws Exception;
+    SynchronizeReport doSynchronizeDocuments(CoreSession session) throws Exception;
 
     /**
      * Synchronizes all the documents by using the synchronization details.
@@ -54,7 +54,7 @@ public interface SynchronizeService {
      * @param queryName - the query name to use server side
      * @throws ClientException
      */
-    void doSynchronizeDocuments(CoreSession session,
+    SynchronizeReport doSynchronizeDocuments(CoreSession session,
             SynchronizeDetails details, String queryName) throws Exception;
 
     /**
@@ -65,7 +65,7 @@ public interface SynchronizeService {
      * @param queryName - the query name to use server side
      * @throws ClientException
      */
-    void doSynchronizeDocuments(CoreSession session, String queryName)
+    SynchronizeReport doSynchronizeDocuments(CoreSession session, String queryName)
             throws Exception;
 
     /**
@@ -76,7 +76,7 @@ public interface SynchronizeService {
      * @param details - the details about the synchronization process
      * @throws ClientException
      */
-    void doSynchronizeRelations(SynchronizeDetails details)
+    SynchronizeReport doSynchronizeRelations(SynchronizeDetails details)
             throws ClientException;
 
     /**
@@ -86,7 +86,7 @@ public interface SynchronizeService {
      *
      * @throws ClientException
      */
-    void doSynchronizeRelations() throws ClientException;
+    SynchronizeReport doSynchronizeRelations() throws ClientException;
 
     /**
      * Synchronizes all the vocabularies by using the synchronization
@@ -95,7 +95,7 @@ public interface SynchronizeService {
      * @param details
      * @throws ClientException
      */
-    void doSynchronizeVocabularies(SynchronizeDetails details)
+    SynchronizeReport doSynchronizeVocabularies(SynchronizeDetails details)
             throws ClientException;
 
     /**
@@ -104,7 +104,7 @@ public interface SynchronizeService {
      *
      * @throws ClientException
      */
-    void doSynchronizeVocabularies() throws ClientException;
+    SynchronizeReport doSynchronizeVocabularies() throws ClientException;
 
     /**
      * Performs the whole synchronization process including the documents
@@ -114,7 +114,7 @@ public interface SynchronizeService {
      * @param details - the details about the synchronization process
      * @throws Exception
      */
-    void doSynchronize(CoreSession session, SynchronizeDetails details)
+    SynchronizeReport doSynchronize(CoreSession session, SynchronizeDetails details)
             throws Exception;
 
     /**
@@ -125,7 +125,7 @@ public interface SynchronizeService {
      * @param session - the Nuxeo core session received from the web context
      * @throws Exception
      */
-    void doSynchronize(CoreSession session) throws Exception;
+    SynchronizeReport doSynchronize(CoreSession session) throws Exception;
 
     /**
      * Performs the whole synchronization process including the documents
@@ -135,7 +135,7 @@ public interface SynchronizeService {
      * @param details - the details about the synchronization process
      * @throws Exception
      */
-    void doSynchronize(CoreSession session, SynchronizeDetails details,
+    SynchronizeReport doSynchronize(CoreSession session, SynchronizeDetails details,
             String queryName) throws Exception;
 
     /**
@@ -146,7 +146,7 @@ public interface SynchronizeService {
      * @param session - the Nuxeo core session received from the web context
      * @throws Exception
      */
-    void doSynchronize(CoreSession session, String queryName) throws Exception;
+    SynchronizeReport doSynchronize(CoreSession session, String queryName) throws Exception;
 
     SynchronizeDetails getDefaultSynchronizeDetails();
 

@@ -32,10 +32,12 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.event.EventServiceAdmin;
+import org.nuxeo.ecm.platform.sync.api.SynchronizeReport;
 import org.nuxeo.ecm.platform.sync.api.exception.SynchronizationException;
 import org.nuxeo.ecm.platform.sync.api.util.MonitorProvider;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
@@ -380,6 +382,34 @@ public class DocumentsSynchronizeManager {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
+    }
+
+    /**
+     * @return
+     */
+    public SynchronizeReport getReport() {
+        List<DocumentRef> added = doExtractDocRefs(addedTuples);
+        List<DocumentRef> updated = doExtractDocRefs(modifiedTuples);
+        List<DocumentRef> moved = doExtractDocRefs(movedTuples);
+        List<DocumentRef> removed =  doExtractIdRefs(deletedIds);
+
+        return SynchronizeReport.newDocumentsReport(added, removed, updated, moved);
+    }
+
+    protected List<DocumentRef> doExtractDocRefs(List<NuxeoSynchroTuple> tuples) {
+        List<DocumentRef> refs = new ArrayList<DocumentRef>();
+        for (NuxeoSynchroTuple tuple:tuples) {
+            refs.add(new PathRef(tuple.getPath()));
+        }
+        return refs;
+    }
+    
+    protected List<DocumentRef> doExtractIdRefs(List<String> ids) {
+        List<DocumentRef> refs = new ArrayList<DocumentRef>();
+        for (String id:deletedIds) {
+            refs.add(new PathRef(id));
+        }
+        return refs;
     }
     
 }

@@ -26,6 +26,7 @@ import org.apache.tools.ant.filters.StringInputStream;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.platform.relations.api.Graph;
 import org.nuxeo.ecm.platform.relations.api.RelationManager;
+import org.nuxeo.ecm.platform.sync.api.SynchronizeReport;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 import org.nuxeo.ecm.platform.sync.utils.SynchHttpClient;
 import org.nuxeo.runtime.api.Framework;
@@ -45,7 +46,7 @@ public class RelationsSynchronizeManager {
 
     }
 
-    public void performChanges() throws ClientException {
+    public SynchronizeReport performChanges() throws ClientException {
         RelationManager relationManager;
         try {
             relationManager = Framework.getService(RelationManager.class);
@@ -57,14 +58,15 @@ public class RelationsSynchronizeManager {
         }
 
         Graph graph;
-        for (String currentGraphName : relationManager.getGraphNames()) {
+        final List<String> graphNames = relationManager.getGraphNames();
+        for (String currentGraphName : graphNames) {
             try {
                 List<String> pathParams = Arrays.asList("relation",
                         currentGraphName);
                 InputStream inputStream = httpClient.executeGetCall(pathParams,
                         null);
                 if (inputStream == null) {
-                    return;
+                    throw new IllegalStateException("Cannot fetch graphs input from server");
                 }
                 try {
                     graph = relationManager.getGraphByName(currentGraphName);
@@ -89,6 +91,8 @@ public class RelationsSynchronizeManager {
                 httpClient.closeConnection();
             }
         }
+        
+        return SynchronizeReport.newRelationsReport(graphNames);
     }
 
 }
