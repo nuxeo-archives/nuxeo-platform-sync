@@ -19,18 +19,18 @@ package org.nuxeo.ecm.platform.sync.processor;
 
 import java.util.List;
 
+import org.nuxeo.common.utils.Path;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
+import org.nuxeo.ecm.platform.sync.client.ImportConfiguration;
 import org.nuxeo.ecm.platform.sync.utils.ImportUtils;
 import org.nuxeo.ecm.platform.sync.webservices.generated.ContextDataInfo;
 import org.nuxeo.ecm.platform.sync.webservices.generated.DocumentSnapshot;
 import org.nuxeo.ecm.platform.sync.webservices.generated.FlagedDocumentSnapshot;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 import org.nuxeo.ecm.platform.sync.webservices.generated.WSSynchroServerModule;
-import org.nuxeo.ecm.platform.sync.client.ImportConfiguration;
-import org.nuxeo.common.utils.Path;
 
 /**
  * The base class for processing a tuple. It holds the common processing.

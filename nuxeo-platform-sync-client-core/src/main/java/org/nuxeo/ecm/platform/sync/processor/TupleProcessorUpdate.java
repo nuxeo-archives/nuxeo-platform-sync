@@ -314,7 +314,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             }
             Type ftype = ltype.getFieldType();
             if (ftype.isSimpleType()) { // these are stored as arrays
-                Class klass = JavaTypes.getClass(ftype);
+                Class<?> klass = JavaTypes.getClass(ftype);
                 if (klass.isPrimitive()) {
                     return PrimitiveArrays.toPrimitiveArray(list, klass);
                 } else {

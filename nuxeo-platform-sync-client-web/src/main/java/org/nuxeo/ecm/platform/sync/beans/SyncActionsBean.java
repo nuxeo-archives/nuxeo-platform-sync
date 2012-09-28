@@ -19,8 +19,6 @@ package org.nuxeo.ecm.platform.sync.beans;
 
 import java.io.Serializable;
 
-import javax.faces.application.FacesMessage;
-
 import org.apache.log4j.Logger;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
@@ -28,6 +26,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -36,7 +35,6 @@ import org.nuxeo.ecm.platform.relations.web.listener.RelationActions;
 import org.nuxeo.ecm.platform.sync.api.SynchronizeService;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
-import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
 import org.nuxeo.runtime.api.Framework;
 
 /**
@@ -64,8 +62,6 @@ public class SyncActionsBean implements Serializable {
     @In(create = true, required = false)
     protected transient FacesMessages facesMessages;
 
-    @In(create = true)
-    protected transient ResourcesAccessor resourcesAccessor;
 
     /**
      * This will keep all the information about the synchronization process
@@ -88,9 +84,8 @@ public class SyncActionsBean implements Serializable {
             getSynchronizeService().doSynchronizeDocuments(documentManager,
                     synchronizeDetails);
         } catch (Exception e) {
-            facesMessages.add(FacesMessage.SEVERITY_ERROR,
-                    resourcesAccessor.getMessages().get("feedback.sync.error")
-                            + e);
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
+                    "feedback.sync.error", e.getMessage());
             log.error("Sync error: ", e);
             return null;
         }
@@ -109,8 +104,8 @@ public class SyncActionsBean implements Serializable {
     }
 
     private String goHome() {
-        facesMessages.add(FacesMessage.SEVERITY_INFO,
-                resourcesAccessor.getMessages().get("feedback.sync.success"));
+        facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,
+                "feedback.sync.success");
         DocumentModel root;
         try {
             root = documentManager.getDocument(new PathRef("/"));

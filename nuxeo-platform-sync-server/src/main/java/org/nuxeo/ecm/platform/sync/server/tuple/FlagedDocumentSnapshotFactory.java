@@ -22,7 +22,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import org.nuxeo.common.utils.Base64;
+import org.apache.commons.codec.binary.Base64;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DataModel;
@@ -81,7 +81,7 @@ public class FlagedDocumentSnapshotFactory {
 
         List<DocumentProperty> props = new ArrayList<DocumentProperty>();
         if (doc != null) {
-            String[] schemas = doc.getDeclaredSchemas();
+            String[] schemas = doc.getSchemas();
             for (String schema : schemas) {
                 DataModel dm = doc.getDataModel(schema);
                 Map<String, Object> map = dm.getMap();
@@ -149,7 +149,7 @@ public class FlagedDocumentSnapshotFactory {
                     try {
                         // strValue = ((Blob) value).getString();
                         byte[] bytes = ((Blob) value).getByteArray();
-                        strValue = Base64.encodeBytes(bytes);
+                        strValue = Base64.encodeBase64String(bytes);
                     } catch (IOException e) {
                         throw new ClientException(
                                 "Failed to get blob property value", e);
