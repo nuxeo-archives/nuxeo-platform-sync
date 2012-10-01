@@ -136,6 +136,9 @@ public class DocumentsSynchronizeManager {
         // computes the diffs
         processDifferences(tuples, query);
         // first remove documents no more available on online server
+        if (synchronizeDetails.getDryRun()) {
+            return;
+        }
         removeDocuments();
         // disable the listener in order to keep the original dc:modified
         EventServiceAdmin eventAdmin = Framework.getLocalService(EventServiceAdmin.class);
@@ -407,7 +410,13 @@ public class DocumentsSynchronizeManager {
     protected List<DocumentRef> doExtractIdRefs(List<String> ids) {
         List<DocumentRef> refs = new ArrayList<DocumentRef>();
         for (String id:deletedIds) {
-            refs.add(new PathRef(id));
+            DocumentModel doc = null;
+            try {
+                doc = session.getDocument(new IdRef(id));
+            } catch (ClientException e) {
+                log.warn("Cannot get access to document " + id, e);
+            }
+            refs.add(new PathRef(doc.getPathAsString()));
         }
         return refs;
     }

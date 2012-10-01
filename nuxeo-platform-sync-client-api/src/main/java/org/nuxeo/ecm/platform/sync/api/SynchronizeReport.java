@@ -90,4 +90,28 @@ public class SynchronizeReport {
         return new SynchronizeReport(added, removed, updated, moved, graphs, vocabularies);
     }
 
+    public DocumentRef[] getRemoved() {
+        return removed;
+    }
+
+    public DocumentRef[] getUpdated() {
+        return updated;
+    }
+
+    public DocumentRef[] getAdded() {
+        return added;
+    }
+
+    public DocumentRef[] getMoved() {
+        return moved;
+    }
+
+    public String[] getGraphs() {
+        return graphs;
+    }
+
+    public String[] getVocabularies() {
+        return vocabularies;
+    }
+
 }

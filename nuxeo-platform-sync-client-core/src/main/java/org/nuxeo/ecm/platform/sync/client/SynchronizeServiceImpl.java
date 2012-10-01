@@ -18,6 +18,7 @@ package org.nuxeo.ecm.platform.sync.client;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -27,6 +28,7 @@ import org.nuxeo.ecm.platform.sync.api.SynchronizeReport;
 import org.nuxeo.ecm.platform.sync.api.SynchronizeService;
 import org.nuxeo.ecm.platform.sync.api.util.MonitorProvider;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
+import org.nuxeo.ecm.platform.sync.manager.DefaultDocumentDifferencesPolicy;
 import org.nuxeo.ecm.platform.sync.manager.DocumentDifferencesPolicy;
 import org.nuxeo.ecm.platform.sync.manager.DocumentsSynchronizeManager;
 import org.nuxeo.ecm.platform.sync.manager.RelationsSynchronizeManager;
@@ -64,7 +66,7 @@ public class SynchronizeServiceImpl extends DefaultComponent implements
 
     private SynchronizeDetails defaultSynchronizeDetails = SynchronizeDetails.DEFAULTS;
 
-    private final Map<String, DocumentDifferencesPolicy> diffPolicies = new HashMap<String, DocumentDifferencesPolicy>();
+    private DocumentDifferencesPolicy diffPolicy = new DefaultDocumentDifferencesPolicy();
 
     @Override
     public void registerContribution(Object contribution,
@@ -81,26 +83,13 @@ public class SynchronizeServiceImpl extends DefaultComponent implements
                     desc.getHost(), desc.getPort(), desc.getContextPath());
         } else if (DOCUMENT_DIFFERENCES_POLICY_EP.equals(extensionPoint)) {
             DocumentDifferencesPolicyDescriptor desc = (DocumentDifferencesPolicyDescriptor) contribution;
-            diffPolicies.put(desc.getName(),
-                    desc.getPolicyClass().newInstance());
+            diffPolicy =
+                    desc.getPolicyClass().newInstance();
         }
     }
 
     @Override
-    public SynchronizeReport doSynchronizeDocuments(CoreSession session,
-            SynchronizeDetails details) throws Exception {
-        return doSynchronizeDocuments(session, details, null);
-    }
-
-    @Override
-    public SynchronizeReport doSynchronizeDocuments(CoreSession session)
-            throws Exception {
-        return doSynchronizeDocuments(session, getDefaultSynchronizeDetails(),
-                null);
-    }
-
-    @Override
-    public SynchronizeReport doSynchronizeDocuments(CoreSession session,
+    public SynchronizeReport synchronizeDocuments(CoreSession session,
             SynchronizeDetails details, String queryName) throws Exception {
         if (details == null) {
             throw new IllegalArgumentException(
@@ -135,20 +124,13 @@ public class SynchronizeServiceImpl extends DefaultComponent implements
         }
         DocumentsSynchronizeManager documentSynchronizeManager = new DocumentsSynchronizeManager(
                 session, details, queryName, importConfiguration,
-                diffPolicies.get(details.getDiffPolicy()));
+                diffPolicy);
         documentSynchronizeManager.run();
         return documentSynchronizeManager.getReport();
     }
 
     @Override
-    public SynchronizeReport doSynchronizeDocuments(CoreSession session,
-            String queryName) throws Exception {
-        return doSynchronizeDocuments(session, getDefaultSynchronizeDetails(),
-                queryName);
-    }
-
-    @Override
-    public SynchronizeReport doSynchronizeRelations(SynchronizeDetails details)
+    public SynchronizeReport synchronizeRelations(SynchronizeDetails details)
             throws ClientException {
         if (details == null) {
             throw new IllegalArgumentException(
@@ -163,12 +145,7 @@ public class SynchronizeServiceImpl extends DefaultComponent implements
     }
 
     @Override
-    public SynchronizeReport doSynchronizeRelations() throws ClientException {
-        return doSynchronizeRelations(getDefaultSynchronizeDetails());
-    }
-
-    @Override
-    public SynchronizeReport doSynchronizeVocabularies(
+    public SynchronizeReport synchronizeVocabularies(
             SynchronizeDetails details) throws ClientException {
         if (details == null) {
             throw new IllegalArgumentException(
@@ -183,33 +160,11 @@ public class SynchronizeServiceImpl extends DefaultComponent implements
     }
 
     @Override
-    public SynchronizeReport doSynchronizeVocabularies() throws ClientException {
-        return doSynchronizeVocabularies(getDefaultSynchronizeDetails());
-    }
-
-    @Override
-    public SynchronizeReport doSynchronize(CoreSession session) throws Exception {
-        return doSynchronize(session, getDefaultSynchronizeDetails());
-    }
-
-    @Override
-    public SynchronizeReport doSynchronize(CoreSession session,
-            SynchronizeDetails details) throws Exception {
-        return doSynchronize(session, details, null);
-    }
-
-    @Override
-    public SynchronizeReport doSynchronize(CoreSession session, SynchronizeDetails details,
+    public SynchronizeReport synchronize(CoreSession session, SynchronizeDetails details,
             String queryName) throws Exception {
-        return doSynchronizeDocuments(session, details, queryName).merge(
-                doSynchronizeRelations(details)).merge(
-                doSynchronizeVocabularies(details));
-    }
-
-    @Override
-    public SynchronizeReport doSynchronize(CoreSession session, String queryName)
-            throws Exception {
-        return doSynchronize(session, getDefaultSynchronizeDetails(), queryName);
+        return synchronizeDocuments(session, details, queryName).merge(
+                synchronizeRelations(details)).merge(
+                synchronizeVocabularies(details));
     }
 
     protected UserManager getUserManager() throws Exception {
@@ -224,7 +179,7 @@ public class SynchronizeServiceImpl extends DefaultComponent implements
     }
 
     @Override
-    public SynchronizeDetails getDefaultSynchronizeDetails() {
+    public SynchronizeDetails getDefaultDetails() {
         return defaultSynchronizeDetails;
     }
 

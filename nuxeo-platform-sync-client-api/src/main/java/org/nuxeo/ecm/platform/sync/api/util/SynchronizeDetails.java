@@ -32,6 +32,8 @@ public class SynchronizeDetails implements Serializable {
     private String contextPath;
     
     private String diffPolicy = "default";
+    
+    private Boolean dryRun = false;
 
     public SynchronizeDetails() {
     }
@@ -124,6 +126,14 @@ public class SynchronizeDetails implements Serializable {
 
     public void setDiffPolicy(String diffPolicy) {
         this.diffPolicy = diffPolicy;
+    }
+
+    public Boolean getDryRun() {
+        return dryRun;
+    }
+
+    public void setDryRun(Boolean dryRun) {
+        this.dryRun = dryRun;
     }
 
 }

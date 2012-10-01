@@ -66,7 +66,7 @@ public class SynchronizeOperation {
         
         SynchronizeService frameworkService = Framework.getLocalService(SynchronizeService.class);
 
-        frameworkService.doSynchronize(session, syncDetails);
+        frameworkService.synchronize(session, syncDetails, "QUERY_ALL");
 
     }
 

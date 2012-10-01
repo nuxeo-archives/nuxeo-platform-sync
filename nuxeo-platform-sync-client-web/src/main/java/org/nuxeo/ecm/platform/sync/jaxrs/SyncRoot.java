@@ -18,103 +18,83 @@
 package org.nuxeo.ecm.platform.sync.jaxrs;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import org.nuxeo.ecm.platform.sync.api.SynchronizeService;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
+import org.nuxeo.ecm.webengine.WebException;
+import org.nuxeo.ecm.webengine.model.Access;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.ModuleRoot;
 import org.nuxeo.runtime.api.Framework;
-
-import com.sun.jersey.api.core.InjectParam;
 
 /**
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
  */
 @Path("/sync")
 @Produces("text/html;charset=UTF-8")
-@WebObject(type="SyncRoot")
+@WebObject(type = "Root", administrator = Access.GRANT)
 public class SyncRoot extends ModuleRoot {
-
-
-    protected final SynchronizeService service =
+    
+    protected SynchronizeService service = 
             Framework.getLocalService(SynchronizeService.class);
     
-    protected final SynchronizeDetails defaultDetails = 
-            service.getDefaultSynchronizeDetails();
+    protected SynchronizeDetails defaultDetails =
+            service.getDefaultDetails();
     
-    protected static class Params {
-        
-        protected @DefaultValue("http://Administrator:Administrator@localhost:8080/nuxeo") @QueryParam("url") @FormParam("url") String url;
-        protected @DefaultValue("default") @QueryParam("diffPolicy") @FormParam("diffPolicy") String diffPolicy;
-        
-        public static Params fromDetails(SynchronizeDetails details) {
-            Params params = new Params();
-            params.url = String.format("%s://%s:%s@%s/%s", details.getProtocol(), details.getUrl(), details.getPassword(), details.getHost(), details.getContextPath());
-            params.diffPolicy = details.getDiffPolicy();
-            return params;
-        }
-        
-        public static SynchronizeDetails toDetails(Params params) throws MalformedURLException {
-            SynchronizeDetails details = new SynchronizeDetails();
-            URL url = new URL(params.url);
-            details.setProtocol(url.getProtocol());
-            details.setHost(url.getHost());
-            int port = url.getPort();
-            if (port == -1) port = url.getDefaultPort();
-            details.setPort(port);
-            details.setContextPath(url.getPath());
-            String[] credentials = url.getUserInfo().split(":");
-            if (credentials.length > 0) {
-                details.setUsername(credentials[0]);
-            }
-            if (credentials.length > 1) {
-                details.setPassword(credentials[1]);
-            }
-            return details;
+    protected URI defaultLocation() {
+         try {
+            return new URI(defaultDetails.getProtocol(), defaultDetails.getUsername() + ":" + defaultDetails.getPassword(), defaultDetails.getHost(), defaultDetails.getPort(), defaultDetails.getContextPath(), null, null);
+        } catch (Exception e) {
+            throw WebException.wrap("Cannot get default server location", e);
         }
     }
     
-    protected Params params;
+    protected URI location = defaultLocation();
     
-    @Path("documents")
-    public Object navigateDocuments(@InjectParam Params params) {
-        this.params = params;
-        return newObject("SyncDocs");
+    public URI getLocation() {
+        return location;
     }
     
-    @Path("vocabularies")
-    public Object navigateVocabularies(@InjectParam Params params) {
-        this.params = params;
-        return newObject("SyncVocs");
-    }
-    
-    @Path("relations")
-    public Object navigateRelations(@InjectParam Params params) {
-        this.params = params;
-        return newObject("SyncRels");
+    @Path("{host}")
+    public Object navigateHost(@PathParam("host")String host) {
+        return newObject("Host", host);
     }
     
     @POST
     @Path("synchronize")
     @Deprecated
-    public String synchronize(@FormParam("queryName") String query) throws Exception {
-        ((SyncDocs)newObject("SyncDocs")).doSynch(query);
-        return "";
+    public String synchronize(@FormParam("query") String query) throws Exception {
+        throw new WebException(Status.BAD_REQUEST);
     }
-
+    
     @GET
-    public Object doGet(@InjectParam Params params) {
-        this.params = params;
+    public Object doGet() {
         return getView("index");
+    }
+    
+    @POST
+    public Object doPost(@FormParam("host") String host, @Context UriInfo info) throws MalformedURLException, URISyntaxException {
+        this.location = new URI("http","Administrator:Administrator", host, 8080, "/nuxeo", null, null);
+        final UriBuilder builder = info.getRequestUriBuilder().segment(host).matrixParam("location", location);
+        final URI hostLocation = builder.build();
+        return redirect(hostLocation.toString());
+    }
+    
+    public SynchronizeService getService() {
+        return service;
     }
 
 }

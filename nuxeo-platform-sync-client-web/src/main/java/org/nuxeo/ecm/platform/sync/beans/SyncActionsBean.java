@@ -73,7 +73,7 @@ public class SyncActionsBean implements Serializable {
     @Create
     public void initialize() throws Exception {
         log.debug("Initializing syncActions ...");
-        synchronizeDetails = getSynchronizeService().getDefaultSynchronizeDetails();
+        synchronizeDetails = getSynchronizeService().getDefaultDetails();
         if (synchronizeDetails == null) {
             synchronizeDetails = new SynchronizeDetails();
         }
@@ -81,8 +81,8 @@ public class SyncActionsBean implements Serializable {
 
     public String doSynchronize() {
         try {
-            getSynchronizeService().doSynchronizeDocuments(documentManager,
-                    synchronizeDetails);
+            getSynchronizeService().synchronizeDocuments(documentManager,
+                    synchronizeDetails, "QUERY_ALL");
         } catch (Exception e) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
                     "feedback.sync.error", e.getMessage());
@@ -93,12 +93,12 @@ public class SyncActionsBean implements Serializable {
     }
 
     public String doSynchronizeVocabularies() throws Exception {
-        getSynchronizeService().doSynchronizeVocabularies(synchronizeDetails);
+        getSynchronizeService().synchronizeVocabularies(synchronizeDetails);
         return goHome();
     }
 
     public String doSynchronizeRelations() throws Exception {
-        getSynchronizeService().doSynchronizeRelations(synchronizeDetails);
+        getSynchronizeService().synchronizeRelations(synchronizeDetails);
         relationActions.resetStatements();
         return goHome();
     }

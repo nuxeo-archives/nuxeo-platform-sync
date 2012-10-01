@@ -2,6 +2,6 @@
   <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
     point="operations">
     <operation
-      class="org.nuxeo.ecm.platform.sync.client.operations.SyncClientOperation" />
+      class="org.nuxeo.ecm.platform.sync.client.SynchronizeOperation" />
   </extension>
 </component>
