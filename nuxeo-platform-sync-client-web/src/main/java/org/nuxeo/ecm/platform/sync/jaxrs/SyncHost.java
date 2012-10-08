@@ -104,13 +104,29 @@ public class SyncHost extends DefaultObject {
     }
     
     @Path("documents")
-    public Object doNavigateDocuments(@Context UriInfo info) throws MalformedURLException {
-        List<PathSegment> segments = info.getPathSegments();
-        PathSegment hostSegment = segments.get(segments.size()-2);
-        this.info = info;
-        this.location = URI.create(hostSegment.getMatrixParameters().get("location").get(0));      
+    public Object doNavigateDocs(@Context UriInfo info) throws MalformedURLException {
+        injectInfo(info);      
         return newObject("Docs");
     }
 
+
+    @Path("vocabularies")
+    public Object doNavigateVocs(@Context UriInfo info) throws MalformedURLException {
+        injectInfo(info);      
+        return newObject("Vocs");
+    }
+    
+    @Path("relations")
+    public Object doNavigateRels(@Context UriInfo info) throws MalformedURLException {
+        injectInfo(info);      
+        return newObject("Rels");
+    }
+
+    protected void injectInfo(UriInfo info) {
+        List<PathSegment> segments = info.getPathSegments();
+        PathSegment hostSegment = segments.get(segments.size()-2);
+        this.info = info;
+        this.location = URI.create(hostSegment.getMatrixParameters().get("location").get(0));
+    }
 
 }

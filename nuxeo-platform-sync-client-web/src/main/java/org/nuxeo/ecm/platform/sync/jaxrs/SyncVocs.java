@@ -19,45 +19,23 @@ package org.nuxeo.ecm.platform.sync.jaxrs;
 import java.net.MalformedURLException;
 import java.net.URI;
 
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 
-import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.platform.sync.api.SynchronizeReport;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
 
-import com.sun.jersey.api.core.InjectParam;
-
 /**
  * @author "Stephane Lacoin (aka matic) slacoin@nuxeo.com"
  *
  */
-@WebObject(type="Docs")
-public class SyncDocs extends DefaultObject {
+@WebObject(type="Vocs")
+public class SyncVocs extends DefaultObject {
     
-    public static class Params {
-        @FormParam("query") @DefaultValue("QUERY_ALL") String query;
-        @FormParam("dryrun")@DefaultValue("true") boolean dryrun;
-        
-        
-        public String getQuery() {
-            return query;
-        }
-        
-        public boolean getDryrun() {
-           return dryrun; 
-        }
-    }
-    
-    protected Params params;
-    
-    public Params params() {
-        return params;
-    }
     
     public URI location() {
         return syncHost().location;
@@ -70,11 +48,11 @@ public class SyncDocs extends DefaultObject {
     protected SyncRoot syncRoot() {
         return syncHost().syncRoot();
     }
+     
+    protected boolean dryrun = true;
     
-    @Override
-    protected void initialize(Object... args) {
-        super.initialize(args);
-        params = new Params();
+    public boolean dryrun() {
+        return dryrun;
     }
     
     @GET
@@ -83,12 +61,12 @@ public class SyncDocs extends DefaultObject {
     }
     
     @POST
-    public Object doPost(@InjectParam Params params) throws Exception {
-        this.params = params;
+    public Object doPost(@FormParam("dryrun") Boolean dryrun) throws MalformedURLException, ClientException {
+        this.dryrun = dryrun;
         SynchronizeDetails details = syncHost().details();
-        details.setDryRun(params.dryrun);
-        CoreSession session = getContext().getCoreSession();
-        SynchronizeReport report = syncRoot().service.synchronizeDocuments(session, details, params.query);
+        details.setDryRun(dryrun);
+        SynchronizeReport report=
+                syncRoot().service.synchronizeVocabularies(details);
         return getView("report").arg("report", report);
     }
 }
