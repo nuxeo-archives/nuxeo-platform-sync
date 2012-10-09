@@ -17,6 +17,8 @@
 
 package org.nuxeo.ecm.platform.sync.jaxrs;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,6 +31,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -37,6 +41,7 @@ import org.nuxeo.ecm.platform.sync.api.SynchronizeService;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 import org.nuxeo.ecm.webengine.WebException;
 import org.nuxeo.ecm.webengine.model.Access;
+import org.nuxeo.ecm.webengine.model.Template;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.ModuleRoot;
 import org.nuxeo.runtime.api.Framework;
@@ -107,6 +112,10 @@ public class SyncRoot extends ModuleRoot {
 
     @Override
     public Object handleError(WebApplicationException e) {
-        return super.handleError(e);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        e.printStackTrace(new PrintStream(os));
+        Template template = getView("error").arg("error", e).arg("stack", new String(os.toByteArray()));
+        return
+            Response.status(500).type(MediaType.TEXT_HTML).entity(template).build();
     }
 }
