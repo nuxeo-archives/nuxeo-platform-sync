@@ -17,7 +17,6 @@
 package org.nuxeo.ecm.platform.sync.jaxrs;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
@@ -28,53 +27,19 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.platform.sync.api.SynchronizeReport;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 import org.nuxeo.ecm.webengine.model.WebObject;
-import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
-
-import com.sun.jersey.api.core.InjectParam;
 
 /**
  * @author "Stephane Lacoin (aka matic) slacoin@nuxeo.com"
  *
  */
 @WebObject(type="Docs")
-public class SyncDocs extends DefaultObject {
-    
-    public static class Params {
-        @FormParam("query") @DefaultValue("QUERY_ALL") String query;
-        @FormParam("dryrun")@DefaultValue("true") boolean dryrun;
+public class SyncDocs extends SyncOp {
+   
         
-        
-        public String getQuery() {
-            return query;
-        }
-        
-        public boolean getDryrun() {
-           return dryrun; 
-        }
-    }
+    protected String query = "QUERY_ALL";
     
-    protected Params params;
-    
-    public Params params() {
-        return params;
-    }
-    
-    public URI location() {
-        return syncHost().location;
-    }
-    
-    protected SyncHost syncHost() {
-        return (SyncHost)getPrevious();
-    }
-    
-    protected SyncRoot syncRoot() {
-        return syncHost().syncRoot();
-    }
-    
-    @Override
-    protected void initialize(Object... args) {
-        super.initialize(args);
-        params = new Params();
+    public String getQuery() {
+        return query;
     }
     
     @GET
@@ -83,12 +48,12 @@ public class SyncDocs extends DefaultObject {
     }
     
     @POST
-    public Object doPost(@InjectParam Params params) throws Exception {
-        this.params = params;
-        SynchronizeDetails details = syncHost().details();
-        details.setDryRun(params.dryrun);
+    public Object doPost(@FormParam("query") @DefaultValue("SELECT * from Document") String query) throws Exception {
+        this.query = query;
+        final SyncHost host = host();
+        SynchronizeDetails details = host.details();
         CoreSession session = getContext().getCoreSession();
-        SynchronizeReport report = syncRoot().service.synchronizeDocuments(session, details, params.query);
-        return getView("report").arg("report", report);
+        SynchronizeReport report = root().service.synchronizeDocuments(session, details, query);
+        return getView("report").arg("report", report).arg("a", host.uri(false).toASCIIString());
     }
 }

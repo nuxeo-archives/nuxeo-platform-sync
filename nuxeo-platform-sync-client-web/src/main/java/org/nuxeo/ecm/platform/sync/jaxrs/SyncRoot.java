@@ -99,13 +99,6 @@ public class SyncRoot extends ModuleRoot {
         return redirect(hostLocation.toString());
     }
     
-    @Path("test")
-    @GET
-    @Produces("text/plain")
-    public String doError() {
-        throw new WebException(Status.INTERNAL_SERVER_ERROR);
-    }
-    
     public SynchronizeService getService() {
         return service;
     }

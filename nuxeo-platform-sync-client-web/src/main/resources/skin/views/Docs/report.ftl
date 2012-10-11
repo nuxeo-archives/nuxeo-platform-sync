@@ -3,16 +3,14 @@
 
 <@block name="content">
 
-<#if This.params().dryrun == 'true'>
-<p>Here is the list of changes from <b>${This.location().host}</b>. Submit the following form if you want to proceed ?
-<form method="POST">
-  <input type="hidden" name="policy" value="${This.params().policy}"/>
-  <input type="hidden" name="query" value="${This.params().query}"/>
-  <input type="hidden" name="dryrun" value="false"/>
+<#if This.host().dryrun >
+<p>Here is the list of changes from <b>${This.host().name}</b>. Submit the following form if you want to proceed ?
+<form method="POST" action="${action}">
+  <input type="hidden" name="query" value="${This.query}"/>
   <input type="submit"/>
 </form>
 <#else>
-<p>Here is the list of changes processed from <b>${This.location().host}</b></p>
+<p>Here is the list of changes processed from <b>${This.host().name}</b></p>
 </#if>
 
 <h2>${report.added?size} added documents</h2>

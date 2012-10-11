@@ -17,9 +17,7 @@
 package org.nuxeo.ecm.platform.sync.jaxrs;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 
@@ -27,46 +25,30 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.platform.sync.api.SynchronizeReport;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 import org.nuxeo.ecm.webengine.model.WebObject;
-import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
 
 /**
  * @author "Stephane Lacoin (aka matic) slacoin@nuxeo.com"
  *
  */
 @WebObject(type="Vocs")
-public class SyncVocs extends DefaultObject {
-    
-    
-    public URI location() {
-        return syncHost().location;
-    }
-    
-    protected SyncHost syncHost() {
-        return (SyncHost)getPrevious();
-    }
-    
-    protected SyncRoot syncRoot() {
-        return syncHost().syncRoot();
-    }
-     
-    protected boolean dryrun = true;
-    
-    public boolean dryrun() {
-        return dryrun;
-    }
+public class SyncVocs extends SyncOp {
+   
     
     @GET
-    public Object doGet() throws MalformedURLException {
-        return getView("index");
+    public Object doGet() throws MalformedURLException, ClientException {
+        return run();
     }
     
     @POST
-    public Object doPost(@FormParam("dryrun") Boolean dryrun) throws MalformedURLException, ClientException {
-        this.dryrun = dryrun;
-        SynchronizeDetails details = syncHost().details();
-        details.setDryRun(dryrun);
+    public Object doPost() throws MalformedURLException, ClientException {
+        return run();
+    }
+
+    protected Object run() throws ClientException {
+        final SyncHost host = host();
+        SynchronizeDetails details = host.details();
         SynchronizeReport report=
-                syncRoot().service.synchronizeVocabularies(details);
-        return getView("report").arg("report", report);
+                root().service.synchronizeVocabularies(details);
+        return getView("report").arg("report", report).arg("action", host.uri(false).toASCIIString());
     }
 }

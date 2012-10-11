@@ -20,15 +20,19 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.LinkedList;
 import java.util.List;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.MatrixParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
@@ -42,16 +46,28 @@ import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
 @WebObject(type="Host")
 public class SyncHost extends DefaultObject {
     
+    protected boolean dryrun = true;
+    
     protected UriInfo info;
     
     protected URI location;
     
+    protected String name;
+    
+    public boolean getDryrun() {
+        return dryrun;
+    }
+    
+    public UriInfo getInfo() {
+        return info;
+    }
+
     public URI getLocation() {
         return location;
     }
-
-    public URI segment(String segment) {
-        return info.getRequestUriBuilder().segment(segment).build();
+    
+    public String getName() {
+        return name;
     }
     
     protected SynchronizeDetails details(){
@@ -68,19 +84,18 @@ public class SyncHost extends DefaultObject {
         if (credentials.length > 1) {
             details.setPassword(credentials[1]);
         }
+        details.setDryRun(dryrun);
         return details;
     }
     
-    protected String host;
-    
-    public String getHost() {
-        return host;
-    }
+
     
     @Override
     protected void initialize(Object... args) {
         super.initialize(args);
-        this.host = (String)args[0];
+        if (args.length == 1) {
+            this.name = (String)args[0];
+        }
     }
     
     protected SyncRoot syncRoot() {
@@ -88,8 +103,9 @@ public class SyncHost extends DefaultObject {
     }
     
     @GET
-    public Object doGet(@MatrixParam("location") URI location, @Context UriInfo info) {
+    public Object doGet(@MatrixParam("location") URI location, @MatrixParam("dryrun") @DefaultValue("true") boolean dryrun, @Context UriInfo info) {
         this.info = info;
+        this.dryrun = dryrun;
         this.location = location;
         return getView("index");
     }
@@ -97,10 +113,8 @@ public class SyncHost extends DefaultObject {
     
     @POST
     public Object doPost(@FormParam("location") URI location, @Context UriInfo info) throws MalformedURLException, URISyntaxException, UnsupportedEncodingException {
-        this.location = location;
         this.info = info;
-        URI newHost = info.getBaseUriBuilder().path("/sync").path("/"+location.getHost()).matrixParam("location", location).build();
-        return redirect(newHost.toASCIIString());
+        return redirect(uri(location).toASCIIString());
     }
     
     @Path("documents")
@@ -123,10 +137,46 @@ public class SyncHost extends DefaultObject {
     }
 
     protected void injectInfo(UriInfo info) {
-        List<PathSegment> segments = info.getPathSegments();
-        PathSegment hostSegment = segments.get(segments.size()-2);
+        final MultivaluedMap<String, String> matrixParameters = parameters(info);
         this.info = info;
-        this.location = URI.create(hostSegment.getMatrixParameters().get("location").get(0));
+        this.location = URI.create(matrixParameters.get("location").get(0));
+        final List<String> dryrunParams = matrixParameters.get("dryrun");
+        if (dryrunParams != null) {
+            this.dryrun = Boolean.parseBoolean(dryrunParams.get(0));
+        }
     }
+
+    protected MultivaluedMap<String, String> parameters(UriInfo info) {
+        final List<PathSegment> segments = info.getPathSegments();
+        final PathSegment hostSegment = segments.get(1);
+        final MultivaluedMap<String, String> matrixParameters = hostSegment.getMatrixParameters();
+        return matrixParameters;
+    }
+
+    public URI uri() {
+        return uriBuilder(dryrun, location).build();
+    }
+    
+    public URI uri(boolean dryrun) {
+        return uriBuilder(dryrun, location).build();
+    }
+    
+    public URI uri(URI location) {
+        return uriBuilder(dryrun, location).build();
+    }
+        
+    public UriBuilder uriBuilder(boolean dryrun, URI location) {
+        final LinkedList<PathSegment> pathSegments = new LinkedList<PathSegment>(info.getPathSegments());
+        UriBuilder builder = info.getBaseUriBuilder();
+        builder = builder.path(pathSegments.remove().getPath()); // root
+        pathSegments.remove(); // host
+        builder = builder.path(location.getHost()).matrixParam("location", location).matrixParam("dryrun", dryrun);
+        while(!pathSegments.isEmpty()) { // subs
+            final PathSegment lastSegment = pathSegments.remove();
+            builder = builder.path(lastSegment.getPath());
+        }
+        return builder;
+    }
+
 
 }

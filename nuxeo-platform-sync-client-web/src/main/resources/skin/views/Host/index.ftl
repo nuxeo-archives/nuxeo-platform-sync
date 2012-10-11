@@ -3,11 +3,11 @@
 
 <@block name="content">
 
-<p>Synchronize this repository with <b>${This.host}</b>
+<p>Synchronize this repository with <b>${This.name}</b>
 <ul>
-  <li><a href="${This.segment('documents')}">documents</a></li>
-  <li><a href="${This.segment('vocabularies')}">vocabularies</li>
-  <li><a href="${This.segment('relations')}">relations</a></li>
+  <li><a href="${This.uri().toASCIIString()}/documents">documents</a></li>
+  <li><a href="${This.uri().toASCIIString()}/vocabularies">vocabularies</li>
+  <li><a href="${This.uri().toASCIIString()}/relations">relations</a></li>
 </ul></p>
 
 <p>Or change the connection parameters if needed by submitting the form below
