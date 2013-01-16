@@ -16,7 +16,8 @@ Bundle-Vendor: Nuxeo
 Bundle-Version: 0.0.0.SNAPSHOT
 Nuxeo-Component: OSGI-INF/sync-client-security-contrib.xml,
  OSGI-INF/SynchronizeService.xml,
- OSGI-INF/sync-client-synchronize-contrib.xml
+ OSGI-INF/sync-client-synchronize-contrib.xml,
+ OSGI-INF/sync-client-operation-contrib.xml
 Bundle-ManifestVersion: 2
 Import-Package: org.apache.commons.httpclient,
  org.apache.commons.httpclient.auth,

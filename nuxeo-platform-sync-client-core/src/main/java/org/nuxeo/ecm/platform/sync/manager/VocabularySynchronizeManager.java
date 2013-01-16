@@ -40,6 +40,7 @@ import org.nuxeo.ecm.core.schema.types.Type;
 import org.nuxeo.ecm.core.schema.types.primitives.IntegerType;
 import org.nuxeo.ecm.core.schema.types.primitives.LongType;
 import org.nuxeo.ecm.core.schema.types.primitives.StringType;
+import org.nuxeo.ecm.platform.sync.api.SynchronizeReport;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 import org.nuxeo.ecm.platform.sync.utils.SynchHttpClient;
 import org.nuxeo.ecm.platform.sync.utils.VocabularyUtils;
@@ -62,7 +63,7 @@ public class VocabularySynchronizeManager {
 
     }
 
-    public void performChanges() throws ClientException {
+    public SynchronizeReport performChanges() throws ClientException {
         // get all vocabularies
         List<String> vocabularyNames = VocabularyUtils.getAllVocabularies();
         for (String vocabularyName : vocabularyNames) {
@@ -74,6 +75,7 @@ public class VocabularySynchronizeManager {
             syncronize(vocabularyName, pathParams);
         }
 
+        return SynchronizeReport.newVocabulariesReport(vocabularyNames);
     }
 
     private void syncronize(String vocabularyName, List<String> pathParams)
