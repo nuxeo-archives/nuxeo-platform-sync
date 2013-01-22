@@ -18,7 +18,6 @@
 package org.nuxeo.ecm.platform.sync.processor;
 
 import org.apache.log4j.Logger;
-
 import org.nuxeo.common.utils.Path;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -26,19 +25,19 @@ import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.impl.DocumentModelImpl;
 import org.nuxeo.ecm.platform.sync.processor.TupleProcessorAdd.UnrestrictedImport;
-import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 import org.nuxeo.ecm.platform.sync.utils.ImportUtils;
+import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 
 /**
  * Implementing class for processing a tuple. It updates a new proxy document.
- * 
+ *
  * @author rux
- * 
+ *
  */
 public class TupleProcessorUpdateProxy extends TupleProcessorUpdate {
 
     private static final Logger log = Logger.getLogger(TupleProcessorUpdateProxy.class);
-    
+
     public TupleProcessorUpdateProxy(CoreSession session,
             NuxeoSynchroTuple tuple) {
         super(session, tuple);
@@ -46,7 +45,7 @@ public class TupleProcessorUpdateProxy extends TupleProcessorUpdate {
 
     @Override
     public void process() throws ClientException {
-        // this case is encountered when republishing 
+        // this case is encountered when republishing
         // and overwriting existing proxy
 
         log.debug("Starting the process of updating proxy "
