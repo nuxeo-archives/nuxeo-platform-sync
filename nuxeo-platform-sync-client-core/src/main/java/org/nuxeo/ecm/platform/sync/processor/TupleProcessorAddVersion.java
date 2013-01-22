@@ -44,8 +44,9 @@ public class TupleProcessorAddVersion extends TupleProcessorAdd {
 
     @Override
     public void process() throws ClientException {
-        log.debug("Starting the process of adding version on the client side: " + name);
         // in case there is a version, the document model will have parent ref null
+        log.debug("Starting the process of adding version "
+                + tuple.getClientId() + " on the client side: " + name);
         localDocument = new DocumentModelImpl((String) null, tuple.getType(),
                 tuple.getClientId(), new Path(name), null, null, null, null, null,
                 null, session.getRepositoryName());
@@ -73,6 +74,7 @@ public class TupleProcessorAddVersion extends TupleProcessorAdd {
 
         setProperties();
         runUnrestrictedImport();
-        log.debug("Finishing the process of adding on the client side: " + name);
+        log.debug("Finishing the process of adding version "
+                + tuple.getClientId() + " on the client side: " + name);
     }
 }

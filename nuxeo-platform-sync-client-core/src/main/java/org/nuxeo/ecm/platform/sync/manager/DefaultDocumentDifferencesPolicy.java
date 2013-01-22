@@ -47,9 +47,15 @@ public class DefaultDocumentDifferencesPolicy implements
                     // yyyy-MM-dd'T'HH:mm:ssz used when dates properties are set
                     // on a document when listeners are disabled
                     if (modificationDate == null) {
-                        log.debug(doc.getPathAsString()
-                                + " is skipped because it has no modification date - problem at first import");
+                        log.debug("Doc "
+                                + doc.getId()
+                                + " ("
+                                + (doc.isProxy() ? "proxy"
+                                        : (doc.isVersion() ? "version" : "live"))
+                                + ") has no modification date (problem at last import) => delete then add it back");
                     } else if (tuple.getLastModification() == 0) {
+                        log.debug("Doc "
+                                + tuple.getClientId()
                         log.debug(tuple.getClientId()
                                 + " is skipped because it is a version without read access - got from a proxy");
                     } else if (modificationDate.getTimeInMillis() / 1000 != (long) tuple.getLastModification() / 1000

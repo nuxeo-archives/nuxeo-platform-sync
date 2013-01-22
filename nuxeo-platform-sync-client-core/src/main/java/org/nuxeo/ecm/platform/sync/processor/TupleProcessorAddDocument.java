@@ -50,7 +50,8 @@ public class TupleProcessorAddDocument extends TupleProcessorAdd {
                     + " will not be created");
             return;
         }
-        log.debug("Starting the process of adding document on the client side: " + name);
+        log.debug("Starting the process of adding live document "
+                + tuple.getClientId() + " on the client side: " + name);
         // a normal document model will be created
         localDocument = new DocumentModelImpl((String) null, tuple.getType(),
                 tuple.getClientId(), new Path(name), null, null, new PathRef(
@@ -90,7 +91,8 @@ public class TupleProcessorAddDocument extends TupleProcessorAdd {
         runUnrestrictedImport();
         setACE();
         updateDocument();
-        log.debug("Finishing the process of adding on the client side: " + name);
+        log.debug("Finishing the process of adding live document "
+                + tuple.getClientId() + " on the client side: " + name);
     }
 
 }

@@ -49,10 +49,11 @@ public class TupleProcessorUpdateProxy extends TupleProcessorUpdate {
         // this case is encountered when republishing 
         // and overwriting existing proxy
 
-        log.debug("Starting the process of updating a proxy on the client side: "
-                + name);
+        log.debug("Starting the process of updating proxy "
+                + tuple.getAdaptedId() + " on the client side: " + name);
 
-        log.debug("Removing old proxy on the client side: " + name);
+        log.debug("Removing old proxy " + tuple.getAdaptedId()
+                + " on the client side: " + name);
         try {
             session.removeDocument((new IdRef(tuple.getAdaptedId())));
             session.save();
@@ -60,7 +61,8 @@ public class TupleProcessorUpdateProxy extends TupleProcessorUpdate {
             log.warn(e);
         }
 
-        log.debug("Adding updated proxy on the client side: " + name);
+        log.debug("Adding updated proxy " + tuple.getAdaptedId()
+                + " on the client side: " + name);
         localDocument = new DocumentModelImpl((String) null,
                 CoreSession.IMPORT_PROXY_TYPE, tuple.getAdaptedId(), new Path(
                         name), null, null, new PathRef(parentPath), null, null,
@@ -74,7 +76,8 @@ public class TupleProcessorUpdateProxy extends TupleProcessorUpdate {
 
         runUnrestrictedImport();
         // no need to add properties too
-        log.debug("Finishing the process of adding on the client side: " + name);
+        log.debug("Finishing the process of updating proxy "
+                + tuple.getAdaptedId() + " on the client side: " + name);
     }
 
     private void runUnrestrictedImport() throws ClientException {
