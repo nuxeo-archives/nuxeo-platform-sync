@@ -30,14 +30,14 @@ import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 
 /**
  * Implementing class for processing a tuple. It updates a new proxy document.
- * 
+ *
  * @author rux
- * 
+ *
  */
 public class TupleProcessorUpdateProxy extends TupleProcessorUpdate {
 
     private static final Logger log = Logger.getLogger(TupleProcessorUpdateProxy.class);
-    
+
     public TupleProcessorUpdateProxy(CoreSession session,
             NuxeoSynchroTuple tuple) {
         super(session, tuple);
@@ -45,7 +45,7 @@ public class TupleProcessorUpdateProxy extends TupleProcessorUpdate {
 
     @Override
     public void process() throws ClientException {
-        // this case is encountered when republishing 
+        // this case is encountered when republishing
         // and overwriting existing proxy
 
         log.debug("Starting the process of updating proxy "

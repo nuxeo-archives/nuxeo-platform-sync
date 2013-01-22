@@ -81,7 +81,7 @@ public class DocumentsSynchronizeManager {
     private ImportConfiguration importConfiguration;
 
     private DocumentDifferencesPolicy documentDifferencesPolicy;
-    
+
     // this list will keep the documents that need to be move
     private List<NuxeoSynchroTuple> movedTuples;
 
@@ -101,11 +101,13 @@ public class DocumentsSynchronizeManager {
     public void run() throws ClientException {
         // first obtain the list of tuples from server based on the custom query
         NuxeoWSMainEntrancePoint entrance = new NuxeoWSMainEntrancePointService().getNuxeoWSMainEntrancePointPort();
-        
-        String wsaddress = NuxeoWSMainEntrancePointService.NUXEOWSMAINENTRANCEPOINTSERVICE_WSDL_LOCATION.toString().replace("wssyncroentry?wsdl", "");
-        
+
+        String wsaddress = NuxeoWSMainEntrancePointService.NUXEOWSMAINENTRANCEPOINTSERVICE_WSDL_LOCATION.toString().replace(
+                "wssyncroentry?wsdl", "");
+
         ((BindingProvider) entrance).getRequestContext().put(
-                BindingProvider.ENDPOINT_ADDRESS_PROPERTY, wsaddress + "wssyncroentry");
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                wsaddress + "wssyncroentry");
         WSSynchroServerModule wsas = null;
         List<NuxeoSynchroTuple> tuples = null;
         String query = null;
@@ -114,9 +116,10 @@ public class DocumentsSynchronizeManager {
                     session.getRepositoryName(),
                     synchronizeDetails.getUsername(),
                     synchronizeDetails.getPassword());
-            
-            SetPrivateAdressUriFromEndPointReference(ref, wsaddress + "wssyncroserver");
-            
+
+            SetPrivateAdressUriFromEndPointReference(ref, wsaddress
+                    + "wssyncroserver");
+
             wsas = new WSSynchroServerModuleService().getPort(ref,
                     WSSynchroServerModule.class);
 
@@ -162,11 +165,14 @@ public class DocumentsSynchronizeManager {
     private void addDocuments(WSSynchroServerModule wsas)
             throws ClientException {
         // first add normal documents
-        MonitorProvider.getMonitor().beginTask("Adding documents (" + addedTuples.size() + ")", addedTuples.size());
+        MonitorProvider.getMonitor().beginTask(
+                "Adding documents (" + addedTuples.size() + ")",
+                addedTuples.size());
         for (NuxeoSynchroTuple tuple : addedTuples) {
             if (!tuple.isVersion() && !tuple.isProxy()) {
                 TupleProcessor tupleProcessor = TupleProcessor.createProcessor(
-                        session, tuple, wsas, true, synchronizeDetails, importConfiguration);
+                        session, tuple, wsas, true, synchronizeDetails,
+                        importConfiguration);
                 tupleProcessor.process();
                 MonitorProvider.getMonitor().worked(1);
             }
@@ -176,7 +182,8 @@ public class DocumentsSynchronizeManager {
         for (NuxeoSynchroTuple tuple : addedTuples) {
             if (tuple.isVersion()) {
                 TupleProcessor tupleProcessor = TupleProcessor.createProcessor(
-                        session, tuple, wsas, true, synchronizeDetails, importConfiguration);
+                        session, tuple, wsas, true, synchronizeDetails,
+                        importConfiguration);
                 tupleProcessor.process();
                 MonitorProvider.getMonitor().worked(1);
             }
@@ -186,7 +193,8 @@ public class DocumentsSynchronizeManager {
         for (NuxeoSynchroTuple tuple : addedTuples) {
             if (tuple.isProxy()) {
                 TupleProcessor tupleProcessor = TupleProcessor.createProcessor(
-                        session, tuple, wsas, true, synchronizeDetails, importConfiguration);
+                        session, tuple, wsas, true, synchronizeDetails,
+                        importConfiguration);
                 tupleProcessor.process();
                 MonitorProvider.getMonitor().worked(1);
             }
@@ -199,16 +207,20 @@ public class DocumentsSynchronizeManager {
         // move documents
         new MoveDocumentsUnrestricted(session, movedTuples).runUnrestricted();
 
-    }        
-    
+    }
+
     private void updateDocuments(WSSynchroServerModule wsas)
             throws ClientException {
 
         // update modified documents
-        MonitorProvider.getMonitor().beginTask("Updating documents", modifiedTuples.size());
+        MonitorProvider.getMonitor().beginTask("Updating documents",
+                modifiedTuples.size());
         for (NuxeoSynchroTuple tuple : modifiedTuples) {
+            log.debug("Will start updating modified tuple: "
+                    + tuple.getClientId());
             TupleProcessor tupleProcessor = TupleProcessor.createProcessor(
-                    session, tuple, wsas, false, synchronizeDetails, importConfiguration);
+                    session, tuple, wsas, false, synchronizeDetails,
+                    importConfiguration);
             tupleProcessor.process();
             MonitorProvider.getMonitor().worked(1);
         }
@@ -219,8 +231,8 @@ public class DocumentsSynchronizeManager {
         new RemoveDocumentsUnrestricted(session, deletedIds).runUnrestricted();
     }
 
-    private void processDifferences(List<NuxeoSynchroTuple> tuples, String queryName)
-            throws ClientException {
+    private void processDifferences(List<NuxeoSynchroTuple> tuples,
+            String queryName) throws ClientException {
         log.info("Getting the differences with the server ...");
         try {
 
@@ -235,7 +247,8 @@ public class DocumentsSynchronizeManager {
                         addedTuples, modifiedTuples, deletedIds, movedTuples);
             }
 
-            if (importConfiguration != null && importConfiguration.getGenerateNewId()) {
+            if (importConfiguration != null
+                    && importConfiguration.getGenerateNewId()) {
                 for (NuxeoSynchroTuple tuple : addedTuples) {
                     tuple.setClientId(UUID.randomUUID().toString());
                 }
@@ -249,7 +262,7 @@ public class DocumentsSynchronizeManager {
         addedTuples = new LinkedList<NuxeoSynchroTuple>();
         modifiedTuples = new LinkedList<NuxeoSynchroTuple>();
         deletedIds = new LinkedList<String>();
-        movedTuples  = new LinkedList<NuxeoSynchroTuple>();
+        movedTuples = new LinkedList<NuxeoSynchroTuple>();
     }
 
     protected static class RemoveDocumentsUnrestricted extends
@@ -266,7 +279,8 @@ public class DocumentsSynchronizeManager {
         @Override
         public void run() throws ClientException {
 
-            MonitorProvider.getMonitor().beginTask("Removing obsolete documents", 4);
+            MonitorProvider.getMonitor().beginTask(
+                    "Removing obsolete documents", 4);
             List<IdRef> refs = new ArrayList<IdRef>();
             List<IdRef> proxyRefs = new ArrayList<IdRef>();
             List<IdRef> versionRefs = new ArrayList<IdRef>();
@@ -303,39 +317,39 @@ public class DocumentsSynchronizeManager {
         }
     }
 
-    
-        protected static class MoveDocumentsUnrestricted extends
-                UnrestrictedSessionRunner {
-    
-            List<NuxeoSynchroTuple> movedTuples;
-    
-            public MoveDocumentsUnrestricted(CoreSession session,
-                    List<NuxeoSynchroTuple> tuples) {
-                super(session);
-                movedTuples = tuples;
-            }
-    
-            @Override
-            public void run() throws ClientException {
-                MonitorProvider.getMonitor().beginTask("Moving documents", movedTuples.size());
-                for (NuxeoSynchroTuple tuple : movedTuples) {
-                    DocumentModel localDocument = session.getDocument(new IdRef(tuple.getAdaptedId()));
-                    if (localDocument.isVersion()) {
-                        continue;
-                    }
-                    Path tuplePath = new Path(tuple.getPath());
-                    String documentName = tuplePath.lastSegment();
-                    Path parentPath = tuplePath.removeLastSegments(1);
-                    session.move(localDocument.getRef(), new PathRef(parentPath.toString()), documentName);
-                    
-                    MonitorProvider.getMonitor().worked(1);
-                }
-    
-            }
+    protected static class MoveDocumentsUnrestricted extends
+            UnrestrictedSessionRunner {
+
+        List<NuxeoSynchroTuple> movedTuples;
+
+        public MoveDocumentsUnrestricted(CoreSession session,
+                List<NuxeoSynchroTuple> tuples) {
+            super(session);
+            movedTuples = tuples;
         }
-    
-    
-    
+
+        @Override
+        public void run() throws ClientException {
+            MonitorProvider.getMonitor().beginTask("Moving documents",
+                    movedTuples.size());
+            for (NuxeoSynchroTuple tuple : movedTuples) {
+                DocumentModel localDocument = session.getDocument(new IdRef(
+                        tuple.getAdaptedId()));
+                if (localDocument.isVersion()) {
+                    continue;
+                }
+                Path tuplePath = new Path(tuple.getPath());
+                String documentName = tuplePath.lastSegment();
+                Path parentPath = tuplePath.removeLastSegments(1);
+                session.move(localDocument.getRef(),
+                        new PathRef(parentPath.toString()), documentName);
+
+                MonitorProvider.getMonitor().worked(1);
+            }
+
+        }
+    }
+
     /**
      * The unrestricted runner for running a query.
      *
@@ -363,15 +377,16 @@ public class DocumentsSynchronizeManager {
         }
 
     }
-    
+
     public void checkSynchronizeStatus() throws SynchronizationException {
         if (MonitorProvider.getMonitor().isCanceled()) {
-            throw new SynchronizationException("Synchronization canceled by user");
+            throw new SynchronizationException(
+                    "Synchronization canceled by user");
         }
     }
 
-    
-    private void SetPrivateAdressUriFromEndPointReference(W3CEndpointReference ref, String value) {
+    private void SetPrivateAdressUriFromEndPointReference(
+            W3CEndpointReference ref, String value) {
         if (ref == null) {
             return;
         }
@@ -406,7 +421,7 @@ public class DocumentsSynchronizeManager {
         }
         return refs;
     }
-    
+
     protected List<DocumentRef> doExtractIdRefs(List<String> ids) {
         List<DocumentRef> refs = new ArrayList<DocumentRef>();
         for (String id:deletedIds) {
@@ -420,5 +435,5 @@ public class DocumentsSynchronizeManager {
         }
         return refs;
     }
-    
+
 }

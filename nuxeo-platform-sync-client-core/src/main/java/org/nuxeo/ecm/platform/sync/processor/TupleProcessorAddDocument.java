@@ -28,8 +28,9 @@ import org.nuxeo.ecm.platform.sync.utils.ImportUtils;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 
 /**
- * Implementing class for processing a tuple. It adds a new normal document. The documents
- * are imported by the CoreSession using the contextual data provided by the server.
+ * Implementing class for processing a tuple. It adds a new normal document. The
+ * documents are imported by the CoreSession using the contextual data provided
+ * by the server.
  *
  * @author rux
  *
