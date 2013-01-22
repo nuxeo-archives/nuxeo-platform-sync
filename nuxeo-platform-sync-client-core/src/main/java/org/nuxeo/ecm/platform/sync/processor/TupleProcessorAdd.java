@@ -19,6 +19,7 @@ package org.nuxeo.ecm.platform.sync.processor;
 
 import java.util.Collections;
 
+import org.apache.log4j.Logger;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -35,6 +36,8 @@ import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
  *
  */
 public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
+
+    private static final Logger log = Logger.getLogger(TupleProcessorAdd.class);
 
     protected String propertyValue;
 
@@ -71,13 +74,14 @@ public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
             try {
                 if (documentModel.getId() != null
                         && session.exists(new IdRef(documentModel.getId()))) {
-                    System.out.println(documentModel.getName()
-                            + " already exists");
+                    log.error("Doc " + documentModel.getId()
+                            + " already exists, not importing it");
                 } else {
+                    log.debug("Importing doc " + documentModel.getId());
                     session.importDocuments(Collections.singletonList(documentModel));
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                log.error(e.getMessage());
             }
             session.save();
         }

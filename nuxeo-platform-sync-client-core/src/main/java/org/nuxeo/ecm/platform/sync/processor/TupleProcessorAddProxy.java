@@ -44,12 +44,14 @@ public class TupleProcessorAddProxy extends TupleProcessorAdd {
 
     @Override
     public void process() throws ClientException {
-        log.debug("Starting the process of adding proxy on the client side: " + name);
+        log.debug("Starting the process of adding proxy " + tuple.getClientId()
+                + " on the client side: " + name);
         // in case there is a proxy, the document model will have the type
         // ecm:proxy
         localDocument = new DocumentModelImpl((String) null,
-                CoreSession.IMPORT_PROXY_TYPE, tuple.getClientId(), new Path(name),
-                null, null, new PathRef(parentPath), null, null, null, null);
+                CoreSession.IMPORT_PROXY_TYPE, tuple.getClientId(), new Path(
+                        name), null, null, new PathRef(parentPath), null, null,
+                null, null);
         localDocument.putContextData(CoreSession.IMPORT_PROXY_TARGET_ID,
                 ImportUtils.getContextDataInfo(contextData,
                         CoreSession.IMPORT_PROXY_TARGET_ID));
@@ -58,7 +60,8 @@ public class TupleProcessorAddProxy extends TupleProcessorAdd {
                         CoreSession.IMPORT_PROXY_VERSIONABLE_ID));
 
         runUnrestrictedImport();
-        //no need to add properties too
-        log.debug("Finishing the process of adding on the client side: " + name);
+        // no need to add properties too
+        log.debug("Finishing the process of adding proxy "
+                + tuple.getClientId() + " on the client side: " + name);
     }
 }
