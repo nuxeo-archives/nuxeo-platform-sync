@@ -48,16 +48,28 @@ public class DefaultDocumentDifferencesPolicy implements
                     // yyyy-MM-dd'T'HH:mm:ssz used when dates properties are set
                     // on a document when listeners are disabled
                     if (modificationDate == null) {
+                        // https://jira.nuxeo.com/browse/NXP-10828
+                        // In the case of a live document, update it.
+                        // In the case of a version, since update is not
+                        // implemented (should not be), delete/add it.
+                        // Do the same for a proxy, since a version cannot be
+                        // deleted if it has a proxy.
                         log.debug("Doc "
                                 + doc.getId()
                                 + " ("
                                 + (doc.isProxy() ? "proxy"
                                         : (doc.isVersion() ? "version" : "live"))
                                 + ") has no modification date (problem at last import) => delete then add it back");
+                        if (doc.isVersion() || doc.isProxy()) {
+                            remove = true;
+                            addedTuples.add(tuple);
+                        } else {
+                            tuple.setClientId(doc.getId());
+                            modifiedTuples.add(tuple);
+                        }
                     } else if (tuple.getLastModification() == 0) {
                         log.debug("Doc "
                                 + tuple.getClientId()
-                        log.debug(tuple.getClientId()
                                 + " is skipped because it is a version without read access - got from a proxy");
                     } else if (modificationDate.getTimeInMillis() / 1000 != (long) tuple.getLastModification() / 1000
                             || !doc.getCurrentLifeCycleState().equals(
