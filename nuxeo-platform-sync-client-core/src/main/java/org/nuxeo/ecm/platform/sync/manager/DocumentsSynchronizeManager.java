@@ -32,6 +32,7 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
@@ -278,7 +279,7 @@ public class DocumentsSynchronizeManager {
                     "Removing obsolete documents", 4);
             List<IdRef> refs = new ArrayList<IdRef>();
             List<IdRef> proxyRefs = new ArrayList<IdRef>();
-            List<IdRef> versionRefs = new ArrayList<IdRef>();
+            List<DocumentModel> versionDocs = new ArrayList<DocumentModel>();
             for (String id : deletedIds) {
                 IdRef docRef = new IdRef(id);
                 DocumentModel model = session.getDocument(docRef);
@@ -286,28 +287,73 @@ public class DocumentsSynchronizeManager {
                     // versions need to be removed after proxies
                     proxyRefs.add(docRef);
                 } else if (model.isVersion()) {
-                    if (session.getProxies(docRef, null).size() == 0
-                            && model.getPath() != null) {
-                        versionRefs.add(docRef);
-                    }
+                    versionDocs.add(model);
                 } else {
                     refs.add(docRef);
                 }
             }
             MonitorProvider.getMonitor().worked(1);
 
+            // Remove proxies
+            // Cannot use CoreSession#removeDocuments(DocumentRef[] docRefs)
+            // because in case of failure on one proxy removal, all remaining
+            // proxies to delete would not be removed. This is a problem for
+            // versions to delete that need their proxies to be deleted first
+            for (IdRef idRef : proxyRefs) {
+                try {
+                    log.debug("Removing proxy: " + idRef);
+                    session.removeDocument(idRef);
+                } catch (ClientException e) {
+                    log.error(e);
+                }
+            }
+            session.save();
+            MonitorProvider.getMonitor().worked(1);
+
+            // Remove versions
+            List<DocumentRef> versionWithParentRefs = new ArrayList<DocumentRef>();
+            for (DocumentModel doc : versionDocs) {
+                DocumentRef docRef = doc.getRef();
+                if (session.getProxies(docRef, null).size() == 0) {
+                    if (doc.getPath() != null) {
+                        versionWithParentRefs.add(docRef);
+                    } else {
+                        try {
+                            log.debug("Removing version: " + doc.getId());
+                            session.removeDocument(docRef);
+                        } catch (ClientException e) {
+                            log.error(e);
+                        }
+                    }
+                }
+            }
             try {
-                session.removeDocuments(proxyRefs.toArray(new IdRef[0]));
+                if (log.isDebugEnabled()) {
+                    for (DocumentRef docRef : versionWithParentRefs) {
+                        log.debug("Will remove version: " + docRef);
+                    }
+                }
+                session.removeDocuments(versionWithParentRefs.toArray(new IdRef[0]));
                 session.save();
+                log.debug("Removed all versions with a non null parent path to delete.");
                 MonitorProvider.getMonitor().worked(1);
-                session.removeDocuments(versionRefs.toArray(new IdRef[0]));
-                session.save();
-                MonitorProvider.getMonitor().worked(1);
+            } catch (ClientException e) {
+                log.error(e);
+            }
+
+            // Remove live docs
+            try {
+                if (log.isDebugEnabled()) {
+                    for (IdRef idRef : refs) {
+                        log.debug("Will remove live document: " + idRef);
+                    }
+                }
                 session.removeDocuments(refs.toArray(new IdRef[0]));
                 session.save();
+                log.debug("Removed all live documents to delete.");
                 MonitorProvider.getMonitor().worked(1);
-            } catch (Exception e) {
-                log.warn(e);
+            } catch (ClientException e) {
+                log.error(e);
             }
         }
     }
