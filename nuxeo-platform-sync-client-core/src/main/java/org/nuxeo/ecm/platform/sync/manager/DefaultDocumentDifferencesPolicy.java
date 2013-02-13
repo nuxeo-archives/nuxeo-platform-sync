@@ -48,6 +48,9 @@ public class DefaultDocumentDifferencesPolicy implements
                     // yyyy-MM-dd'T'HH:mm:ssz used when dates properties are set
                     // on a document when listeners are disabled
                     if (modificationDate == null) {
+                        // Doc has a null modification date (and probably no
+                        // line at all in the dublincore table), this is
+                        // inconsistent => need to fix it.
                         // https://jira.nuxeo.com/browse/NXP-10828
                         // In the case of a live document, update it.
                         // In the case of a version, since update is not
