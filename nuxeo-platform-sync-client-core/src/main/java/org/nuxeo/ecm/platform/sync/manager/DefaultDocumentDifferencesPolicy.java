@@ -1,9 +1,11 @@
 package org.nuxeo.ecm.platform.sync.manager;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
@@ -26,6 +28,7 @@ public class DefaultDocumentDifferencesPolicy implements
         MonitorProvider.getMonitor().beginTask("Computing the differences",
                 availableDocs.size());
         addedTuples.addAll(tuples);
+        List<NuxeoSynchroTuple> versionTuplesToAdd = new ArrayList<NuxeoSynchroTuple>();
 
         boolean remove;
         for (DocumentModel doc : availableDocs) {
@@ -73,6 +76,44 @@ public class DefaultDocumentDifferencesPolicy implements
                         log.debug("Doc "
                                 + tuple.getClientId()
                                 + " is skipped because it is a version without read access - got from a proxy");
+                    } else if (doc.getCurrentLifeCycleState() == null) {
+                        // Doc has a null life cycle state, this is inconsistent
+                        // => need to fix it.
+                        // See https://jira.nuxeo.com/browse/NXP-10982
+                        // In the case of a live document, update it.
+                        // In the case of a version, since update is not
+                        // implemented (should not be), delete/add it.
+                        // Do the same for a proxy, since a version cannot be
+                        // deleted if it has a proxy.
+                        log.debug("Doc "
+                                + doc.getId()
+                                + " ("
+                                + (doc.isProxy() ? "proxy"
+                                        : (doc.isVersion() ? "version" : "live"))
+                                + ") has no life cycle state (problem at last import) => delete then add it back");
+                        if (doc.isVersion() || doc.isProxy()) {
+                            remove = true;
+                            addedTuples.add(tuple);
+                            if (doc.isProxy()) {
+                                DocumentModel version = doc.getCoreSession().getSourceDocument(
+                                        doc.getRef());
+                                log.debug("Doc "
+                                        + doc.getId()
+                                        + " is a proxy => delete then add back its target version "
+                                        + version.getId());
+                                if (!deletedIds.contains(version.getId())) {
+                                    deletedIds.add(version.getId());
+                                }
+                                NuxeoSynchroTuple versionTuple = getTuple(
+                                        tuples, version.getId());
+                                if (!versionTuplesToAdd.contains(versionTuple)) {
+                                    versionTuplesToAdd.add(versionTuple);
+                                }
+                            }
+                        } else {
+                            tuple.setClientId(doc.getId());
+                            modifiedTuples.add(tuple);
+                        }
                     } else if (modificationDate.getTimeInMillis() / 1000 != (long) tuple.getLastModification() / 1000
                             || !doc.getCurrentLifeCycleState().equals(
                                     lifecycleState)) {
@@ -91,6 +132,18 @@ public class DefaultDocumentDifferencesPolicy implements
             }
             MonitorProvider.getMonitor().worked(1);
         }
+        addedTuples.addAll(versionTuplesToAdd);
+    }
+
+    protected NuxeoSynchroTuple getTuple(List<NuxeoSynchroTuple> tuples,
+            String versionId) throws ClientException {
+        for (NuxeoSynchroTuple tuple : tuples) {
+            if (versionId.equals(tuple.getClientId())) {
+                return tuple;
+            }
+        }
+        throw new ClientException("Cannot find tuple matching version "
+                + versionId);
     }
 
 }
