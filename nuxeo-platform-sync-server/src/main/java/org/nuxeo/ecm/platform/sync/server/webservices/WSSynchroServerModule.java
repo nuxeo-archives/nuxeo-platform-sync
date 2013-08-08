@@ -26,6 +26,7 @@ import javax.xml.ws.soap.Addressing;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.annotations.FactoryType;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -51,27 +52,22 @@ import org.nuxeo.ecm.platform.sync.server.tuple.FlagedDocumentSnapshotFactory;
 import org.nuxeo.ecm.platform.sync.server.tuple.NuxeoSynchroTuple;
 import org.nuxeo.runtime.api.Framework;
 
-import com.sun.xml.ws.developer.Stateful;
-import com.sun.xml.ws.developer.StatefulWebServiceManager;
-
 /**
  * @author mcedica
  *
  */
 
-@Stateful
 @WebService
 @Addressing
+@FactoryType(FactoryType.Type.Session)
 public class WSSynchroServerModule implements StatefulWebServiceManagement {
 
     private static final Log log = LogFactory.getLog(WSSynchroServerModule.class);
 
-    public static StatefulWebServiceManager<WSSynchroServerModule> manager;
-
     private BasicSession session;
 
     public WSSynchroServerModule() {
-    };
+    }
 
     public WSSynchroServerModule(BasicSession _session) {
         session = _session;
@@ -246,7 +242,6 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
 
     public void destroySession() {
         session.disconnect();
-        manager.unexport(this);
     }
 
     public void keepAlive() {
@@ -444,10 +439,10 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
                 query = query.concat(" ORDER BY ecm:path");
             }
             return query;
-        }        
+        }
         return null;
     }
-    
+
     private String getQuery(String queryName) throws ClientException {
         // check for inline queries
         QueryModelService queryModelService = getQueryModelService();

@@ -8,4 +8,5 @@ Require-Bundle: org.nuxeo.ecm.webapp.core,
  org.nuxeo.ecm.platform.ui
 Eclipse-LazyStart: false
 Nuxeo-Component: OSGI-INF/sync-server-restAPI-contrib.xml,
-  OSGI-INF/sync-server-querymodel-components-setup.xml
+  OSGI-INF/sync-server-querymodel-components-setup.xml,
+  OSGI-INF/sync-server-ws-contrib.xml
