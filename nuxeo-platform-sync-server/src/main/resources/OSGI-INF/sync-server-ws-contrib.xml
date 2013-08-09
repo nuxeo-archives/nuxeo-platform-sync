@@ -6,10 +6,8 @@
       implementor="org.nuxeo.ecm.platform.sync.server.webservices.NuxeoWSMainEntrancePoint">
     </endpoint>
 
-    <!-- Might be useless due to on the flow creation.
     <endpoint name="WSSynchroServerModule" address="wssyncroserver"
       implementor="org.nuxeo.ecm.platform.sync.server.webservices.WSSynchroServerModule">
     </endpoint>
-    -->
   </extension>
 </component>

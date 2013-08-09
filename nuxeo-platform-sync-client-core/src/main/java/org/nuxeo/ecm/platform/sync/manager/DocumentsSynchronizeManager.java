@@ -470,13 +470,12 @@ public class DocumentsSynchronizeManager {
     protected List<DocumentRef> doExtractIdRefs(List<String> ids) {
         List<DocumentRef> refs = new ArrayList<DocumentRef>();
         for (String id:deletedIds) {
-            DocumentModel doc = null;
             try {
-                doc = session.getDocument(new IdRef(id));
+                DocumentModel doc = session.getDocument(new IdRef(id));
+                refs.add(new PathRef(doc.getPathAsString()));
             } catch (ClientException e) {
                 log.warn("Cannot get access to document " + id, e);
             }
-            refs.add(new PathRef(doc.getPathAsString()));
         }
         return refs;
     }

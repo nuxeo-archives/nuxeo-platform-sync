@@ -21,9 +21,11 @@ package org.nuxeo.ecm.platform.sync.server.webservices;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
-import javax.xml.ws.Endpoint;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 
+import org.apache.cxf.BusFactory;
+import org.apache.cxf.ws.addressing.EndpointReferenceType;
+import org.apache.cxf.wsdl.EndpointReferenceUtils;
 import org.nuxeo.ecm.platform.sync.server.exceptions.ClientAuthenticationException;
 
 /**
@@ -62,11 +64,12 @@ public class NuxeoWSMainEntrancePoint {
         session.logout();
         WSSynchroServerModule wssyncro = new WSSynchroServerModule(session);
 
-        // allows the timeout to be armed
-        Endpoint sessionEp = Endpoint.publish(
-                "wssyncroserver" + Double.toString(Math.random()), wssyncro);
+        EndpointReferenceType epId = EndpointReferenceUtils.getEndpointReferenceWithId(
+                WSSynchroServerModule.Q_NAME, "WSSynchroServerModulePort",
+                session.toString(), BusFactory.getDefaultBus());
 
-        return (W3CEndpointReference) sessionEp.getEndpointReference();
+        return new W3CEndpointReference(
+                EndpointReferenceUtils.convertToXML(epId));
     }
 
 }

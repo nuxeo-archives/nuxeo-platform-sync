@@ -19,14 +19,20 @@ package org.nuxeo.ecm.platform.sync.server.webservices;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
+import javax.annotation.Resource;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
+import javax.xml.namespace.QName;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.soap.Addressing;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.annotations.FactoryType;
+import org.apache.cxf.wsdl.EndpointReferenceUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -59,18 +65,31 @@ import org.nuxeo.runtime.api.Framework;
 
 @WebService
 @Addressing
-@FactoryType(FactoryType.Type.Session)
 public class WSSynchroServerModule implements StatefulWebServiceManagement {
+
+    public static final QName Q_NAME = new QName(
+            "http://webservices.server.sync.platform.ecm.nuxeo.org/",
+            "WSSynchroServerModuleService");
 
     private static final Log log = LogFactory.getLog(WSSynchroServerModule.class);
 
-    private BasicSession session;
+    private static Map<String, BasicSession> sessions = new WeakHashMap<>();
+
+    @Resource
+    protected WebServiceContext wsContext;
 
     public WSSynchroServerModule() {
     }
 
     public WSSynchroServerModule(BasicSession _session) {
-        session = _session;
+        sessions.put(_session.toString(), _session);
+        //session = _session;
+    }
+
+    protected BasicSession getSession() {
+        MessageContext ctx = wsContext.getMessageContext();
+        String refId = EndpointReferenceUtils.getEndpointReferenceId(ctx);
+        return sessions.get(refId);
     }
 
     @WebMethod(operationName = "getAvailableDocumentListWithQuery")
@@ -81,8 +100,8 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
         Calendar modificationDate = null;
         List<String> domainNames = new ArrayList<String>();
         try {
-            session.login();
-            CoreSession documentManager = session.getDocumentManager();
+            getSession().login();
+            CoreSession documentManager = getSession().getDocumentManager();
             // invalidate cache
             documentManager.save();
 
@@ -162,8 +181,10 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
             throw new ClientException(ce);
 
         } finally {
-            // don't forget to close the session
-            session.logout();
+            if (getSession() != null) {
+                // don't forget to close the session
+                getSession().logout();
+            }
         }
         return availableTuples.toArray(new NuxeoSynchroTuple[0]);
     }
@@ -218,15 +239,15 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
     public FlagedDocumentSnapshot getDocumentByIdWithoutBlob(String uuid) {
         FlagedDocumentSnapshot ds = null;
         try {
-            session.login();
-            CoreSession documentManager = session.getDocumentManager();
+            getSession().login();
+            CoreSession documentManager = getSession().getDocumentManager();
             DocumentModel documentModel = documentManager.getDocument(new IdRef(
                     uuid));
             ds = new FlagedDocumentSnapshotFactory().newDocumentSnapshot(documentModel);
         } catch (ClientException e) {
             log.error(e);
             DocumentSourceUnrestricted usr = new DocumentSourceUnrestricted(
-                    session.getDocumentManager(), new IdRef(uuid));
+                    getSession().getDocumentManager(), new IdRef(uuid));
             try {
                 usr.runUnrestricted();
                 ds = usr.documentSnapshot;
@@ -235,13 +256,17 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
             }
 
         } finally {
-            session.logout();
+            getSession().logout();
         }
         return ds;
     }
 
     public void destroySession() {
-        session.disconnect();
+        BasicSession session = getSession();
+        if (session != null) {
+            sessions.remove(session);
+            session.disconnect();
+        }
     }
 
     public void keepAlive() {

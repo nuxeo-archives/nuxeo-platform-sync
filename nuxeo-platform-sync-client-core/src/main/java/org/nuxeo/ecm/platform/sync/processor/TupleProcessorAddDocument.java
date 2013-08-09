@@ -66,7 +66,7 @@ public class TupleProcessorAddDocument extends TupleProcessorAdd {
             localDocument.putContextData(CoreSession.IMPORT_LOCK_OWNER,
                     propertyValue);
             String createdString = ImportUtils.getContextDataInfo(contextData,
-                    CoreSession.IMPORT_LOCK_OWNER);
+                    CoreSession.IMPORT_LOCK_CREATED);
             localDocument.putContextData(
                     CoreSession.IMPORT_LOCK_CREATED,
                     ISODateTimeFormat.dateTimeParser().parseDateTime(
