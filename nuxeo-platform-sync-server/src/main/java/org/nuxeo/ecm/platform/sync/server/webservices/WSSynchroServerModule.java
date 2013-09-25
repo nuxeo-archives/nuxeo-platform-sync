@@ -49,8 +49,8 @@ import org.nuxeo.ecm.core.api.facet.VersioningDocument;
 import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.ecm.core.api.security.SecurityConstants;
 import org.nuxeo.ecm.core.schema.types.primitives.DateType;
-import org.nuxeo.ecm.core.search.api.client.querymodel.QueryModelService;
-import org.nuxeo.ecm.core.search.api.client.querymodel.descriptor.QueryModelDescriptor;
+import org.nuxeo.ecm.platform.query.api.PageProviderDefinition;
+import org.nuxeo.ecm.platform.query.api.PageProviderService;
 import org.nuxeo.ecm.platform.sync.adapter.SynchronizableDocument;
 import org.nuxeo.ecm.platform.sync.server.tuple.ContextDataInfo;
 import org.nuxeo.ecm.platform.sync.server.tuple.FlagedDocumentSnapshot;
@@ -60,7 +60,6 @@ import org.nuxeo.runtime.api.Framework;
 
 /**
  * @author mcedica
- *
  */
 
 @WebService
@@ -456,11 +455,6 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
         return new ContextDataInfo(dataName, dataValue);
     }
 
-    private QueryModelService getQueryModelService() {
-        return (QueryModelService) Framework.getRuntime().getComponent(
-                 QueryModelService.NAME);
-     }
-
     private String getInlinedQuery(String query) {
         final String upperCase = query.toUpperCase();
         if (upperCase.startsWith("SELECT *")) {
@@ -473,15 +467,13 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
     }
 
     private String getQuery(String queryName) throws ClientException {
-        // check for inline queries
-        QueryModelService queryModelService = getQueryModelService();
-        if (queryModelService == null) {
-            throw new ClientException("Unable to get queryModelService");
+        PageProviderService ppService = Framework.getLocalService(PageProviderService.class);
+        if (ppService == null) {
+            throw new ClientException("Unable to get PageProviderService");
         }
-
-        QueryModelDescriptor qm = queryModelService.getQueryModelDescriptor(queryName);
-        if (qm != null) {
-            return qm.getQuery(new Object[0]);
+        PageProviderDefinition def = ppService.getPageProviderDefinition(queryName);
+        if (def != null) {
+            return def.getPattern();
         }
         return null;
     }
