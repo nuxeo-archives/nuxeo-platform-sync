@@ -23,9 +23,9 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.ClientRuntimeException;
+import org.nuxeo.ecm.core.api.CoreInstance;
 import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.repository.Repository;
-import org.nuxeo.ecm.core.api.repository.RepositoryManager;
 import org.nuxeo.runtime.api.Framework;
 
 /**
@@ -33,37 +33,22 @@ import org.nuxeo.runtime.api.Framework;
  */
 public class BasicSession {
 
-    private CoreSession documentManager;
+    private CoreSession coreSession;
     //can be null if the JAAS context is suposedly established by the Nuxeo filters
     private LoginContext loginCtx;
-    private Repository repository;
 
-    public CoreSession getDocumentManager() {
-        return documentManager;
+    public CoreSession getCoreSession() {
+        return coreSession;
     }
 
-    public LoginContext getLoginCtx() {
-        return loginCtx;
-    }
-
-    public BasicSession(CoreSession docMgr, LoginContext loginCtx,
-            Repository repo) {
-        this.documentManager = docMgr;
+    public BasicSession(CoreSession docMgr, LoginContext loginCtx) {
+        this.coreSession = docMgr;
         this.loginCtx = loginCtx;
-        this.repository = repo;
-    }
-
-    public Repository getRepository() {
-        return repository;
     }
 
     public void login() throws ClientException {
         try {
-            if (loginCtx != null) {
-                loginCtx.login();
-            } else {
-                //TODO I should check if JAAS context established... How?
-            }
+            loginCtx.login();
         } catch (LoginException e) {
             throw new ClientException(e);
         }
@@ -72,75 +57,36 @@ public class BasicSession {
 
     public void logout() {
         try {
-            if (loginCtx != null) {
-                loginCtx.logout();
-            }
+            loginCtx.logout();
         } catch (LoginException e) {
-//            throw new ClientAuthenticationException(e);
+            throw new ClientRuntimeException(e);
         }
     }
 
     public void disconnect() {
-        try {
-            Repository.close(documentManager);
-            logout();
-        } catch (Exception e) {
-//          throw new ClientAuthenticationException(e);
-        }
-
-    }
-    
-    public static BasicSession getInstanceAsSuperUser(String repository) 
-            throws ClientException {
-        LoginContext loginContext = null;
-        CoreSession session = null;
-        RepositoryManager manager = null;
-        Repository repo = null;
-        try {
-            loginContext = Framework.login();
-            manager = Framework.getService(RepositoryManager.class);
-            repo = manager.getRepository(repository);
-            session = repo.open();
-        } catch (Exception e) {
-            if (session != null) {
-                Repository.close(session);
-            }
-            try {
-                if (loginContext != null) {
-                    loginContext.logout();
-                }
-            } catch (LoginException le) {
-                //not interested
-            }
-            throw new ClientException(e);
-        }
-        return new BasicSession(session, loginContext, repo);
+        coreSession.close();
+        logout();
     }
 
-    public static BasicSession getInstanceAsUser(String repository, 
+    public static BasicSession getInstanceAsUser(String repositoryName,
             String userName, String password) throws ClientException {
         LoginContext loginContext = null;
         CoreSession session = null;
-        RepositoryManager manager = null;
-        Repository repo = null;
         try {
             loginContext = Framework.login(userName, password);
-            manager = Framework.getService(RepositoryManager.class);
-            repo = manager.getRepository(repository);
-            session = repo.open();
-        } catch (Exception e) {
-            if (session != null) {
-                Repository.close(session);
-            }
+        } catch (LoginException e) {
+            throw new ClientException(e);
+        }
+        try {
+            session = CoreInstance.openCoreSession(repositoryName);
+        } catch (ClientException e) {
             try {
-                if (loginContext != null) {
-                    loginContext.logout();
-                }
+                loginContext.logout();
             } catch (LoginException le) {
                 //not interested
             }
             throw new ClientException(e);
         }
-        return new BasicSession(session, loginContext, repo);
+        return new BasicSession(session, loginContext);
     }
 }

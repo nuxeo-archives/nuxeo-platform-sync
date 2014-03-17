@@ -100,7 +100,7 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
         List<String> domainNames = new ArrayList<String>();
         try {
             getSession().login();
-            CoreSession documentManager = getSession().getDocumentManager();
+            CoreSession documentManager = getSession().getCoreSession();
             // invalidate cache
             documentManager.save();
 
@@ -238,14 +238,14 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
         FlagedDocumentSnapshot ds = null;
         try {
             getSession().login();
-            CoreSession documentManager = getSession().getDocumentManager();
+            CoreSession documentManager = getSession().getCoreSession();
             DocumentModel documentModel = documentManager.getDocument(new IdRef(
                     uuid));
             ds = new FlagedDocumentSnapshotFactory().newDocumentSnapshot(documentModel);
         } catch (ClientException e) {
             log.error(e);
             DocumentSourceUnrestricted usr = new DocumentSourceUnrestricted(
-                    getSession().getDocumentManager(), new IdRef(uuid));
+                    getSession().getCoreSession(), new IdRef(uuid));
             try {
                 usr.runUnrestricted();
                 ds = usr.documentSnapshot;
