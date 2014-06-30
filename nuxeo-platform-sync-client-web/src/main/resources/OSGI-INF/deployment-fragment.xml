@@ -36,12 +36,16 @@
       <include>OSGI-INF/l10n/**</include>
     </unzip>
 
-    <append from="nxsync.tmp/OSGI-INF/l10n/messages.properties"
+    <append from="nxsync.tmp/OSGI-INF/l10n/messages_en_US.properties"
         to="nuxeo.war/WEB-INF/classes/messages.properties"
         addNewLine="true"/>
     <append
-        from="nxsync.tmp/OSGI-INF/l10n/messages_en.properties"
+        from="nxsync.tmp/OSGI-INF/l10n/messages_en_US.properties"
         to="nuxeo.war/WEB-INF/classes/messages_en.properties"
+        addNewLine="true"/>
+    <append
+        from="nxsync.tmp/OSGI-INF/l10n/messages_en_US.properties"
+        to="nuxeo.war/WEB-INF/classes/messages_en_US.properties"
         addNewLine="true"/>
     <append
         from="nxsync.tmp/OSGI-INF/l10n/messages_fr_FR.properties"
