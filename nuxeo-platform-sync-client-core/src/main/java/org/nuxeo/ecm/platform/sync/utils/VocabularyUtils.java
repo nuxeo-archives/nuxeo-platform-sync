@@ -88,7 +88,6 @@ public class VocabularyUtils {
                 } else {
                     vocabulary.deleteEntry(selectedVocabularyEntry.getId());
                 }
-                vocabulary.commit();
             }
         } catch (Exception e) {
             log.error("Unable to delete entry vocabulary", e);
@@ -110,7 +109,6 @@ public class VocabularyUtils {
             vocabulary = openVocabulary(vocabularyName);
             if (vocabulary != null) {
                 vocabulary.createEntry(entry);
-                vocabulary.commit();
             }
         } catch (Exception e) {
             log.error("Unable to insert entry into vocabulary", e);
@@ -134,7 +132,6 @@ public class VocabularyUtils {
                 for (DocumentModel entry : vocabulary.getEntries()) {
                     vocabulary.deleteEntry(entry.getId());
                 }
-                vocabulary.commit();
             }
         } finally {
             if (vocabulary != null) {
