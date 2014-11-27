@@ -39,7 +39,7 @@ public class SynchronizableDocumentManagerComponent extends DefaultComponent imp
 
     @Override
     public void registerContribution(Object contribution, String extensionPoint,
-            ComponentInstance contributor) throws Exception {
+            ComponentInstance contributor) {
         if ("synchronizableDocument".equals(extensionPoint)) {
             SynchronizableDocumentFactoryDescriptor desc = (SynchronizableDocumentFactoryDescriptor) contribution;
             if (desc.isEnabled()) {

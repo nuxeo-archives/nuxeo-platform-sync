@@ -15,6 +15,7 @@
 
 package org.nuxeo.ecm.platform.sync.client;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ import org.nuxeo.runtime.model.DefaultComponent;
 
 /**
  * The Synchronize Service implementation.
- * 
+ *
  * @author rux
  */
 public class SynchronizeServiceImpl extends DefaultComponent implements
@@ -70,8 +71,7 @@ public class SynchronizeServiceImpl extends DefaultComponent implements
 
     @Override
     public void registerContribution(Object contribution,
-            String extensionPoint, ComponentInstance contributor)
-            throws Exception {
+            String extensionPoint, ComponentInstance contributor) {
         if (IMPORT_CONFIGURATION_EP.equals(extensionPoint)) {
             importConfiguration = (ImportConfiguration) contribution;
         } else if (DISABLE_READ_SP_EP.equals(extensionPoint)) {
@@ -83,14 +83,17 @@ public class SynchronizeServiceImpl extends DefaultComponent implements
                     desc.getHost(), desc.getPort(), desc.getContextPath());
         } else if (DOCUMENT_DIFFERENCES_POLICY_EP.equals(extensionPoint)) {
             DocumentDifferencesPolicyDescriptor desc = (DocumentDifferencesPolicyDescriptor) contribution;
-            diffPolicy =
-                    desc.getPolicyClass().newInstance();
+            try {
+                diffPolicy = desc.getPolicyClass().newInstance();
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     @Override
     public SynchronizeReport synchronizeDocuments(CoreSession session,
-            SynchronizeDetails details, String queryName) throws Exception {
+            SynchronizeDetails details, String queryName) {
         if (details == null) {
             throw new IllegalArgumentException(
                     "Cannot synchronize without synchronization details");
@@ -103,11 +106,20 @@ public class SynchronizeServiceImpl extends DefaultComponent implements
 
         String baseSpec = details.getUrl();
 
-        URL url = new URL(baseUrl, baseSpec + "/webservices/wssyncroentry?wsdl");
+        URL url;
+        try {
+            url = new URL(baseUrl, baseSpec + "/webservices/wssyncroentry?wsdl");
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
         NuxeoWSMainEntrancePointService.NUXEOWSMAINENTRANCEPOINTSERVICE_WSDL_LOCATION = url;
 
         baseUrl = WSSynchroServerModuleService.class.getResource(".");
-        url = new URL(baseUrl, baseSpec + "/webservices/wssyncroserver?wsdl");
+        try {
+            url = new URL(baseUrl, baseSpec + "/webservices/wssyncroserver?wsdl");
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
         WSSynchroServerModuleService.WSSYNCHROSERVERMODULESERVICE_WSDL_LOCATION = url;
         if (getUserManager().getPrincipal(details.getUsername()) == null) {
             log.debug("In case user does not exists on the local machine, then register it...");
@@ -161,13 +173,13 @@ public class SynchronizeServiceImpl extends DefaultComponent implements
 
     @Override
     public SynchronizeReport synchronize(CoreSession session, SynchronizeDetails details,
-            String queryName) throws Exception {
+            String queryName) {
         return synchronizeDocuments(session, details, queryName).merge(
                 synchronizeRelations(details)).merge(
                 synchronizeVocabularies(details));
     }
 
-    protected UserManager getUserManager() throws Exception {
+    protected UserManager getUserManager() {
         if (userManager == null) {
             userManager = Framework.getLocalService(UserManager.class);
         }
