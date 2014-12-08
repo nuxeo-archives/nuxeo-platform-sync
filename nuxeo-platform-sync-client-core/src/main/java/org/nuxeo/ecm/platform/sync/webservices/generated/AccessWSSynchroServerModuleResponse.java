@@ -1,4 +1,3 @@
-
 package org.nuxeo.ecm.platform.sync.webservices.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -7,11 +6,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 
-
 /**
- * <p>Java class for accessWSSynchroServerModuleResponse complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for accessWSSynchroServerModuleResponse complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="accessWSSynchroServerModuleResponse">
@@ -24,13 +23,9 @@ import javax.xml.ws.wsaddressing.W3CEndpointReference;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "accessWSSynchroServerModuleResponse", propOrder = {
-    "_return"
-})
+@XmlType(name = "accessWSSynchroServerModuleResponse", propOrder = { "_return" })
 public class AccessWSSynchroServerModuleResponse {
 
     @XmlElement(name = "return")
@@ -39,10 +34,7 @@ public class AccessWSSynchroServerModuleResponse {
     /**
      * Gets the value of the return property.
      * 
-     * @return
-     *     possible object is
-     *     {@link W3CEndpointReference }
-     *     
+     * @return possible object is {@link W3CEndpointReference }
      */
     public W3CEndpointReference getReturn() {
         return _return;
@@ -51,10 +43,7 @@ public class AccessWSSynchroServerModuleResponse {
     /**
      * Sets the value of the return property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link W3CEndpointReference }
-     *     
+     * @param value allowed object is {@link W3CEndpointReference }
      */
     public void setReturn(W3CEndpointReference value) {
         this._return = value;

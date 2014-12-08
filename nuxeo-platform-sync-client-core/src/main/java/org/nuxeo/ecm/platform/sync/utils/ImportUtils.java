@@ -31,7 +31,6 @@ import org.nuxeo.ecm.platform.sync.webservices.generated.ContextDataInfo;
  * Utility class used to provide functionality in the process of import.
  *
  * @author rux
- *
  */
 public class ImportUtils {
 
@@ -46,18 +45,14 @@ public class ImportUtils {
     public static final String DELETED_LIFECYCLE_STATE = "deleted";
 
     /**
-     * Utility method used to return a context data information.Usually this
-     * context data information is used in the process of import.
+     * Utility method used to return a context data information.Usually this context data information is used in the
+     * process of import.
      *
-     * @param contextDatas - the list with all the context data information that
-     *            a document has
-     * @param dataName - the name of the data context information that needs to
-     *            be retrieved
-     * @return the value of the context data information that needs to be
-     *         retrieved
+     * @param contextDatas - the list with all the context data information that a document has
+     * @param dataName - the name of the data context information that needs to be retrieved
+     * @return the value of the context data information that needs to be retrieved
      */
-    public static String getContextDataInfo(List<ContextDataInfo> contextDatas,
-            String dataName) {
+    public static String getContextDataInfo(List<ContextDataInfo> contextDatas, String dataName) {
         String dataValue = null;
         for (ContextDataInfo contextDataInfo : contextDatas) {
             if (contextDataInfo.getDataName().equals(dataName)) {
@@ -98,16 +93,15 @@ public class ImportUtils {
     }
 
     /**
-     * Returns the list of transition names to follow to go from one particular
-     * state to another.
+     * Returns the list of transition names to follow to go from one particular state to another.
      *
      * @param lifeCycle - the lifecycle
      * @param origState - the origin state
      * @param destState - the destination state
      * @return the list of transition names
      */
-    public static List<String> getLifeCycleTransitions(LifeCycle lifeCycle,
-            String origState, String destState) throws LifeCycleException {
+    public static List<String> getLifeCycleTransitions(LifeCycle lifeCycle, String origState, String destState)
+            throws LifeCycleException {
         List<String> path = new ArrayList<String>();
         LinkedList<List<String>> paths = new LinkedList<List<String>>();
         paths.add(path);

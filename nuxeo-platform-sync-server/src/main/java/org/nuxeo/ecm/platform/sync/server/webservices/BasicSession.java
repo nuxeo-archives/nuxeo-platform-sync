@@ -34,7 +34,8 @@ import org.nuxeo.runtime.api.Framework;
 public class BasicSession {
 
     private CoreSession coreSession;
-    //can be null if the JAAS context is suposedly established by the Nuxeo filters
+
+    // can be null if the JAAS context is suposedly established by the Nuxeo filters
     private LoginContext loginCtx;
 
     public CoreSession getCoreSession() {
@@ -68,8 +69,8 @@ public class BasicSession {
         logout();
     }
 
-    public static BasicSession getInstanceAsUser(String repositoryName,
-            String userName, String password) throws ClientException {
+    public static BasicSession getInstanceAsUser(String repositoryName, String userName, String password)
+            throws ClientException {
         LoginContext loginContext = null;
         CoreSession session = null;
         try {
@@ -83,7 +84,7 @@ public class BasicSession {
             try {
                 loginContext.logout();
             } catch (LoginException le) {
-                //not interested
+                // not interested
             }
             throw new ClientException(e);
         }

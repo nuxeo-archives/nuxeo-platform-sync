@@ -28,16 +28,15 @@ import org.nuxeo.ecm.webengine.model.WebObject;
 
 /**
  * @author "Stephane Lacoin (aka matic) slacoin@nuxeo.com"
- *
  */
-@WebObject(type="Rels")
+@WebObject(type = "Rels")
 public class SyncRels extends SyncOp {
-    
+
     @GET
     public Object doGet() throws MalformedURLException, ClientException {
         return run();
     }
-    
+
     @POST
     public Object doPost() throws MalformedURLException, ClientException {
         return run();

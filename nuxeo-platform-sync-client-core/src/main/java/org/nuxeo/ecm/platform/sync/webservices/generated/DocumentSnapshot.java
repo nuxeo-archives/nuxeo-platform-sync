@@ -1,4 +1,3 @@
-
 package org.nuxeo.ecm.platform.sync.webservices.generated;
 
 import java.util.ArrayList;
@@ -9,11 +8,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for documentSnapshot complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for documentSnapshot complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="documentSnapshot">
@@ -29,50 +28,37 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "documentSnapshot", propOrder = {
-    "acl",
-    "blobProperties",
-    "noBlobProperties",
-    "pathAsString"
-})
-@XmlSeeAlso({
-    FlagedDocumentSnapshot.class
-})
+@XmlType(name = "documentSnapshot", propOrder = { "acl", "blobProperties", "noBlobProperties", "pathAsString" })
+@XmlSeeAlso({ FlagedDocumentSnapshot.class })
 public class DocumentSnapshot {
 
     @XmlElement(nillable = true)
     protected List<WsACE> acl;
+
     @XmlElement(nillable = true)
     protected List<DocumentBlob> blobProperties;
+
     @XmlElement(nillable = true)
     protected List<DocumentProperty> noBlobProperties;
+
     protected String pathAsString;
 
     /**
      * Gets the value of the acl property.
-     * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the acl property.
-     * 
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+     * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+     * the acl property.
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getAcl().add(newItem);
+     * getAcl().add(newItem);
      * </pre>
-     * 
-     * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link WsACE }
-     * 
-     * 
+     * Objects of the following type(s) are allowed in the list {@link WsACE }
      */
     public List<WsACE> getAcl() {
         if (acl == null) {
@@ -83,25 +69,18 @@ public class DocumentSnapshot {
 
     /**
      * Gets the value of the blobProperties property.
-     * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the blobProperties property.
-     * 
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+     * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+     * the blobProperties property.
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getBlobProperties().add(newItem);
+     * getBlobProperties().add(newItem);
      * </pre>
-     * 
-     * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link DocumentBlob }
-     * 
-     * 
+     * Objects of the following type(s) are allowed in the list {@link DocumentBlob }
      */
     public List<DocumentBlob> getBlobProperties() {
         if (blobProperties == null) {
@@ -112,25 +91,18 @@ public class DocumentSnapshot {
 
     /**
      * Gets the value of the noBlobProperties property.
-     * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the noBlobProperties property.
-     * 
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+     * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+     * the noBlobProperties property.
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getNoBlobProperties().add(newItem);
+     * getNoBlobProperties().add(newItem);
      * </pre>
-     * 
-     * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link DocumentProperty }
-     * 
-     * 
+     * Objects of the following type(s) are allowed in the list {@link DocumentProperty }
      */
     public List<DocumentProperty> getNoBlobProperties() {
         if (noBlobProperties == null) {
@@ -142,10 +114,7 @@ public class DocumentSnapshot {
     /**
      * Gets the value of the pathAsString property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getPathAsString() {
         return pathAsString;
@@ -154,10 +123,7 @@ public class DocumentSnapshot {
     /**
      * Sets the value of the pathAsString property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setPathAsString(String value) {
         this.pathAsString = value;

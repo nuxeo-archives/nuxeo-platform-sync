@@ -53,52 +53,53 @@ import org.nuxeo.runtime.api.Framework;
 @Produces("text/html;charset=UTF-8")
 @WebObject(type = "Root", administrator = Access.GRANT)
 public class SyncRoot extends ModuleRoot {
-    
-    protected SynchronizeService service = 
-            Framework.getLocalService(SynchronizeService.class);
-    
-    protected SynchronizeDetails defaultDetails =
-            service.getDefaultDetails();
-    
+
+    protected SynchronizeService service = Framework.getLocalService(SynchronizeService.class);
+
+    protected SynchronizeDetails defaultDetails = service.getDefaultDetails();
+
     protected URI defaultLocation() {
-         try {
-            return new URI(defaultDetails.getProtocol(), defaultDetails.getUsername() + ":" + defaultDetails.getPassword(), defaultDetails.getHost(), defaultDetails.getPort(), defaultDetails.getContextPath(), null, null);
+        try {
+            return new URI(defaultDetails.getProtocol(), defaultDetails.getUsername() + ":"
+                    + defaultDetails.getPassword(), defaultDetails.getHost(), defaultDetails.getPort(),
+                    defaultDetails.getContextPath(), null, null);
         } catch (Exception e) {
             throw WebException.wrap("Cannot get default server location", e);
         }
     }
-    
+
     protected URI location = defaultLocation();
-    
+
     public URI getLocation() {
         return location;
     }
-    
+
     @Path("{host}")
-    public Object navigateHost(@PathParam("host")String host) {
+    public Object navigateHost(@PathParam("host") String host) {
         return newObject("Host", host);
     }
-    
+
     @POST
     @Path("synchronize")
     @Deprecated
     public String synchronize(@FormParam("query") String query) throws Exception {
         throw new WebException(Status.BAD_REQUEST);
     }
-    
+
     @GET
     public Object doGet() {
         return getView("index");
     }
-    
+
     @POST
-    public Object doPost(@FormParam("host") String host, @Context UriInfo info) throws MalformedURLException, URISyntaxException {
-        this.location = new URI("http","Administrator:Administrator", host, 8080, "/nuxeo", null, null);
+    public Object doPost(@FormParam("host") String host, @Context UriInfo info) throws MalformedURLException,
+            URISyntaxException {
+        this.location = new URI("http", "Administrator:Administrator", host, 8080, "/nuxeo", null, null);
         final UriBuilder builder = info.getRequestUriBuilder().segment(host).matrixParam("location", location);
         final URI hostLocation = builder.build();
         return redirect(hostLocation.toString());
     }
-    
+
     public SynchronizeService getService() {
         return service;
     }
@@ -108,7 +109,6 @@ public class SyncRoot extends ModuleRoot {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         e.printStackTrace(new PrintStream(os));
         Template template = getView("error").arg("error", e).arg("stack", new String(os.toByteArray()));
-        return
-            Response.status(500).type(MediaType.TEXT_HTML).entity(template).build();
+        return Response.status(500).type(MediaType.TEXT_HTML).entity(template).build();
     }
 }

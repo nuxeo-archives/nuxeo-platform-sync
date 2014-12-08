@@ -27,27 +27,25 @@ import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
  * Implementing class for processing a tuple. It updates a normal document.
  *
  * @author rux
- *
  */
 public class TupleProcessorUpdateDocument extends TupleProcessorUpdate {
 
     private static final Logger log = Logger.getLogger(TupleProcessorUpdateDocument.class);
 
-    public TupleProcessorUpdateDocument(CoreSession session,
-            NuxeoSynchroTuple tuple) {
+    public TupleProcessorUpdateDocument(CoreSession session, NuxeoSynchroTuple tuple) {
         super(session, tuple);
     }
 
     @Override
     public void process() throws ClientException {
-        log.debug("Starting the process of updating live document "
-                + tuple.getClientId() + " on the client side: " + name);
+        log.debug("Starting the process of updating live document " + tuple.getClientId() + " on the client side: "
+                + name);
         localDocument = session.getDocument(new IdRef(tuple.getClientId()));
         setProperties();
         setACE();
         updateDocument();
-        log.debug("Finishing the process of updating live document "
-                + tuple.getClientId() + " on the client side: " + name);
+        log.debug("Finishing the process of updating live document " + tuple.getClientId() + " on the client side: "
+                + name);
     }
 
 }

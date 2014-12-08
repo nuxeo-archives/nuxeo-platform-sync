@@ -30,7 +30,6 @@ import org.nuxeo.runtime.api.Framework;
  * Perform the synchronization through an operation
  *
  * @author Sun Seng David TAN <stan@nuxeo.com>
- *
  */
 @Operation(id = SynchronizeOperation.ID, category = Constants.CAT_SERVICES, label = "Synchronize with another nuxeo server", description = "Synchronize with another nuxeo server")
 public class SynchronizeOperation {
@@ -48,7 +47,7 @@ public class SynchronizeOperation {
 
     @Param(name = "password", required = false)
     protected String password;
-    
+
     @Param(name = "diffPolicy", required = false)
     protected String diffPolicy;
 
@@ -58,12 +57,17 @@ public class SynchronizeOperation {
     @OperationMethod
     public void test() throws Exception {
         SynchronizeDetails syncDetails = new SynchronizeDetails();
-        if (host != null) syncDetails.setHost(host);
-        if (username != null) syncDetails.setUsername(username);
-        if (password != null) syncDetails.setPassword(password);
-        if (port != 01) syncDetails.setPort(port);
-        if (diffPolicy != null) syncDetails.setDiffPolicy(diffPolicy);
-        
+        if (host != null)
+            syncDetails.setHost(host);
+        if (username != null)
+            syncDetails.setUsername(username);
+        if (password != null)
+            syncDetails.setPassword(password);
+        if (port != 01)
+            syncDetails.setPort(port);
+        if (diffPolicy != null)
+            syncDetails.setDiffPolicy(diffPolicy);
+
         SynchronizeService frameworkService = Framework.getLocalService(SynchronizeService.class);
 
         frameworkService.synchronize(session, syncDetails, "QUERY_ALL");

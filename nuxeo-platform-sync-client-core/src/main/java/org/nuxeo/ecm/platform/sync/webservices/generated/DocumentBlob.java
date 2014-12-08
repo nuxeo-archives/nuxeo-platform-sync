@@ -1,4 +1,3 @@
-
 package org.nuxeo.ecm.platform.sync.webservices.generated;
 
 import java.util.ArrayList;
@@ -8,11 +7,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for documentBlob complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for documentBlob complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="documentBlob">
@@ -31,36 +30,30 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "documentBlob", propOrder = {
-    "blob",
-    "encoding",
-    "extensions",
-    "mimeType",
-    "mimetype",
-    "name",
-    "url"
-})
+@XmlType(name = "documentBlob", propOrder = { "blob", "encoding", "extensions", "mimeType", "mimetype", "name", "url" })
 public class DocumentBlob {
 
     protected byte[] blob;
+
     protected String encoding;
+
     @XmlElement(nillable = true)
     protected List<String> extensions;
+
     protected String mimeType;
+
     protected String mimetype;
+
     protected String name;
+
     protected String url;
 
     /**
      * Gets the value of the blob property.
      * 
-     * @return
-     *     possible object is
-     *     byte[]
+     * @return possible object is byte[]
      */
     public byte[] getBlob() {
         return blob;
@@ -69,9 +62,7 @@ public class DocumentBlob {
     /**
      * Sets the value of the blob property.
      * 
-     * @param value
-     *     allowed object is
-     *     byte[]
+     * @param value allowed object is byte[]
      */
     public void setBlob(byte[] value) {
         this.blob = ((byte[]) value);
@@ -80,10 +71,7 @@ public class DocumentBlob {
     /**
      * Gets the value of the encoding property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getEncoding() {
         return encoding;
@@ -92,10 +80,7 @@ public class DocumentBlob {
     /**
      * Sets the value of the encoding property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setEncoding(String value) {
         this.encoding = value;
@@ -103,25 +88,18 @@ public class DocumentBlob {
 
     /**
      * Gets the value of the extensions property.
-     * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the extensions property.
-     * 
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+     * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+     * the extensions property.
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getExtensions().add(newItem);
+     * getExtensions().add(newItem);
      * </pre>
-     * 
-     * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
-     * 
-     * 
+     * Objects of the following type(s) are allowed in the list {@link String }
      */
     public List<String> getExtensions() {
         if (extensions == null) {
@@ -133,10 +111,7 @@ public class DocumentBlob {
     /**
      * Gets the value of the mimeType property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getMimeType() {
         return mimeType;
@@ -145,10 +120,7 @@ public class DocumentBlob {
     /**
      * Sets the value of the mimeType property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setMimeType(String value) {
         this.mimeType = value;
@@ -157,10 +129,7 @@ public class DocumentBlob {
     /**
      * Gets the value of the mimetype property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getMimetype() {
         return mimetype;
@@ -169,10 +138,7 @@ public class DocumentBlob {
     /**
      * Sets the value of the mimetype property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setMimetype(String value) {
         this.mimetype = value;
@@ -181,10 +147,7 @@ public class DocumentBlob {
     /**
      * Gets the value of the name property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getName() {
         return name;
@@ -193,10 +156,7 @@ public class DocumentBlob {
     /**
      * Sets the value of the name property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setName(String value) {
         this.name = value;
@@ -205,10 +165,7 @@ public class DocumentBlob {
     /**
      * Gets the value of the url property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getUrl() {
         return url;
@@ -217,10 +174,7 @@ public class DocumentBlob {
     /**
      * Sets the value of the url property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setUrl(String value) {
         this.url = value;

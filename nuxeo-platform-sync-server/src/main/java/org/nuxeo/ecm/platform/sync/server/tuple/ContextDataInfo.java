@@ -21,8 +21,8 @@ import java.io.Serializable;
 
 /**
  * Holds the document related data required when importing new documents.
+ * 
  * @author rux
- *
  */
 public class ContextDataInfo implements Serializable {
 

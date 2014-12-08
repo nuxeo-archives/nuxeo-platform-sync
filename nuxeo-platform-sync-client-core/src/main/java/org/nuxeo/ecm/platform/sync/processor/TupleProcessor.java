@@ -36,7 +36,6 @@ import org.nuxeo.ecm.platform.sync.webservices.generated.WSSynchroServerModule;
  * The base class for processing a tuple. It holds the common processing.
  *
  * @author rux
- *
  */
 public abstract class TupleProcessor {
 
@@ -81,9 +80,9 @@ public abstract class TupleProcessor {
      * @param isNew
      * @return
      */
-    public static TupleProcessor createProcessor(CoreSession session,
-            NuxeoSynchroTuple tuple, WSSynchroServerModule wsSyncro,
-            boolean isNew, SynchronizeDetails synchronizeDetails, ImportConfiguration importConfiguration) {
+    public static TupleProcessor createProcessor(CoreSession session, NuxeoSynchroTuple tuple,
+            WSSynchroServerModule wsSyncro, boolean isNew, SynchronizeDetails synchronizeDetails,
+            ImportConfiguration importConfiguration) {
         TupleProcessor ret = null;
         if (isNew) {
             if (tuple.isVersion()) {
@@ -108,27 +107,24 @@ public abstract class TupleProcessor {
         return ret;
     }
 
-    public static TupleProcessor createProcessor(CoreSession session,
-            NuxeoSynchroTuple tuple, WSSynchroServerModule wsSyncro,
-            boolean isNew, SynchronizeDetails synchronizeDetails) {
+    public static TupleProcessor createProcessor(CoreSession session, NuxeoSynchroTuple tuple,
+            WSSynchroServerModule wsSyncro, boolean isNew, SynchronizeDetails synchronizeDetails) {
         return createProcessor(session, tuple, wsSyncro, isNew, synchronizeDetails, null);
     }
 
     /**
-     * Processes the tuple. Actual implementation in the implementors. Be
-     * careful to catch the ClientException to make possible continuing the
-     * process.
+     * Processes the tuple. Actual implementation in the implementors. Be careful to catch the ClientException to make
+     * possible continuing the process.
      *
      * @throws ClientException
      */
     public abstract void process() throws ClientException;
 
     /**
-     * Obtains the WS document representation. It returns it and also sets it as
-     * remoteDocument. Never returns null, but throws exceptions.
+     * Obtains the WS document representation. It returns it and also sets it as remoteDocument. Never returns null, but
+     * throws exceptions.
      */
-    protected FlagedDocumentSnapshot getDocumentSnapshot()
-            throws ClientException {
+    protected FlagedDocumentSnapshot getDocumentSnapshot() throws ClientException {
         if (documentSnapshot == null) {
             documentSnapshot = synchroServerModule.getDocumentByIdWithoutBlob(tuple.getServerId());
         }

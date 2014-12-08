@@ -38,9 +38,7 @@ import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.runtime.api.Framework;
 
 /**
- * 
  * @author <a href="mailto:cbaican@nuxeo.com">Catalin Baican</a>
- * 
  */
 @Scope(ScopeType.SESSION)
 @Name("syncActions")
@@ -62,7 +60,6 @@ public class SyncActionsBean implements Serializable {
     @In(create = true, required = false)
     protected transient FacesMessages facesMessages;
 
-
     /**
      * This will keep all the information about the synchronization process
      */
@@ -81,11 +78,9 @@ public class SyncActionsBean implements Serializable {
 
     public String doSynchronize() {
         try {
-            getSynchronizeService().synchronizeDocuments(documentManager,
-                    synchronizeDetails, "QUERY_ALL");
+            getSynchronizeService().synchronizeDocuments(documentManager, synchronizeDetails, "QUERY_ALL");
         } catch (Exception e) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
-                    "feedback.sync.error", e.getMessage());
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "feedback.sync.error", e.getMessage());
             log.error("Sync error: ", e);
             return null;
         }
@@ -104,8 +99,7 @@ public class SyncActionsBean implements Serializable {
     }
 
     private String goHome() {
-        facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,
-                "feedback.sync.success");
+        facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO, "feedback.sync.success");
         DocumentModel root;
         try {
             root = documentManager.getDocument(new PathRef("/"));

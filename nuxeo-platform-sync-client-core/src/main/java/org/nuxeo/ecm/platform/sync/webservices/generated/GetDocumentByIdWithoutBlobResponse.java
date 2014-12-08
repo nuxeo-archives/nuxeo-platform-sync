@@ -1,4 +1,3 @@
-
 package org.nuxeo.ecm.platform.sync.webservices.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -6,11 +5,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for getDocumentByIdWithoutBlobResponse complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for getDocumentByIdWithoutBlobResponse complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="getDocumentByIdWithoutBlobResponse">
@@ -23,13 +22,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "getDocumentByIdWithoutBlobResponse", propOrder = {
-    "_return"
-})
+@XmlType(name = "getDocumentByIdWithoutBlobResponse", propOrder = { "_return" })
 public class GetDocumentByIdWithoutBlobResponse {
 
     @XmlElement(name = "return")
@@ -38,10 +33,7 @@ public class GetDocumentByIdWithoutBlobResponse {
     /**
      * Gets the value of the return property.
      * 
-     * @return
-     *     possible object is
-     *     {@link FlagedDocumentSnapshot }
-     *     
+     * @return possible object is {@link FlagedDocumentSnapshot }
      */
     public FlagedDocumentSnapshot getReturn() {
         return _return;
@@ -50,10 +42,7 @@ public class GetDocumentByIdWithoutBlobResponse {
     /**
      * Sets the value of the return property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link FlagedDocumentSnapshot }
-     *     
+     * @param value allowed object is {@link FlagedDocumentSnapshot }
      */
     public void setReturn(FlagedDocumentSnapshot value) {
         this._return = value;

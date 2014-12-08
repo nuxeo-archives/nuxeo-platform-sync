@@ -5,7 +5,6 @@
 // Generated on: 2009.12.03 at 07:10:29 PM CET 
 //
 
-
 package org.nuxeo.ecm.platform.sync.vocabularies.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for entry complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for entry complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="entry">
@@ -32,8 +31,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "entry")
@@ -41,22 +38,23 @@ public class Entry {
 
     @XmlAttribute(required = true)
     protected String id;
+
     @XmlAttribute(required = true)
     protected String label;
+
     @XmlAttribute(required = true)
     protected String translatedLabel;
+
     @XmlAttribute
     protected String parent;
+
     @XmlAttribute
     protected Integer obsolete;
 
     /**
      * Gets the value of the id property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getId() {
         return id;
@@ -65,10 +63,7 @@ public class Entry {
     /**
      * Sets the value of the id property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setId(String value) {
         this.id = value;
@@ -77,10 +72,7 @@ public class Entry {
     /**
      * Gets the value of the label property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getLabel() {
         return label;
@@ -89,10 +81,7 @@ public class Entry {
     /**
      * Sets the value of the label property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setLabel(String value) {
         this.label = value;
@@ -101,10 +90,7 @@ public class Entry {
     /**
      * Gets the value of the translatedLabel property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getTranslatedLabel() {
         return translatedLabel;
@@ -113,10 +99,7 @@ public class Entry {
     /**
      * Sets the value of the translatedLabel property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setTranslatedLabel(String value) {
         this.translatedLabel = value;
@@ -125,10 +108,7 @@ public class Entry {
     /**
      * Gets the value of the parent property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getParent() {
         return parent;
@@ -137,10 +117,7 @@ public class Entry {
     /**
      * Sets the value of the parent property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setParent(String value) {
         this.parent = value;
@@ -149,10 +126,7 @@ public class Entry {
     /**
      * Gets the value of the obsolete property.
      * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
+     * @return possible object is {@link Integer }
      */
     public Integer getObsolete() {
         return obsolete;
@@ -161,10 +135,7 @@ public class Entry {
     /**
      * Sets the value of the obsolete property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
+     * @param value allowed object is {@link Integer }
      */
     public void setObsolete(Integer value) {
         this.obsolete = value;

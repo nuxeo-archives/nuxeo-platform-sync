@@ -23,24 +23,23 @@ import org.nuxeo.ecm.platform.api.ws.DocumentSnapshot;
 import org.nuxeo.ecm.platform.api.ws.WsACE;
 
 /**
- * It is a {@link DocumentSnapshot} extended with hasBlobs property to signal existence of
- * blobs in the document.
+ * It is a {@link DocumentSnapshot} extended with hasBlobs property to signal existence of blobs in the document.
+ * 
  * @author rux
- *
  */
 public class FlagedDocumentSnapshot extends DocumentSnapshot {
 
     private static final long serialVersionUID = -4033819657709889213L;
-    
+
     private boolean hasBlobs = false;
-    
-    public FlagedDocumentSnapshot(){
+
+    public FlagedDocumentSnapshot() {
         super();
     }
 
-    public FlagedDocumentSnapshot(DocumentProperty[] noBlobProperties,
-            DocumentBlob[] blobProperties, String pathAsString, WsACE[] acl,  boolean hasBlobs) {
-        super(noBlobProperties, blobProperties, pathAsString, acl );
+    public FlagedDocumentSnapshot(DocumentProperty[] noBlobProperties, DocumentBlob[] blobProperties,
+            String pathAsString, WsACE[] acl, boolean hasBlobs) {
+        super(noBlobProperties, blobProperties, pathAsString, acl);
         this.hasBlobs = hasBlobs;
     }
 
@@ -51,6 +50,5 @@ public class FlagedDocumentSnapshot extends DocumentSnapshot {
     public void setHasBlobs(boolean hasBlobs) {
         this.hasBlobs = hasBlobs;
     }
-
 
 }

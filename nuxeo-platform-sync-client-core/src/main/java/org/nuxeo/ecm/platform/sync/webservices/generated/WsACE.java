@@ -1,15 +1,14 @@
-
 package org.nuxeo.ecm.platform.sync.webservices.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for wsACE complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for wsACE complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="wsACE">
@@ -24,24 +23,19 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "wsACE", propOrder = {
-    "granted",
-    "permission",
-    "username"
-})
+@XmlType(name = "wsACE", propOrder = { "granted", "permission", "username" })
 public class WsACE {
 
     protected boolean granted;
+
     protected String permission;
+
     protected String username;
 
     /**
      * Gets the value of the granted property.
-     * 
      */
     public boolean isGranted() {
         return granted;
@@ -49,7 +43,6 @@ public class WsACE {
 
     /**
      * Sets the value of the granted property.
-     * 
      */
     public void setGranted(boolean value) {
         this.granted = value;
@@ -58,10 +51,7 @@ public class WsACE {
     /**
      * Gets the value of the permission property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getPermission() {
         return permission;
@@ -70,10 +60,7 @@ public class WsACE {
     /**
      * Sets the value of the permission property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setPermission(String value) {
         this.permission = value;
@@ -82,10 +69,7 @@ public class WsACE {
     /**
      * Gets the value of the username property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getUsername() {
         return username;
@@ -94,10 +78,7 @@ public class WsACE {
     /**
      * Sets the value of the username property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setUsername(String value) {
         this.username = value;

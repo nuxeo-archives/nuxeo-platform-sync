@@ -39,16 +39,14 @@ public class TestXPathUtils extends SQLRepositoryTestCase {
 
     NodeList nodes;
 
-    URL documentUrl = getClass().getClassLoader().getResource(
-            "org/nuxeo/test/document.xml");
+    URL documentUrl = getClass().getClassLoader().getResource("org/nuxeo/test/document.xml");
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
         deployBundle("org.nuxeo.ecm.core.api");
         deployBundle("org.nuxeo.ecm.core");
-        deployContrib("org.nuxeo.ecm.platform.sync.client.core.test",
-                "OSGI-INF/test-core-contrib.xml");
+        deployContrib("org.nuxeo.ecm.platform.sync.client.core.test", "OSGI-INF/test-core-contrib.xml");
         fireFrameworkStarted();
         openSession();
 
@@ -91,8 +89,7 @@ public class TestXPathUtils extends SQLRepositoryTestCase {
 
         // set properties
         DocumentModel sampleDoc = session.createDocumentModel("Sample");
-        sampleDoc.setPathInfo(session.getRootDocument().getPathAsString(),
-                "sample");
+        sampleDoc.setPathInfo(session.getRootDocument().getPathAsString(), "sample");
         URLBlob blob = new URLBlob(documentUrl);
         blob.setEncoding("UTF-8");
         blob.setFilename("document.xml");
@@ -108,15 +105,9 @@ public class TestXPathUtils extends SQLRepositoryTestCase {
 
         assertEquals(new File(documentUrl.getFile()).length(),
                 ((Blob) sampleDoc.getPropertyValue("file:content")).getLength());
-        assertEquals(
-                "document.xml",
-                ((Blob) sampleDoc.getPropertyValue("multifile:originalfile")).getFilename());
-        assertEquals(
-                "application/xml",
-                ((Blob) sampleDoc.getPropertyValue("multifile:pdffile")).getMimeType());
-        assertEquals(
-                "UTF-8",
-                ((Blob) sampleDoc.getPropertyValue("pict:pictfile")).getEncoding());
+        assertEquals("document.xml", ((Blob) sampleDoc.getPropertyValue("multifile:originalfile")).getFilename());
+        assertEquals("application/xml", ((Blob) sampleDoc.getPropertyValue("multifile:pdffile")).getMimeType());
+        assertEquals("UTF-8", ((Blob) sampleDoc.getPropertyValue("pict:pictfile")).getEncoding());
     }
 
     private NodeList getNodesFromDocument() throws Exception {
@@ -134,22 +125,19 @@ public class TestXPathUtils extends SQLRepositoryTestCase {
         Document document = docBuilder.parse(documentUrl.openStream());
 
         XPathExpression xPathExpression = xPath.compile(xPathString);
-        Object result = xPathExpression.evaluate(document,
-                XPathConstants.NODESET);
+        Object result = xPathExpression.evaluate(document, XPathConstants.NODESET);
         return (NodeList) result;
     }
 
     /**
-     * Copy of TupleProcessorUpdate#correctXPath which is not static due to a
-     * reference on localDocument
+     * Copy of TupleProcessorUpdate#correctXPath which is not static due to a reference on localDocument
      *
      * @param initialXPath
      * @param localDocument
      * @return
      * @throws ClientException
      */
-    protected String correctXPath(String initialXPath,
-            DocumentModel localDocument) throws ClientException {
+    protected String correctXPath(String initialXPath, DocumentModel localDocument) throws ClientException {
         // get schema name: it has to be the first part before :
         String[] tokens = initialXPath.split(":");
         if (tokens.length != 2) {
@@ -164,8 +152,7 @@ public class TestXPathUtils extends SQLRepositoryTestCase {
             log.warn(initialXPath + " no XPath: no segments found");
             return null;
         }
-        StringBuilder correctedXPath = new StringBuilder(tokens[0] + ":"
-                + segments[0]);
+        StringBuilder correctedXPath = new StringBuilder(tokens[0] + ":" + segments[0]);
         DocumentPart part = localDocument.getPart(tokens[0]);
         correctedXPath.append(TupleProcessorUpdate.recursiveCorrectPath(
                 part.getSchema().getField(segments[0]).getType(), segments, 1));

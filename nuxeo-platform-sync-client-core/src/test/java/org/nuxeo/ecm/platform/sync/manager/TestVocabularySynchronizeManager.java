@@ -36,25 +36,22 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 public class TestVocabularySynchronizeManager {
 
     /**
-     * Unit Testing extractVocabulary, having a schema extract the values to a
-     * list of map entry. (key = property, value=property value)
+     * Unit Testing extractVocabulary, having a schema extract the values to a list of map entry. (key = property,
+     * value=property value)
      *
      * @throws DocumentException
      */
     @Test
     public void testExtractVocabulary() throws DocumentException {
         // open vocabulary as xml
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                + "<entries>"
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<entries>"
                 + "<entry id=\"entry id 0\" obsolete=\"0\" ordering=\"10000000\" label=\"Entry Label 0\" />"
                 + "<entry id=\"entry id 1\" obsolete=\"1\" ordering=\"10000000\" label=\"Entry Label 1\" />"
                 + "</entries>";
 
-        VocabularySynchronizeManager classToTest = new VocabularySynchronizeManager(
-                new SynchronizeDetails());
+        VocabularySynchronizeManager classToTest = new VocabularySynchronizeManager(new SynchronizeDetails());
 
-        List<Map<String, Object>> entries = classToTest.extractVocabulary(
-                "vocabulary", xml);
+        List<Map<String, Object>> entries = classToTest.extractVocabulary("vocabulary", xml);
         assertEquals("The entries size is ", 2, entries.size());
         Map<String, Object> entry0 = entries.get(0);
         assertEquals("entry id 0", entry0.get("id"));
@@ -69,12 +66,10 @@ public class TestVocabularySynchronizeManager {
         assertEquals(1L, entry1.get("obsolete"));
 
         // testing xvocabulary
-        xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                + "<entries>"
+        xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<entries>"
                 + "<entry id=\"xentry id 0\" label=\"XEntry 0\" obsolete=\"0\" parent=\"entry id 0\"/>"
                 + "<entry id=\"xentry id 1\" label=\"XEntry 1\" obsolete=\"0\" parent=\"entry id 1\"/>"
-                + "<entry id=\"xentry id 2\" label=\"XEntry 2\" obsolete=\"0\" parent=\"entry id 0\"/>"
-                + "</entries>";
+                + "<entry id=\"xentry id 2\" label=\"XEntry 2\" obsolete=\"0\" parent=\"entry id 0\"/>" + "</entries>";
 
         entries = classToTest.extractVocabulary("xvocabulary", xml);
         assertEquals("The entries size is ", 3, entries.size());

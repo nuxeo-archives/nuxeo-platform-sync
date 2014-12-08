@@ -28,81 +28,62 @@ import org.nuxeo.ecm.platform.sync.utils.ImportUtils;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 
 /**
- * Implementing class for processing a tuple. It adds a new normal document. The
- * documents are imported by the CoreSession using the contextual data provided
- * by the server.
+ * Implementing class for processing a tuple. It adds a new normal document. The documents are imported by the
+ * CoreSession using the contextual data provided by the server.
  *
  * @author rux
- *
  */
 public class TupleProcessorAddDocument extends TupleProcessorAdd {
 
     private static final Logger log = Logger.getLogger(TupleProcessorAddDocument.class);
 
-    public TupleProcessorAddDocument(CoreSession session,
-            NuxeoSynchroTuple tuple) {
+    public TupleProcessorAddDocument(CoreSession session, NuxeoSynchroTuple tuple) {
         super(session, tuple);
     }
 
     @Override
     public void process() throws ClientException {
         if (!session.exists(new PathRef(parentPath))) {
-            log.warn("Parent path " + parentPath
-                    + " doesn't exist => Document " + tuple.getClientId()
+            log.warn("Parent path " + parentPath + " doesn't exist => Document " + tuple.getClientId()
                     + " will not be created");
             return;
         }
-        log.debug("Starting the process of adding live document "
-                + tuple.getClientId() + " on the client side: " + name);
+        log.debug("Starting the process of adding live document " + tuple.getClientId() + " on the client side: "
+                + name);
         // a normal document model will be created
-        localDocument = new DocumentModelImpl((String) null, tuple.getType(),
-                tuple.getClientId(), new Path(name), null, null, new PathRef(
-                        parentPath), null, null, null,
-                session.getRepositoryName());
+        localDocument = new DocumentModelImpl((String) null, tuple.getType(), tuple.getClientId(), new Path(name),
+                null, null, new PathRef(parentPath), null, null, null, session.getRepositoryName());
 
-        propertyValue = ImportUtils.getContextDataInfo(contextData,
-                CoreSession.IMPORT_LOCK_OWNER);
+        propertyValue = ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_LOCK_OWNER);
         if (propertyValue != null) {
-            localDocument.putContextData(CoreSession.IMPORT_LOCK_OWNER,
-                    propertyValue);
-            String createdString = ImportUtils.getContextDataInfo(contextData,
-                    CoreSession.IMPORT_LOCK_CREATED);
-            localDocument.putContextData(
-                    CoreSession.IMPORT_LOCK_CREATED,
-                    ISODateTimeFormat.dateTimeParser().parseDateTime(
-                            createdString).toGregorianCalendar());
+            localDocument.putContextData(CoreSession.IMPORT_LOCK_OWNER, propertyValue);
+            String createdString = ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_LOCK_CREATED);
+            localDocument.putContextData(CoreSession.IMPORT_LOCK_CREATED,
+                    ISODateTimeFormat.dateTimeParser().parseDateTime(createdString).toGregorianCalendar());
         }
-        propertyValue = ImportUtils.getContextDataInfo(contextData,
-                CoreSession.IMPORT_CHECKED_IN);
+        propertyValue = ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_CHECKED_IN);
         if (propertyValue != null) {
-            localDocument.putContextData(CoreSession.IMPORT_CHECKED_IN,
-                    new Boolean(propertyValue));
+            localDocument.putContextData(CoreSession.IMPORT_CHECKED_IN, new Boolean(propertyValue));
         }
-        propertyValue = ImportUtils.getContextDataInfo(contextData,
-                CoreSession.IMPORT_BASE_VERSION_ID);
+        propertyValue = ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_BASE_VERSION_ID);
         if (propertyValue != null) {
-            localDocument.putContextData(CoreSession.IMPORT_BASE_VERSION_ID,
-                    propertyValue);
+            localDocument.putContextData(CoreSession.IMPORT_BASE_VERSION_ID, propertyValue);
         }
-        propertyValue = ImportUtils.getContextDataInfo(contextData,
-                CoreSession.IMPORT_VERSION_MAJOR);
+        propertyValue = ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_VERSION_MAJOR);
         if (propertyValue != null) {
-            localDocument.putContextData(CoreSession.IMPORT_VERSION_MAJOR,
-                    Long.valueOf(propertyValue));
+            localDocument.putContextData(CoreSession.IMPORT_VERSION_MAJOR, Long.valueOf(propertyValue));
         }
-        propertyValue = ImportUtils.getContextDataInfo(contextData,
-                CoreSession.IMPORT_VERSION_MINOR);
+        propertyValue = ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_VERSION_MINOR);
         if (propertyValue != null) {
-            localDocument.putContextData(CoreSession.IMPORT_VERSION_MINOR,
-                    Long.valueOf(propertyValue));
+            localDocument.putContextData(CoreSession.IMPORT_VERSION_MINOR, Long.valueOf(propertyValue));
         }
         localDocument.setPathInfo(parentPath, name);
         setProperties();
         runUnrestrictedImport();
         setACE();
         updateDocument();
-        log.debug("Finishing the process of adding live document "
-                + tuple.getClientId() + " on the client side: " + name);
+        log.debug("Finishing the process of adding live document " + tuple.getClientId() + " on the client side: "
+                + name);
     }
 
 }

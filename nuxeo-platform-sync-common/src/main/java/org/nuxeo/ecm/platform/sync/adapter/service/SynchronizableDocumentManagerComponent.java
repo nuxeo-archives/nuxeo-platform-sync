@@ -38,8 +38,7 @@ public class SynchronizableDocumentManagerComponent extends DefaultComponent imp
     private List<SynchronizableDocumentFactoryDescriptor> syncDocAdapters = new ArrayList<SynchronizableDocumentFactoryDescriptor>();
 
     @Override
-    public void registerContribution(Object contribution, String extensionPoint,
-            ComponentInstance contributor) {
+    public void registerContribution(Object contribution, String extensionPoint, ComponentInstance contributor) {
         if ("synchronizableDocument".equals(extensionPoint)) {
             SynchronizableDocumentFactoryDescriptor desc = (SynchronizableDocumentFactoryDescriptor) contribution;
             if (desc.isEnabled()) {
@@ -57,7 +56,8 @@ public class SynchronizableDocumentManagerComponent extends DefaultComponent imp
         }
     }
 
-    public SynchronizableDocument getSynchronizableDocument(DocumentModel doc) throws InstantiationException, IllegalAccessException {
+    public SynchronizableDocument getSynchronizableDocument(DocumentModel doc) throws InstantiationException,
+            IllegalAccessException {
         SynchronizableDocument syncDoc = null;
         for (SynchronizableDocumentFactoryDescriptor desc : syncDocAdapters) {
             if (doc.hasSchema(desc.getSchema())) {

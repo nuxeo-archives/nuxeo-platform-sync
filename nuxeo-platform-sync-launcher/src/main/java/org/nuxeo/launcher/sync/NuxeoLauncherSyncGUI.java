@@ -21,11 +21,10 @@ import org.nuxeo.launcher.gui.NuxeoFrame;
 import org.nuxeo.launcher.gui.NuxeoLauncherGUI;
 
 /**
- * Customized NuxeoLauncherGui to instantiate a {@link NuxeoSyncFrame} instead
- * of {@link NuxeoFrame} {@link NuxeoSyncFrame} adds the sync tab.
+ * Customized NuxeoLauncherGui to instantiate a {@link NuxeoSyncFrame} instead of {@link NuxeoFrame}
+ * {@link NuxeoSyncFrame} adds the sync tab.
  *
  * @author Sun Seng David TAN <stan@nuxeo.com>
- *
  */
 public class NuxeoLauncherSyncGUI extends NuxeoLauncherGUI {
 

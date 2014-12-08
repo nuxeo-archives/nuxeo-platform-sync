@@ -41,23 +41,22 @@ import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
 
 /**
  * @author "Stephane Lacoin (aka matic) slacoin@nuxeo.com"
- *
  */
-@WebObject(type="Host")
+@WebObject(type = "Host")
 public class SyncHost extends DefaultObject {
-    
+
     protected boolean dryrun = true;
-    
+
     protected UriInfo info;
-    
+
     protected URI location;
-    
+
     protected String name;
-    
+
     public boolean getDryrun() {
         return dryrun;
     }
-    
+
     public UriInfo getInfo() {
         return info;
     }
@@ -65,12 +64,12 @@ public class SyncHost extends DefaultObject {
     public URI getLocation() {
         return location;
     }
-    
+
     public String getName() {
         return name;
     }
-    
-    protected SynchronizeDetails details(){
+
+    protected SynchronizeDetails details() {
         SynchronizeDetails details = new SynchronizeDetails();
         details.setProtocol(location.getScheme());
         details.setHost(location.getHost());
@@ -87,52 +86,50 @@ public class SyncHost extends DefaultObject {
         details.setDryRun(dryrun);
         return details;
     }
-    
 
-    
     @Override
     protected void initialize(Object... args) {
         super.initialize(args);
         if (args.length == 1) {
-            this.name = (String)args[0];
+            this.name = (String) args[0];
         }
     }
-    
+
     protected SyncRoot syncRoot() {
-        return (SyncRoot)getPrevious();
+        return (SyncRoot) getPrevious();
     }
-    
+
     @GET
-    public Object doGet(@MatrixParam("location") URI location, @MatrixParam("dryrun") @DefaultValue("true") boolean dryrun, @Context UriInfo info) {
+    public Object doGet(@MatrixParam("location") URI location,
+            @MatrixParam("dryrun") @DefaultValue("true") boolean dryrun, @Context UriInfo info) {
         this.info = info;
         this.dryrun = dryrun;
         this.location = location;
         return getView("index");
     }
-    
-    
+
     @POST
-    public Object doPost(@FormParam("location") URI location, @Context UriInfo info) throws MalformedURLException, URISyntaxException, UnsupportedEncodingException {
+    public Object doPost(@FormParam("location") URI location, @Context UriInfo info) throws MalformedURLException,
+            URISyntaxException, UnsupportedEncodingException {
         this.info = info;
         return redirect(uri(location).toASCIIString());
     }
-    
+
     @Path("documents")
     public Object doNavigateDocs(@Context UriInfo info) throws MalformedURLException {
-        injectInfo(info);      
+        injectInfo(info);
         return newObject("Docs");
     }
 
-
     @Path("vocabularies")
     public Object doNavigateVocs(@Context UriInfo info) throws MalformedURLException {
-        injectInfo(info);      
+        injectInfo(info);
         return newObject("Vocs");
     }
-    
+
     @Path("relations")
     public Object doNavigateRels(@Context UriInfo info) throws MalformedURLException {
-        injectInfo(info);      
+        injectInfo(info);
         return newObject("Rels");
     }
 
@@ -156,27 +153,26 @@ public class SyncHost extends DefaultObject {
     public URI uri() {
         return uriBuilder(dryrun, location).build();
     }
-    
+
     public URI uri(boolean dryrun) {
         return uriBuilder(dryrun, location).build();
     }
-    
+
     public URI uri(URI location) {
         return uriBuilder(dryrun, location).build();
     }
-        
+
     public UriBuilder uriBuilder(boolean dryrun, URI location) {
         final LinkedList<PathSegment> pathSegments = new LinkedList<PathSegment>(info.getPathSegments());
         UriBuilder builder = info.getBaseUriBuilder();
         builder = builder.path(pathSegments.remove().getPath()); // root
         pathSegments.remove(); // host
         builder = builder.path(location.getHost()).matrixParam("location", location).matrixParam("dryrun", dryrun);
-        while(!pathSegments.isEmpty()) { // subs
+        while (!pathSegments.isEmpty()) { // subs
             final PathSegment lastSegment = pathSegments.remove();
             builder = builder.path(lastSegment.getPath());
         }
         return builder;
     }
-
 
 }

@@ -12,20 +12,16 @@ import org.nuxeo.ecm.platform.sync.api.util.MonitorProvider;
 import org.nuxeo.ecm.platform.sync.utils.ImportUtils;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 
-public class DefaultDocumentDifferencesPolicy implements
-        DocumentDifferencesPolicy {
+public class DefaultDocumentDifferencesPolicy implements DocumentDifferencesPolicy {
 
     private static final Logger log = Logger.getLogger(DefaultDocumentDifferencesPolicy.class);
 
     @Override
-    public void process(DocumentModelList availableDocs,
-            List<NuxeoSynchroTuple> tuples,
-            List<NuxeoSynchroTuple> addedTuples,
-            List<NuxeoSynchroTuple> modifiedTuples, List<String> deletedIds,
+    public void process(DocumentModelList availableDocs, List<NuxeoSynchroTuple> tuples,
+            List<NuxeoSynchroTuple> addedTuples, List<NuxeoSynchroTuple> modifiedTuples, List<String> deletedIds,
             List<NuxeoSynchroTuple> movedTuples) throws Exception {
 
-        MonitorProvider.getMonitor().beginTask("Computing the differences",
-                availableDocs.size());
+        MonitorProvider.getMonitor().beginTask("Computing the differences", availableDocs.size());
         addedTuples.addAll(tuples);
 
         boolean remove;
@@ -33,8 +29,7 @@ public class DefaultDocumentDifferencesPolicy implements
             remove = true;
             SynchronizableDocument syncDoc = doc.getAdapter(SynchronizableDocument.class);
             for (NuxeoSynchroTuple tuple : tuples) {
-                String lifecycleState = ImportUtils.getContextDataInfo(
-                        tuple.getContextData(),
+                String lifecycleState = ImportUtils.getContextDataInfo(tuple.getContextData(),
                         CoreSession.IMPORT_LIFECYCLE_STATE);
                 if (syncDoc.getId().equals(tuple.getAdaptedId())) {
                     addedTuples.remove(tuple);
@@ -57,11 +52,8 @@ public class DefaultDocumentDifferencesPolicy implements
                         // implemented (should not be), delete/add it.
                         // Do the same for a proxy, since a version cannot be
                         // deleted if it has a proxy.
-                        log.debug("Doc "
-                                + doc.getId()
-                                + " ("
-                                + (doc.isProxy() ? "proxy"
-                                        : (doc.isVersion() ? "version" : "live"))
+                        log.debug("Doc " + doc.getId() + " ("
+                                + (doc.isProxy() ? "proxy" : (doc.isVersion() ? "version" : "live"))
                                 + ") has no modification date (problem at last import) => delete then add it back");
                         if (doc.isVersion() || doc.isProxy()) {
                             remove = true;
@@ -71,17 +63,14 @@ public class DefaultDocumentDifferencesPolicy implements
                             modifiedTuples.add(tuple);
                         }
                     } else if (tuple.getLastModification() == 0) {
-                        log.debug("Doc "
-                                + tuple.getClientId()
+                        log.debug("Doc " + tuple.getClientId()
                                 + " is skipped because it is a version without read access - got from a proxy");
                     } else if (modificationDate.getTimeInMillis() / 1000 != (long) tuple.getLastModification() / 1000
-                            || !doc.getCurrentLifeCycleState().equals(
-                                    lifecycleState)) {
+                            || !doc.getCurrentLifeCycleState().equals(lifecycleState)) {
                         tuple.setClientId(doc.getId());
                         modifiedTuples.add(tuple);
                     }
-                    if (tuple.getPath() != null
-                            && !tuple.getPath().equals(doc.getPathAsString())) {
+                    if (tuple.getPath() != null && !tuple.getPath().equals(doc.getPathAsString())) {
                         movedTuples.add(tuple);
                     }
                     break;

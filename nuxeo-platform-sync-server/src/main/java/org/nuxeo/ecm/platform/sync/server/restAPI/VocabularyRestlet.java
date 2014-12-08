@@ -42,9 +42,8 @@ import org.restlet.data.Response;
 import org.w3c.dom.Element;
 
 /**
- * Simple restlet to export vocabularies content. This reslet is similar to
- * {@link VocabularyRestlet} but as the goals are different they can't be
- * intercharged.
+ * Simple restlet to export vocabularies content. This reslet is similar to {@link VocabularyRestlet} but as the goals
+ * are different they can't be intercharged.
  *
  * @author mariana
  * @author Sun Seng David TAN <stan@nuxeo.com>
@@ -87,8 +86,7 @@ public class VocabularyRestlet extends BaseStatelessNuxeoRestlet {
             String directorySchema = directoryService.getDirectorySchema(vocName);
             Element current = result.createElement("entries");
             result.setRootElement((org.dom4j.Element) current);
-            if (directorySchema.equals(VOCABULARY_TYPE_SIMPLE)
-                    || directorySchema.equals(VOCABULARY_TYPE_HIER)) {
+            if (directorySchema.equals(VOCABULARY_TYPE_SIMPLE) || directorySchema.equals(VOCABULARY_TYPE_HIER)) {
 
                 SchemaManager schemaManager = Framework.getLocalService(SchemaManager.class);
                 Schema vocSchema = schemaManager.getSchema(directorySchema);
@@ -100,35 +98,27 @@ public class VocabularyRestlet extends BaseStatelessNuxeoRestlet {
                         String fieldName = field.getName().getLocalName();
                         Type type = field.getType();
                         if (type instanceof StringType) {
-                            el.setAttribute(fieldName,
-                                    (String) entry.getProperty(directorySchema,
-                                            fieldName));
+                            el.setAttribute(fieldName, (String) entry.getProperty(directorySchema, fieldName));
                         } else if (type instanceof LongType) {
                             el.setAttribute(
                                     fieldName,
-                                    ((Long) (entry.getProperty(directorySchema,
-                                            fieldName) != null ? entry.getProperty(
+                                    ((Long) (entry.getProperty(directorySchema, fieldName) != null ? entry.getProperty(
                                             directorySchema, fieldName) : 0)).toString());
                         } else if (type instanceof IntegerType) {
                             el.setAttribute(
                                     fieldName,
-                                    ((Integer) (entry.getProperty(
-                                            directorySchema, fieldName) != null ? entry.getProperty(
+                                    ((Integer) (entry.getProperty(directorySchema, fieldName) != null ? entry.getProperty(
                                             directorySchema, fieldName) : 0)).toString());
                         } else {
                             log.warn("Vocabulary Restlet serializer only serialize int, long or string fields type. "
-                                    + fieldName
-                                    + "("
-                                    + type.getName()
-                                    + ") has been ignored");
+                                    + fieldName + "(" + type.getName() + ") has been ignored");
                         }
                     }
 
                     current.appendChild(el);
                 }
             } else {
-                handleError(result, res,
-                        "Selected directory is not a vocabulary");
+                handleError(result, res, "Selected directory is not a vocabulary");
                 return;
             }
         } catch (ClientException e) {

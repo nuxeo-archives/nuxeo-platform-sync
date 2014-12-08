@@ -32,11 +32,10 @@ import org.nuxeo.ecm.platform.sync.utils.SynchHttpClient;
 import org.nuxeo.runtime.api.Framework;
 
 /**
- * The manager to take care the relations set synchronization. It simple
- * replaces the local relations with the ones from server.
+ * The manager to take care the relations set synchronization. It simple replaces the local relations with the ones from
+ * server.
  * 
  * @author <a href="mailto:cbaican@nuxeo.com">Catalin Baican</a>
- * 
  */
 public class RelationsSynchronizeManager {
     SynchHttpClient httpClient = null;
@@ -61,27 +60,22 @@ public class RelationsSynchronizeManager {
         final List<String> graphNames = relationManager.getGraphNames();
         for (String currentGraphName : graphNames) {
             try {
-                List<String> pathParams = Arrays.asList("relation",
-                        currentGraphName);
-                InputStream inputStream = httpClient.executeGetCall(pathParams,
-                        null);
+                List<String> pathParams = Arrays.asList("relation", currentGraphName);
+                InputStream inputStream = httpClient.executeGetCall(pathParams, null);
                 if (inputStream == null) {
                     throw new IllegalStateException("Cannot fetch graphs input from server");
                 }
                 try {
                     graph = relationManager.getGraphByName(currentGraphName);
                 } catch (ClientException e) {
-                    throw new ClientException("Unable to get graph:"
-                            + currentGraphName);
+                    throw new ClientException("Unable to get graph:" + currentGraphName);
                 }
 
                 graph.clear();
 
                 try {
-                    String inputString = IOUtils.toString(inputStream,
-                            "ISO-8859-1");
-                    InputStream inStream = new StringInputStream(new String(
-                            inputString.getBytes(), "UTF-8"));
+                    String inputString = IOUtils.toString(inputStream, "ISO-8859-1");
+                    InputStream inStream = new StringInputStream(new String(inputString.getBytes(), "UTF-8"));
                     graph.read(inStream, null, null);
                 } catch (Exception e) {
                     throw new ClientException("Can't parse stream in UTF-8", e);
@@ -91,7 +85,7 @@ public class RelationsSynchronizeManager {
                 httpClient.closeConnection();
             }
         }
-        
+
         return SynchronizeReport.newRelationsReport(graphNames);
     }
 

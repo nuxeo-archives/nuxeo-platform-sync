@@ -28,17 +28,15 @@ import org.nuxeo.ecm.webengine.model.WebObject;
 
 /**
  * @author "Stephane Lacoin (aka matic) slacoin@nuxeo.com"
- *
  */
-@WebObject(type="Vocs")
+@WebObject(type = "Vocs")
 public class SyncVocs extends SyncOp {
-   
-    
+
     @GET
     public Object doGet() throws MalformedURLException, ClientException {
         return run();
     }
-    
+
     @POST
     public Object doPost() throws MalformedURLException, ClientException {
         return run();
@@ -47,8 +45,7 @@ public class SyncVocs extends SyncOp {
     protected Object run() throws ClientException {
         final SyncHost host = host();
         SynchronizeDetails details = host.details();
-        SynchronizeReport report=
-                root().service.synchronizeVocabularies(details);
+        SynchronizeReport report = root().service.synchronizeVocabularies(details);
         return getView("report").arg("report", report).arg("action", host.uri(false).toASCIIString());
     }
 }

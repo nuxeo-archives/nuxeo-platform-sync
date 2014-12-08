@@ -25,7 +25,6 @@ import org.nuxeo.ecm.core.api.ClientException;
  * Class for Synchronization Exceptions
  *
  * @author tm
- *
  */
 public class SynchronizationException extends ClientException {
 
@@ -38,6 +37,5 @@ public class SynchronizationException extends ClientException {
     public SynchronizationException(String message, Throwable cause) {
         super(message, cause);
     }
-
 
 }

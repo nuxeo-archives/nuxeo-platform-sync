@@ -29,11 +29,9 @@ import org.nuxeo.ecm.platform.sync.utils.ImportUtils;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 
 /**
- * The base class for processing a tuple when adding a new document. It holds
- * the common processing for this case.
+ * The base class for processing a tuple when adding a new document. It holds the common processing for this case.
  *
  * @author rux
- *
  */
 public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
 
@@ -58,13 +56,11 @@ public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
      * The unrestricted runner for running the import of a document.
      *
      * @author rux
-     *
      */
     protected static class UnrestrictedImport extends UnrestrictedSessionRunner {
         DocumentModel documentModel;
 
-        public UnrestrictedImport(CoreSession session,
-                DocumentModel documentModel) {
+        public UnrestrictedImport(CoreSession session, DocumentModel documentModel) {
             super(session);
             this.documentModel = documentModel;
         }
@@ -72,10 +68,8 @@ public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
         @Override
         public void run() throws ClientException {
             try {
-                if (documentModel.getId() != null
-                        && session.exists(new IdRef(documentModel.getId()))) {
-                    log.error("Doc " + documentModel.getId()
-                            + " already exists, not importing it");
+                if (documentModel.getId() != null && session.exists(new IdRef(documentModel.getId()))) {
+                    log.error("Doc " + documentModel.getId() + " already exists, not importing it");
                 } else {
                     log.debug("Importing doc " + documentModel.getId());
                     session.importDocuments(Collections.singletonList(documentModel));
@@ -89,22 +83,18 @@ public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
 
     /**
      * Sets life cycle details on localDocument as super user.
-     *
      */
     @Override
     protected void setLifeCycle() throws ClientException {
-        String lifecycle = ImportUtils.getContextDataInfo(contextData,
-                CoreSession.IMPORT_LIFECYCLE_STATE);
+        String lifecycle = ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_LIFECYCLE_STATE);
         if (importConfiguration != null) {
             String importLC = importConfiguration.getClientLifeCycleStateFor(lifecycle);
             if (importLC != null && importLC.length() > 0)
                 lifecycle = importLC;
         }
-        localDocument.putContextData(CoreSession.IMPORT_LIFECYCLE_STATE,
-                lifecycle);
+        localDocument.putContextData(CoreSession.IMPORT_LIFECYCLE_STATE, lifecycle);
         localDocument.putContextData(CoreSession.IMPORT_LIFECYCLE_POLICY,
-                ImportUtils.getContextDataInfo(contextData,
-                        CoreSession.IMPORT_LIFECYCLE_POLICY));
+                ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_LIFECYCLE_POLICY));
     }
 
 }

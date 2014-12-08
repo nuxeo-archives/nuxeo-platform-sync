@@ -32,11 +32,10 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 
 /**
- * simple http client using basic authentication that executes a get call !!
- * Don't forget to close the connection after using it
+ * simple http client using basic authentication that executes a get call !! Don't forget to close the connection after
+ * using it
  *
  * @author mcedica
- *
  */
 public class SynchHttpClient {
 
@@ -57,16 +56,12 @@ public class SynchHttpClient {
 
     }
 
-    public InputStream executeGetCall(List<String> pathParams,
-            Map<String, String> queryParams) throws ClientException {
+    public InputStream executeGetCall(List<String> pathParams, Map<String, String> queryParams) throws ClientException {
         HttpClient client = new HttpClient();
-        Credentials defaultcreds = new UsernamePasswordCredentials(
-                synchronizeDetails.getUsername(),
+        Credentials defaultcreds = new UsernamePasswordCredentials(synchronizeDetails.getUsername(),
                 synchronizeDetails.getPassword());
         client.getState().setCredentials(
-                new AuthScope(synchronizeDetails.getHost(),
-                        synchronizeDetails.getPort(), NUXEO_REALM),
-                defaultcreds);
+                new AuthScope(synchronizeDetails.getHost(), synchronizeDetails.getPort(), NUXEO_REALM), defaultcreds);
         httpGet = new GetMethod(constructUri(pathParams, queryParams));
         httpGet.setDoAuthentication(true);
         try {
@@ -87,8 +82,7 @@ public class SynchHttpClient {
 
     }
 
-    private String constructUri(List<String> pathParams,
-            Map<String, String> queryParams) {
+    private String constructUri(List<String> pathParams, Map<String, String> queryParams) {
         String path = "";
         StringBuffer pathBuffer = new StringBuffer();
 

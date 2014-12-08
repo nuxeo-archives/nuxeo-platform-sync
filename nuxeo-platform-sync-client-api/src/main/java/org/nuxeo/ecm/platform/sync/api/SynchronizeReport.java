@@ -24,36 +24,29 @@ import org.nuxeo.ecm.core.api.DocumentRef;
 
 /**
  * @author matic
- * 
  */
 public class SynchronizeReport {
 
     @SuppressWarnings("unchecked")
-    public static SynchronizeReport newDocumentsReport(List<DocumentRef> added,
-            List<DocumentRef> removed, List<DocumentRef> updated,
-            List<DocumentRef> moved) {
-        return new SynchronizeReport(added, removed, updated, moved,
-                Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+    public static SynchronizeReport newDocumentsReport(List<DocumentRef> added, List<DocumentRef> removed,
+            List<DocumentRef> updated, List<DocumentRef> moved) {
+        return new SynchronizeReport(added, removed, updated, moved, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
     }
 
     @SuppressWarnings("unchecked")
     public static SynchronizeReport newRelationsReport(List<String> graphs) {
-        return new SynchronizeReport(Collections.EMPTY_LIST,
-                Collections.EMPTY_LIST, Collections.EMPTY_LIST,
+        return new SynchronizeReport(Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.EMPTY_LIST,
                 Collections.EMPTY_LIST, graphs, Collections.EMPTY_LIST);
     }
 
     @SuppressWarnings("unchecked")
     public static SynchronizeReport newVocabulariesReport(List<String> vocabularies) {
-        return new SynchronizeReport(Collections.EMPTY_LIST,
-                Collections.EMPTY_LIST, Collections.EMPTY_LIST,
+        return new SynchronizeReport(Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.EMPTY_LIST,
                 Collections.EMPTY_LIST, Collections.EMPTY_LIST, vocabularies);
     }
-    
-    protected SynchronizeReport(List<DocumentRef> added,
-            List<DocumentRef> removed, List<DocumentRef> updated,
-            List<DocumentRef> moved, List<String> graphs,
-            List<String> vocabularies) {
+
+    protected SynchronizeReport(List<DocumentRef> added, List<DocumentRef> removed, List<DocumentRef> updated,
+            List<DocumentRef> moved, List<String> graphs, List<String> vocabularies) {
         this.added = added.toArray(new DocumentRef[added.size()]);
         this.removed = removed.toArray(new DocumentRef[removed.size()]);
         this.updated = updated.toArray(new DocumentRef[updated.size()]);

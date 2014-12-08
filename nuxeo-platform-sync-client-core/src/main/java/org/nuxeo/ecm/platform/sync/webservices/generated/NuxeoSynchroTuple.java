@@ -1,4 +1,3 @@
-
 package org.nuxeo.ecm.platform.sync.webservices.generated;
 
 import java.util.ArrayList;
@@ -8,11 +7,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for nuxeoSynchroTuple complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for nuxeoSynchroTuple complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="nuxeoSynchroTuple">
@@ -33,41 +32,35 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "nuxeoSynchroTuple", propOrder = {
-    "adaptedId",
-    "clientId",
-    "contextData",
-    "lastModification",
-    "path",
-    "proxy",
-    "serverId",
-    "type",
-    "version"
-})
+@XmlType(name = "nuxeoSynchroTuple", propOrder = { "adaptedId", "clientId", "contextData", "lastModification", "path",
+        "proxy", "serverId", "type", "version" })
 public class NuxeoSynchroTuple {
 
     protected String adaptedId;
+
     protected String clientId;
+
     @XmlElement(nillable = true)
     protected List<ContextDataInfo> contextData;
+
     protected Long lastModification;
+
     protected String path;
+
     protected boolean proxy;
+
     protected String serverId;
+
     protected String type;
+
     protected boolean version;
 
     /**
      * Gets the value of the adaptedId property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getAdaptedId() {
         return adaptedId;
@@ -76,10 +69,7 @@ public class NuxeoSynchroTuple {
     /**
      * Sets the value of the adaptedId property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setAdaptedId(String value) {
         this.adaptedId = value;
@@ -88,10 +78,7 @@ public class NuxeoSynchroTuple {
     /**
      * Gets the value of the clientId property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getClientId() {
         return clientId;
@@ -100,10 +87,7 @@ public class NuxeoSynchroTuple {
     /**
      * Sets the value of the clientId property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setClientId(String value) {
         this.clientId = value;
@@ -111,25 +95,18 @@ public class NuxeoSynchroTuple {
 
     /**
      * Gets the value of the contextData property.
-     * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the contextData property.
-     * 
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+     * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+     * the contextData property.
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getContextData().add(newItem);
+     * getContextData().add(newItem);
      * </pre>
-     * 
-     * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link ContextDataInfo }
-     * 
-     * 
+     * Objects of the following type(s) are allowed in the list {@link ContextDataInfo }
      */
     public List<ContextDataInfo> getContextData() {
         if (contextData == null) {
@@ -141,10 +118,7 @@ public class NuxeoSynchroTuple {
     /**
      * Gets the value of the lastModification property.
      * 
-     * @return
-     *     possible object is
-     *     {@link Long }
-     *     
+     * @return possible object is {@link Long }
      */
     public Long getLastModification() {
         return lastModification;
@@ -153,10 +127,7 @@ public class NuxeoSynchroTuple {
     /**
      * Sets the value of the lastModification property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link Long }
-     *     
+     * @param value allowed object is {@link Long }
      */
     public void setLastModification(Long value) {
         this.lastModification = value;
@@ -165,10 +136,7 @@ public class NuxeoSynchroTuple {
     /**
      * Gets the value of the path property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getPath() {
         return path;
@@ -177,10 +145,7 @@ public class NuxeoSynchroTuple {
     /**
      * Sets the value of the path property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setPath(String value) {
         this.path = value;
@@ -188,7 +153,6 @@ public class NuxeoSynchroTuple {
 
     /**
      * Gets the value of the proxy property.
-     * 
      */
     public boolean isProxy() {
         return proxy;
@@ -196,7 +160,6 @@ public class NuxeoSynchroTuple {
 
     /**
      * Sets the value of the proxy property.
-     * 
      */
     public void setProxy(boolean value) {
         this.proxy = value;
@@ -205,10 +168,7 @@ public class NuxeoSynchroTuple {
     /**
      * Gets the value of the serverId property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getServerId() {
         return serverId;
@@ -217,10 +177,7 @@ public class NuxeoSynchroTuple {
     /**
      * Sets the value of the serverId property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setServerId(String value) {
         this.serverId = value;
@@ -229,10 +186,7 @@ public class NuxeoSynchroTuple {
     /**
      * Gets the value of the type property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getType() {
         return type;
@@ -241,10 +195,7 @@ public class NuxeoSynchroTuple {
     /**
      * Sets the value of the type property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setType(String value) {
         this.type = value;
@@ -252,7 +203,6 @@ public class NuxeoSynchroTuple {
 
     /**
      * Gets the value of the version property.
-     * 
      */
     public boolean isVersion() {
         return version;
@@ -260,7 +210,6 @@ public class NuxeoSynchroTuple {
 
     /**
      * Sets the value of the version property.
-     * 
      */
     public void setVersion(boolean value) {
         this.version = value;

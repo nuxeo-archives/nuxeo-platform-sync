@@ -27,12 +27,10 @@ import org.nuxeo.ecm.platform.sync.utils.ImportUtils;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 
 /**
- * Implementing class for processing a tuple. It adds a new version document.
- * The documents are imported by the CoreSession using the contextual data
- * provided by the server. They need to be added before proxies import.
+ * Implementing class for processing a tuple. It adds a new version document. The documents are imported by the
+ * CoreSession using the contextual data provided by the server. They need to be added before proxies import.
  *
  * @author rux
- *
  */
 public class TupleProcessorAddVersion extends TupleProcessorAdd {
 
@@ -44,38 +42,29 @@ public class TupleProcessorAddVersion extends TupleProcessorAdd {
 
     @Override
     public void process() throws ClientException {
-        log.debug("Starting the process of adding version "
-                + tuple.getClientId() + " on the client side: " + name);
+        log.debug("Starting the process of adding version " + tuple.getClientId() + " on the client side: " + name);
         // in case there is a version, the document model will have parent ref
         // null
-        localDocument = new DocumentModelImpl((String) null, tuple.getType(),
-                tuple.getClientId(), new Path(name), null, null, null, null,
-                null, null, session.getRepositoryName());
+        localDocument = new DocumentModelImpl((String) null, tuple.getType(), tuple.getClientId(), new Path(name),
+                null, null, null, null, null, null, session.getRepositoryName());
 
         localDocument.putContextData(CoreSession.IMPORT_VERSION_VERSIONABLE_ID,
-                ImportUtils.getContextDataInfo(contextData,
-                        CoreSession.IMPORT_VERSION_VERSIONABLE_ID));
+                ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_VERSION_VERSIONABLE_ID));
         localDocument.putContextData(CoreSession.IMPORT_VERSION_LABEL,
-                ImportUtils.getContextDataInfo(contextData,
-                        CoreSession.IMPORT_VERSION_LABEL));
+                ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_VERSION_LABEL));
         localDocument.putContextData(CoreSession.IMPORT_VERSION_DESCRIPTION,
-                ImportUtils.getContextDataInfo(contextData,
-                        CoreSession.IMPORT_VERSION_DESCRIPTION));
+                ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_VERSION_DESCRIPTION));
 
-        propertyValue = new DateType().encode(ImportUtils.getContextDataInfo(
-                contextData, CoreSession.IMPORT_VERSION_CREATED));
-        localDocument.putContextData(CoreSession.IMPORT_VERSION_CREATED,
-                propertyValue);
+        propertyValue = new DateType().encode(ImportUtils.getContextDataInfo(contextData,
+                CoreSession.IMPORT_VERSION_CREATED));
+        localDocument.putContextData(CoreSession.IMPORT_VERSION_CREATED, propertyValue);
         localDocument.putContextData(CoreSession.IMPORT_VERSION_MAJOR,
-                Long.valueOf(ImportUtils.getContextDataInfo(contextData,
-                        CoreSession.IMPORT_VERSION_MAJOR)));
+                Long.valueOf(ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_VERSION_MAJOR)));
         localDocument.putContextData(CoreSession.IMPORT_VERSION_MINOR,
-                Long.valueOf(ImportUtils.getContextDataInfo(contextData,
-                        CoreSession.IMPORT_VERSION_MINOR)));
+                Long.valueOf(ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_VERSION_MINOR)));
 
         setProperties();
         runUnrestrictedImport();
-        log.debug("Finishing the process of adding version "
-                + tuple.getClientId() + " on the client side: " + name);
+        log.debug("Finishing the process of adding version " + tuple.getClientId() + " on the client side: " + name);
     }
 }

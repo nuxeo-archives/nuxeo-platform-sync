@@ -21,7 +21,6 @@ package org.nuxeo.ecm.platform.sync.adapter;
 
 import org.nuxeo.ecm.core.api.DocumentModel;
 
-
 /**
  * @author <a href="qlamerand@nuxeo.com">Quentin Lamerand</a>
  */

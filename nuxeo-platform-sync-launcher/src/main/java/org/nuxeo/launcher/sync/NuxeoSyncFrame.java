@@ -52,7 +52,6 @@ import org.nuxeo.launcher.gui.NuxeoLauncherGUI;
  * A NuxeoFrame with a custom tab: Synchronization
  * 
  * @author Sun Seng David TAN <stan@nuxeo.com>
- * 
  */
 public class NuxeoSyncFrame extends NuxeoFrame {
 
@@ -95,8 +94,7 @@ public class NuxeoSyncFrame extends NuxeoFrame {
     @Override
     protected JComponent buildHeader() {
         // override the default image with the new desktop client logo
-        ImagePanel headerLogo = new ImagePanel(
-                getImageIcon("img/nuxeo_desktop_client_logo.png"),
+        ImagePanel headerLogo = new ImagePanel(getImageIcon("img/nuxeo_desktop_client_logo.png"),
                 getImageIcon("img/nuxeo_control_panel_bg.png"));
         headerLogo.setLayout(new GridBagLayout());
         // Main button (start/stop) (added to header)
@@ -212,8 +210,7 @@ public class NuxeoSyncFrame extends NuxeoFrame {
                 String login = syncLoginTextField.getText();
                 char[] password = syncPasswordField.getPassword();
 
-                HttpAutomationClient client = new HttpAutomationClient(
-                        "http://localhost:8080/nuxeo/site/automation");
+                HttpAutomationClient client = new HttpAutomationClient("http://localhost:8080/nuxeo/site/automation");
                 // anonymous locally
                 Session session;
                 try {
@@ -227,9 +224,8 @@ public class NuxeoSyncFrame extends NuxeoFrame {
                     request.execute();
                     getErrorMessageLabel().setText("");
                 } catch (Exception e) {
-                    errorMessageLabel.setText("<html>"
-                            + " an error occurred while synchronizing"
-                            + "<br> [" + e.getMessage() + "]" + "</html>");
+                    errorMessageLabel.setText("<html>" + " an error occurred while synchronizing" + "<br> ["
+                            + e.getMessage() + "]" + "</html>");
                     syncPanel.updateUI();
                 } finally {
                     client.shutdown();
@@ -245,8 +241,7 @@ public class NuxeoSyncFrame extends NuxeoFrame {
             @Override
             public void actionPerformed(ActionEvent event) {
                 try {
-                    Desktop.getDesktop().browse(
-                            java.net.URI.create(getController().getLauncher().getURL()));
+                    Desktop.getDesktop().browse(java.net.URI.create(getController().getLauncher().getURL()));
                 } catch (Exception e) {
                     setError("an error occurred while launching browser", e);
                 }

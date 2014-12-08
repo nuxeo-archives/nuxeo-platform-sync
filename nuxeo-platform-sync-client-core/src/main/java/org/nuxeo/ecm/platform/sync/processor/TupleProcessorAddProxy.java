@@ -27,12 +27,10 @@ import org.nuxeo.ecm.platform.sync.utils.ImportUtils;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 
 /**
- * Implementing class for processing a tuple. It adds a new proxy document. The
- * documents are imported by the CoreSession using the contextual data provided
- * by the server. They need to be added after versions import.
+ * Implementing class for processing a tuple. It adds a new proxy document. The documents are imported by the
+ * CoreSession using the contextual data provided by the server. They need to be added after versions import.
  *
  * @author rux
- *
  */
 public class TupleProcessorAddProxy extends TupleProcessorAdd {
 
@@ -44,24 +42,18 @@ public class TupleProcessorAddProxy extends TupleProcessorAdd {
 
     @Override
     public void process() throws ClientException {
-        log.debug("Starting the process of adding proxy " + tuple.getClientId()
-                + " on the client side: " + name);
+        log.debug("Starting the process of adding proxy " + tuple.getClientId() + " on the client side: " + name);
         // in case there is a proxy, the document model will have the type
         // ecm:proxy
-        localDocument = new DocumentModelImpl((String) null,
-                CoreSession.IMPORT_PROXY_TYPE, tuple.getClientId(), new Path(
-                        name), null, null, new PathRef(parentPath), null, null,
-                null, null);
+        localDocument = new DocumentModelImpl((String) null, CoreSession.IMPORT_PROXY_TYPE, tuple.getClientId(),
+                new Path(name), null, null, new PathRef(parentPath), null, null, null, null);
         localDocument.putContextData(CoreSession.IMPORT_PROXY_TARGET_ID,
-                ImportUtils.getContextDataInfo(contextData,
-                        CoreSession.IMPORT_PROXY_TARGET_ID));
+                ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_PROXY_TARGET_ID));
         localDocument.putContextData(CoreSession.IMPORT_PROXY_VERSIONABLE_ID,
-                ImportUtils.getContextDataInfo(contextData,
-                        CoreSession.IMPORT_PROXY_VERSIONABLE_ID));
+                ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_PROXY_VERSIONABLE_ID));
 
         runUnrestrictedImport();
         // no need to add properties too
-        log.debug("Finishing the process of adding proxy "
-                + tuple.getClientId() + " on the client side: " + name);
+        log.debug("Finishing the process of adding proxy " + tuple.getClientId() + " on the client side: " + name);
     }
 }

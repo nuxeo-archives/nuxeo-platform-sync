@@ -1,15 +1,14 @@
-
 package org.nuxeo.ecm.platform.sync.webservices.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for accessWSSynchroServerModule complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for accessWSSynchroServerModule complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="accessWSSynchroServerModule">
@@ -24,28 +23,21 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "accessWSSynchroServerModule", propOrder = {
-    "repository",
-    "user",
-    "password"
-})
+@XmlType(name = "accessWSSynchroServerModule", propOrder = { "repository", "user", "password" })
 public class AccessWSSynchroServerModule {
 
     protected String repository;
+
     protected String user;
+
     protected String password;
 
     /**
      * Gets the value of the repository property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getRepository() {
         return repository;
@@ -54,10 +46,7 @@ public class AccessWSSynchroServerModule {
     /**
      * Sets the value of the repository property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setRepository(String value) {
         this.repository = value;
@@ -66,10 +55,7 @@ public class AccessWSSynchroServerModule {
     /**
      * Gets the value of the user property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getUser() {
         return user;
@@ -78,10 +64,7 @@ public class AccessWSSynchroServerModule {
     /**
      * Sets the value of the user property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setUser(String value) {
         this.user = value;
@@ -90,10 +73,7 @@ public class AccessWSSynchroServerModule {
     /**
      * Gets the value of the password property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getPassword() {
         return password;
@@ -102,10 +82,7 @@ public class AccessWSSynchroServerModule {
     /**
      * Sets the value of the password property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setPassword(String value) {
         this.password = value;

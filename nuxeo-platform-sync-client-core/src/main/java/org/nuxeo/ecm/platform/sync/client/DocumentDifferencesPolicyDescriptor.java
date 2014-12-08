@@ -32,7 +32,7 @@ public class DocumentDifferencesPolicyDescriptor {
 
     @XNode("@name")
     private String name = "default";
-    
+
     public Class<DocumentDifferencesPolicy> getPolicyClass() {
         return policyClass;
     }

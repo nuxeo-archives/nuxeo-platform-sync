@@ -22,16 +22,13 @@ package org.nuxeo.ecm.platform.sync.server.webservices;
  */
 public interface StatefulWebServiceManagement {
     /**
-     * Keeps alive the session. The Client can call this method to touch the instance.
-     * That way it is prevented the destruction of the Stateful Web Service even if the
-     * Client has nothing really to communicate with the Server.
+     * Keeps alive the session. The Client can call this method to touch the instance. That way it is prevented the
+     * destruction of the Stateful Web Service even if the Client has nothing really to communicate with the Server.
      */
     void keepAlive();
 
-
     /**
-     * Destroys the service. It is called from the timeout callback, allowing the service
-     * to gracefully clean up.
+     * Destroys the service. It is called from the timeout callback, allowing the service to gracefully clean up.
      */
     void destroySession();
 }

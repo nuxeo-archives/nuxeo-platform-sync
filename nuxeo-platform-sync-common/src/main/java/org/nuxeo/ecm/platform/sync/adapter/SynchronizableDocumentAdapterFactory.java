@@ -37,8 +37,7 @@ public class SynchronizableDocumentAdapterFactory implements DocumentAdapterFact
 
     protected SynchronizableDocumentManagerService getService() {
         if (syncDocumentService == null) {
-            syncDocumentService = Framework
-                    .getLocalService(SynchronizableDocumentManagerService.class);
+            syncDocumentService = Framework.getLocalService(SynchronizableDocumentManagerService.class);
         }
         return syncDocumentService;
     }

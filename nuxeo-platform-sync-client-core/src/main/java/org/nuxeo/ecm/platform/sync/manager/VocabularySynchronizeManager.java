@@ -47,11 +47,10 @@ import org.nuxeo.ecm.platform.sync.utils.VocabularyUtils;
 import org.nuxeo.runtime.api.Framework;
 
 /**
- * The manager to take care the vocabulary set synchronization. It simple
- * replaces the local vocabularies with the ones from server.
+ * The manager to take care the vocabulary set synchronization. It simple replaces the local vocabularies with the ones
+ * from server.
  *
  * @author mcedica
- *
  */
 public class VocabularySynchronizeManager {
     SynchHttpClient httpClient = null;
@@ -70,20 +69,17 @@ public class VocabularySynchronizeManager {
             // delete all entries for this one
             VocabularyUtils.clearVocabulary(vocabularyName);
             // get all the entries from server
-            List<String> pathParams = Arrays.asList("vocabularyRestlet",
-                    vocabularyName);
+            List<String> pathParams = Arrays.asList("vocabularyRestlet", vocabularyName);
             syncronize(vocabularyName, pathParams);
         }
 
         return SynchronizeReport.newVocabulariesReport(vocabularyNames);
     }
 
-    private void syncronize(String vocabularyName, List<String> pathParams)
-            throws ClientException {
+    private void syncronize(String vocabularyName, List<String> pathParams) throws ClientException {
 
         try {
-            InputStream inputStream = httpClient.executeGetCall(pathParams,
-                    null);
+            InputStream inputStream = httpClient.executeGetCall(pathParams, null);
 
             byte[] bytesRead = IOUtils.toByteArray(inputStream);
 
@@ -93,8 +89,7 @@ public class VocabularySynchronizeManager {
             String xmlRep = null;
             xmlRep = new String(bytesRead);
 
-            List<Map<String, Object>> mappedEntries = getMappedEntries(
-                    vocabularyName, xmlRep);
+            List<Map<String, Object>> mappedEntries = getMappedEntries(vocabularyName, xmlRep);
             for (Map<String, Object> map : mappedEntries) {
                 VocabularyUtils.addVocabularyEntry(vocabularyName, map);
             }
@@ -108,26 +103,20 @@ public class VocabularySynchronizeManager {
 
     }
 
-    protected List<Map<String, Object>> getMappedEntries(String vocabularyName,
-            String res) {
+    protected List<Map<String, Object>> getMappedEntries(String vocabularyName, String res) {
         try {
             String directorySchema = VocabularyUtils.getDirectorySchema(vocabularyName);
             return extractVocabulary(directorySchema, res);
         } catch (DocumentException e) {
-            throw new Error(
-                    "Unexpected error occured while parsing the vocabularies",
-                    e);
+            throw new Error("Unexpected error occured while parsing the vocabularies", e);
         } catch (ClientException e) {
-            throw new Error(
-                    "Unexpected error occured while parsing the vocabularies",
-                    e);
+            throw new Error("Unexpected error occured while parsing the vocabularies", e);
         }
 
     }
 
     @SuppressWarnings("rawtypes")
-    protected List<Map<String, Object>> extractVocabulary(
-            String directorySchema, String res) throws DocumentException {
+    protected List<Map<String, Object>> extractVocabulary(String directorySchema, String res) throws DocumentException {
         ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         Document domDoc = DocumentHelper.parseText(res);
         List nodes = domDoc.selectNodes("//entries/entry");
@@ -152,11 +141,8 @@ public class VocabularySynchronizeManager {
                         Integer integerEntry = Integer.valueOf(entryValue);
                         entryMap.put(fieldName, integerEntry);
                     } else {
-                        log.warn("Vocabulary sychronizer only serialize int, long or string fields type. "
-                                + fieldName
-                                + "("
-                                + type.getName()
-                                + ") has been ignored");
+                        log.warn("Vocabulary sychronizer only serialize int, long or string fields type. " + fieldName
+                                + "(" + type.getName() + ") has been ignored");
                     }
                 }
             }

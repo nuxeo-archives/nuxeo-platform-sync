@@ -20,12 +20,11 @@ import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
 
 /**
  * @author "Stephane Lacoin (aka matic) slacoin@nuxeo.com"
- *
  */
 public class SyncOp extends DefaultObject {
 
     public SyncHost host() {
-        return (SyncHost)getPrevious();
+        return (SyncHost) getPrevious();
     }
 
     public SyncRoot root() {

@@ -5,17 +5,14 @@ import java.io.Serializable;
 import org.nuxeo.ecm.platform.web.common.vh.VirtualHostHelper;
 
 /**
- * Utility class that will keep all the details needed in the process of
- * synchronization
+ * Utility class that will keep all the details needed in the process of synchronization
  * 
  * @author rux
- * 
  */
 public class SynchronizeDetails implements Serializable {
 
-    public static final SynchronizeDetails DEFAULTS = new SynchronizeDetails(
-            "Administrator", "Administrator", "http", "localhost", 8080,
-            "/nuxeo");
+    public static final SynchronizeDetails DEFAULTS = new SynchronizeDetails("Administrator", "Administrator", "http",
+            "localhost", 8080, "/nuxeo");
 
     private static final long serialVersionUID = -3876136428566855181L;
 
@@ -30,16 +27,16 @@ public class SynchronizeDetails implements Serializable {
     private String protocol = "http";
 
     private String contextPath;
-    
+
     private String diffPolicy = "default";
-    
+
     private Boolean dryRun = false;
 
     public SynchronizeDetails() {
     }
 
-    public SynchronizeDetails(String username, String password,
-            String protocol, String host, int port, String contextPath) {
+    public SynchronizeDetails(String username, String password, String protocol, String host, int port,
+            String contextPath) {
         this.username = username;
         this.password = password;
         this.protocol = protocol;

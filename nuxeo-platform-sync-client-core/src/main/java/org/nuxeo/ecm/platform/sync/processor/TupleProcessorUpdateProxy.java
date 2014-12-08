@@ -32,14 +32,12 @@ import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
  * Implementing class for processing a tuple. It updates a new proxy document.
  *
  * @author rux
- *
  */
 public class TupleProcessorUpdateProxy extends TupleProcessorUpdate {
 
     private static final Logger log = Logger.getLogger(TupleProcessorUpdateProxy.class);
 
-    public TupleProcessorUpdateProxy(CoreSession session,
-            NuxeoSynchroTuple tuple) {
+    public TupleProcessorUpdateProxy(CoreSession session, NuxeoSynchroTuple tuple) {
         super(session, tuple);
     }
 
@@ -48,11 +46,9 @@ public class TupleProcessorUpdateProxy extends TupleProcessorUpdate {
         // this case is encountered when republishing
         // and overwriting existing proxy
 
-        log.debug("Starting the process of updating proxy "
-                + tuple.getAdaptedId() + " on the client side: " + name);
+        log.debug("Starting the process of updating proxy " + tuple.getAdaptedId() + " on the client side: " + name);
 
-        log.debug("Removing old proxy " + tuple.getAdaptedId()
-                + " on the client side: " + name);
+        log.debug("Removing old proxy " + tuple.getAdaptedId() + " on the client side: " + name);
         try {
             session.removeDocument((new IdRef(tuple.getAdaptedId())));
             session.save();
@@ -60,23 +56,17 @@ public class TupleProcessorUpdateProxy extends TupleProcessorUpdate {
             log.warn(e);
         }
 
-        log.debug("Adding updated proxy " + tuple.getAdaptedId()
-                + " on the client side: " + name);
-        localDocument = new DocumentModelImpl((String) null,
-                CoreSession.IMPORT_PROXY_TYPE, tuple.getAdaptedId(), new Path(
-                        name), null, null, new PathRef(parentPath), null, null,
-                null, null);
+        log.debug("Adding updated proxy " + tuple.getAdaptedId() + " on the client side: " + name);
+        localDocument = new DocumentModelImpl((String) null, CoreSession.IMPORT_PROXY_TYPE, tuple.getAdaptedId(),
+                new Path(name), null, null, new PathRef(parentPath), null, null, null, null);
         localDocument.putContextData(CoreSession.IMPORT_PROXY_TARGET_ID,
-                ImportUtils.getContextDataInfo(contextData,
-                        CoreSession.IMPORT_PROXY_TARGET_ID));
+                ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_PROXY_TARGET_ID));
         localDocument.putContextData(CoreSession.IMPORT_PROXY_VERSIONABLE_ID,
-                ImportUtils.getContextDataInfo(contextData,
-                        CoreSession.IMPORT_PROXY_VERSIONABLE_ID));
+                ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_PROXY_VERSIONABLE_ID));
 
         runUnrestrictedImport();
         // no need to add properties too
-        log.debug("Finishing the process of updating proxy "
-                + tuple.getAdaptedId() + " on the client side: " + name);
+        log.debug("Finishing the process of updating proxy " + tuple.getAdaptedId() + " on the client side: " + name);
     }
 
     private void runUnrestrictedImport() throws ClientException {

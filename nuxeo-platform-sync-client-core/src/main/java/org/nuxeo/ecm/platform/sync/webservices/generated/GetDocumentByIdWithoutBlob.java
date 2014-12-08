@@ -1,15 +1,14 @@
-
 package org.nuxeo.ecm.platform.sync.webservices.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for getDocumentByIdWithoutBlob complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for getDocumentByIdWithoutBlob complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="getDocumentByIdWithoutBlob">
@@ -22,13 +21,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "getDocumentByIdWithoutBlob", propOrder = {
-    "arg0"
-})
+@XmlType(name = "getDocumentByIdWithoutBlob", propOrder = { "arg0" })
 public class GetDocumentByIdWithoutBlob {
 
     protected String arg0;
@@ -36,10 +31,7 @@ public class GetDocumentByIdWithoutBlob {
     /**
      * Gets the value of the arg0 property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
      */
     public String getArg0() {
         return arg0;
@@ -48,10 +40,7 @@ public class GetDocumentByIdWithoutBlob {
     /**
      * Sets the value of the arg0 property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
      */
     public void setArg0(String value) {
         this.arg0 = value;

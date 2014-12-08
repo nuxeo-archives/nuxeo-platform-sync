@@ -24,6 +24,7 @@ import org.nuxeo.ecm.platform.sync.adapter.SynchronizableDocument;
 
 public interface SynchronizableDocumentManagerService {
 
-    SynchronizableDocument getSynchronizableDocument(DocumentModel doc) throws InstantiationException, IllegalAccessException;
+    SynchronizableDocument getSynchronizableDocument(DocumentModel doc) throws InstantiationException,
+            IllegalAccessException;
 
 }

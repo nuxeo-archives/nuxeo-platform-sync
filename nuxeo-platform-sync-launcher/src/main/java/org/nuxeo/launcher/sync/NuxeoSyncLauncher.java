@@ -31,7 +31,6 @@ import org.nuxeo.launcher.config.ConfigurationException;
  * Customized nuxeo-launcher Main class to launch the gui with the "sync" tab.
  *
  * @author Sun Seng David TAN <stan@nuxeo.com>
- *
  */
 public class NuxeoSyncLauncher {
 

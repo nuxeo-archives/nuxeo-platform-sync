@@ -39,21 +39,17 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *
  * Read security policy
  *
  * @author <a href="mailto:cbaican@nuxeo.com">Catalin Baican</a>
- *
  */
 public class ReadSecurityPolicy extends AbstractSecurityPolicy {
 
     protected SynchronizeService synchronizeService;
 
     @Override
-    public Access checkPermission(Document doc, ACP mergedAcp,
-            Principal principal, String permission,
-            String[] resolvedPermissions, String[] additionalPrincipals)
-            throws SecurityException {
+    public Access checkPermission(Document doc, ACP mergedAcp, Principal principal, String permission,
+            String[] resolvedPermissions, String[] additionalPrincipals) throws SecurityException {
         Access access = Access.UNKNOWN;
         if (doc.getType().getName().equals("UserWorkspacesRoot")) {
             return Access.DENY;
@@ -63,9 +59,8 @@ public class ReadSecurityPolicy extends AbstractSecurityPolicy {
             return access;
         }
 
-        List<String> permissionList = Arrays.asList(READ, BROWSE,
-                "ReadVersion", READ_PROPERTIES, READ_CHILDREN, READ_LIFE_CYCLE,
-                READ_SECURITY, "ReviewParticipant", VERSION);
+        List<String> permissionList = Arrays.asList(READ, BROWSE, "ReadVersion", READ_PROPERTIES, READ_CHILDREN,
+                READ_LIFE_CYCLE, READ_SECURITY, "ReviewParticipant", VERSION);
         if (permissionList.contains(permission)) {
             access = Access.GRANT;
         } else {

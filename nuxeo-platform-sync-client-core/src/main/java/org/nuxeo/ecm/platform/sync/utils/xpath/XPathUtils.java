@@ -28,13 +28,12 @@ import org.w3c.dom.NodeList;
  * Utility to manage the XPath creation.
  * 
  * @author price
- *
  */
 public class XPathUtils {
 
     /**
-     * Checks to see if parent node has more of these nodes 
-     * looks at tagName
+     * Checks to see if parent node has more of these nodes looks at tagName
+     * 
      * @param node
      * @return
      */
@@ -57,6 +56,7 @@ public class XPathUtils {
 
     /**
      * Resolves the xpath of an element.
+     * 
      * @param elt
      * @return
      * @throws IOException
@@ -71,8 +71,7 @@ public class XPathUtils {
                 if (!parentNodeHasMoreOfThese((Element) currentNode)) {
                     path = '/' + parent.getTagName() + path;
                 } else {
-                    path = '/' + parent.getTagName() + '['
-                            + getElementIdx(parent) + ']' + path;
+                    path = '/' + parent.getTagName() + '[' + getElementIdx(parent) + ']' + path;
                 }
             } else {
                 String schema = parent.getAttribute("name");
@@ -88,6 +87,7 @@ public class XPathUtils {
 
     /**
      * Returns the index of a node .
+     * 
      * @param elt
      * @return
      */
@@ -95,8 +95,7 @@ public class XPathUtils {
         int count = 0;
         for (Node sib = elt.getPreviousSibling(); sib != null; sib = sib.getPreviousSibling()) {
             if (sib.getNodeType() == Node.ELEMENT_NODE
-                    && ((Element) sib).getTagName().equals(
-                            ((Element) elt).getTagName()))
+                    && ((Element) sib).getTagName().equals(((Element) elt).getTagName()))
                 count++;
         }
 

@@ -28,8 +28,8 @@ import org.w3c.dom.NodeList;
 
 /**
  * An xpath function that validates if a data node has a blob.
+ * 
  * @author price
- *
  */
 public class BlobValidator implements XPathFunction {
 

@@ -38,29 +38,26 @@ import org.nuxeo.ecm.platform.ws.NuxeoRemotingBean;
 import org.nuxeo.runtime.api.Framework;
 
 /**
- * 
- * Class factory for flagged document shanpshot initialization. The code is basically the
- * same as in {@link NuxeoRemotingBean} but: that code is private and also we need the
- * hasBlobs flag.
+ * Class factory for flagged document shanpshot initialization. The code is basically the same as in
+ * {@link NuxeoRemotingBean} but: that code is private and also we need the hasBlobs flag.
  * 
  * @author mcedica
- * 
  */
 public class FlagedDocumentSnapshotFactory {
 
     private boolean hasBlobs;
-    
+
     public FlagedDocumentSnapshotFactory() {
     }
-    
+
     /**
      * Creates a new FlagedDocumentSnapshot based on the properties of the document.
+     * 
      * @param document
      * @return
      * @throws ClientException
      */
-    public FlagedDocumentSnapshot newDocumentSnapshot(DocumentModel document)
-            throws ClientException {
+    public FlagedDocumentSnapshot newDocumentSnapshot(DocumentModel document) throws ClientException {
         hasBlobs = false;
         DocumentProperty[] props = getDocumentNoBlobProperties(document);
         ACE[] resACP = null;
@@ -71,13 +68,10 @@ public class FlagedDocumentSnapshotFactory {
         } else {
             resACP = new ACE[0];
         }
-        return new FlagedDocumentSnapshot(props, null, document.getPathAsString(),
-                WsACE.wrap(resACP), hasBlobs);
+        return new FlagedDocumentSnapshot(props, null, document.getPathAsString(), WsACE.wrap(resACP), hasBlobs);
     }
 
-
-    private DocumentProperty[] getDocumentNoBlobProperties(
-            DocumentModel doc) throws ClientException {
+    private DocumentProperty[] getDocumentNoBlobProperties(DocumentModel doc) throws ClientException {
 
         List<DocumentProperty> props = new ArrayList<DocumentProperty>();
         if (doc != null) {
@@ -86,8 +80,7 @@ public class FlagedDocumentSnapshotFactory {
                 DataModel dm = doc.getDataModel(schema);
                 Map<String, Object> map = dm.getMap();
                 for (Map.Entry<String, Object> entry : map.entrySet()) {
-                    collectNoBlobProperty(schema + ":", entry.getKey(), entry.getValue(),
-                            props);
+                    collectNoBlobProperty(schema + ":", entry.getKey(), entry.getValue(), props);
                 }
             }
         }
@@ -95,24 +88,22 @@ public class FlagedDocumentSnapshotFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private void collectNoBlobProperty(String prefix, String rawName,
-            Object value, List<DocumentProperty> props) throws ClientException {
-        //eliminate any prefix
+    private void collectNoBlobProperty(String prefix, String rawName, Object value, List<DocumentProperty> props)
+            throws ClientException {
+        // eliminate any prefix
         String[] tokens = rawName.split(":");
-        String name = tokens[tokens.length - 1]; 
+        String name = tokens[tokens.length - 1];
         if (value instanceof Map) {
             Map<String, Object> map = (Map<String, Object>) value;
             prefix = prefix + name + '/';
             for (Map.Entry<String, Object> entry : map.entrySet()) {
-                collectNoBlobProperty(prefix, entry.getKey(), entry.getValue(),
-                        props);
+                collectNoBlobProperty(prefix, entry.getKey(), entry.getValue(), props);
             }
         } else if (value instanceof List) {
             prefix = prefix + name + '/';
             List<Object> list = (List<Object>) value;
             for (int i = 0, len = list.size(); i < len; i++) {
-                collectNoBlobProperty(prefix, String.valueOf(i), list.get(i),
-                        props);
+                collectNoBlobProperty(prefix, String.valueOf(i), list.get(i), props);
             }
         } else if (!(value instanceof Blob)) {
             if (value == null) {
@@ -120,15 +111,15 @@ public class FlagedDocumentSnapshotFactory {
             } else {
                 collectProperty(prefix, name, value, props);
             }
-            
+
         } else if (value instanceof Blob) {
             hasBlobs = true;
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void collectProperty(String prefix, String name,
-            Object value, List<DocumentProperty> props) throws ClientException {
+    private void collectProperty(String prefix, String name, Object value, List<DocumentProperty> props)
+            throws ClientException {
         final String STRINGS_LIST_SEP = ";";
         if (value instanceof Map) {
             Map<String, Object> map = (Map<String, Object>) value;
@@ -151,8 +142,7 @@ public class FlagedDocumentSnapshotFactory {
                         byte[] bytes = ((Blob) value).getByteArray();
                         strValue = Base64.encodeBase64String(bytes);
                     } catch (IOException e) {
-                        throw new ClientException(
-                                "Failed to get blob property value", e);
+                        throw new ClientException("Failed to get blob property value", e);
                     }
                 } else if (value instanceof Calendar) {
                     strValue = new DateType().encode(value);
@@ -179,8 +169,7 @@ public class FlagedDocumentSnapshotFactory {
             props.add(new DocumentProperty(prefix + name, strValue));
         }
     }
-    
-    
+
     protected static SchemaManager getSchemaManager() {
         return Framework.getRuntime().getService(SchemaManager.class);
     }

@@ -25,12 +25,10 @@ import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
  * Implementing class for processing a tuple. It updates a new version document.
  * 
  * @author rux
- * 
  */
 public class TupleProcessorUpdateVersion extends TupleProcessorUpdate {
 
-    public TupleProcessorUpdateVersion(CoreSession session,
-            NuxeoSynchroTuple tuple) {
+    public TupleProcessorUpdateVersion(CoreSession session, NuxeoSynchroTuple tuple) {
         super(session, tuple);
     }
 

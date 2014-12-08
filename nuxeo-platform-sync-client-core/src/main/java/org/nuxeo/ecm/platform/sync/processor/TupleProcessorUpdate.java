@@ -80,11 +80,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * The base class for processing a tuple when updating a new document. It holds
- * the common processing for this case.
+ * The base class for processing a tuple when updating a new document. It holds the common processing for this case.
  *
  * @author rux
- *
  */
 public abstract class TupleProcessorUpdate extends TupleProcessor {
 
@@ -105,8 +103,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
         try {
             List<WsACE> aces = getDocumentSnapshot().getAcl();
             for (WsACE wsACE : aces) {
-                ACE ace = new ACE(wsACE.getUsername(), wsACE.getPermission(),
-                        wsACE.isGranted());
+                ACE ace = new ACE(wsACE.getUsername(), wsACE.getPermission(), wsACE.isGranted());
                 newACL.add(ace);
             }
         } catch (Exception e) {
@@ -115,8 +112,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
     }
 
     /**
-     * Sets the properties on localDocument as super user. Lifecycle details are
-     * also included here.
+     * Sets the properties on localDocument as super user. Lifecycle details are also included here.
      *
      * @throws ClientException
      */
@@ -140,10 +136,8 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * @throws ClientException
      */
     protected void setLifeCycle() throws ClientException {
-        String lifeCyclePolicy = ImportUtils.getContextDataInfo(contextData,
-                CoreSession.IMPORT_LIFECYCLE_POLICY);
-        String destState = ImportUtils.getContextDataInfo(contextData,
-                CoreSession.IMPORT_LIFECYCLE_STATE);
+        String lifeCyclePolicy = ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_LIFECYCLE_POLICY);
+        String destState = ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_LIFECYCLE_STATE);
         if (importConfiguration != null) {
             String importLC = importConfiguration.getClientLifeCycleStateFor(destState);
             if (importLC != null && importLC.length() > 0)
@@ -167,30 +161,29 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
 
     /**
      * Sets properties (non blobs only) on the local document.
+     * 
      * @throws ClientException
      */
     @SuppressWarnings("unchecked")
     protected void setPropertiesOnDocument() throws ClientException {
-        //first prepare the list of properties as tree
-        Map<String, Object> propertyTree = transformList(
-                getDocumentSnapshot().getNoBlobProperties());
-        //get the parts: one for each schema applied
+        // first prepare the list of properties as tree
+        Map<String, Object> propertyTree = transformList(getDocumentSnapshot().getNoBlobProperties());
+        // get the parts: one for each schema applied
         DocumentPart[] parts = localDocument.getParts();
-        //for each part hunt the properties in document snapshot
+        // for each part hunt the properties in document snapshot
         for (DocumentPart part : parts) {
-            //the map to accumulate the data
+            // the map to accumulate the data
             Map<String, Object> data = new HashMap<String, Object>();
-            //now look for properties
-            Map<String, Object> subTree = (Map<String, Object>) propertyTree.get(
-                    part.getName());
+            // now look for properties
+            Map<String, Object> subTree = (Map<String, Object>) propertyTree.get(part.getName());
             if (subTree == null) {
-                //no data for this map
+                // no data for this map
                 continue;
             }
             for (String topProperty : subTree.keySet()) {
                 Field field = part.getSchema().getField(topProperty);
                 if (field == null) {
-                    //property required but not in schema
+                    // property required but not in schema
                     log.warn(topProperty + " not in schema" + part.getName());
                     continue;
                 }
@@ -208,7 +201,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                 try {
                     value = getSegmentData(subTree, topProperty, field.getType());
                 } catch (ClientException ce) {
-                    //don't break, go further
+                    // don't break, go further
                     log.warn(topProperty + " couldn't be imported", ce);
                     continue;
                 }
@@ -220,47 +213,48 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
 
     /**
      * Transforms the list of properties in a tree by schema names and segments.
+     * 
      * @param properties
-     * @return Map<schemaName - Map <first name - Object>> where Object is either the
-     * value or the further Map <second name - Object> and so on
+     * @return Map<schemaName - Map <first name - Object>> where Object is either the value or the further Map <second
+     *         name - Object> and so on
      */
     @SuppressWarnings("unchecked")
     private static Map<String, Object> transformList(List<DocumentProperty> properties) {
         Map<String, Object> ret = new LinkedHashMap<String, Object>();
         for (DocumentProperty property : properties) {
-            //get schema name: it has to be the first part before :
+            // get schema name: it has to be the first part before :
             String[] tokens = property.getName().split(":");
             if (tokens.length != 2) {
-                //strange, no schema name? skip
+                // strange, no schema name? skip
                 log.warn(property.getName() + " no schema found");
                 continue;
             }
-            //get the segments of the property name
+            // get the segments of the property name
             String[] segments = tokens[1].split("/");
             if (segments.length == 0) {
-                //strange, no segments, only schema name? skip
+                // strange, no segments, only schema name? skip
                 log.warn(property.getName() + " no segments found");
                 continue;
             }
-            //schema name  - map
+            // schema name - map
             if (ret.get(tokens[0]) == null) {
                 ret.put(tokens[0], new LinkedHashMap<String, Object>());
             }
             Map<String, Object> tempMap = (Map<String, Object>) ret.get(tokens[0]);
-            for (int i = 0; ; i++) {
+            for (int i = 0;; i++) {
                 if (i == (segments.length - 1)) {
-                    //if it is the last segment, just set the value
+                    // if it is the last segment, just set the value
                     tempMap.put(segments[i], property.getValue());
                     break;
                 }
-                //further segments, so need to have map
+                // further segments, so need to have map
                 if (tempMap.get(segments[i]) == null) {
-                    //first time seen this property
+                    // first time seen this property
                     tempMap.put(segments[i], new LinkedHashMap<String, Object>());
                 }
                 Object obj = tempMap.get(segments[i]);
                 if (obj instanceof String) {
-                    //oops, already had a shorter property, can't have both
+                    // oops, already had a shorter property, can't have both
                     log.warn(property.getName() + " already valued as " + segments[i]);
                     break;
                 }
@@ -272,6 +266,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
 
     /**
      * Goes throught the segments recursively and create PropertyValue in data.
+     * 
      * @param data the accumulating map for entire part
      * @param segments the property name split in segments
      * @param index the current segment
@@ -280,11 +275,11 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * @throws ClientException
      */
     @SuppressWarnings("unchecked")
-    private static Object getSegmentData(Map<String, Object> tree, String propertySegment,
-            Type type) throws ClientException {
+    private static Object getSegmentData(Map<String, Object> tree, String propertySegment, Type type)
+            throws ClientException {
         Object obj = tree.get(propertySegment);
         if (obj == null) {
-            //set null value
+            // set null value
             return null;
         }
         if (type.isSimpleType()) {
@@ -297,16 +292,16 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             ListType ltype = (ListType) type;
             List<Object> list = new ArrayList<Object>();
             if (obj instanceof String) {
-                //one single value?
+                // one single value?
                 list.add(ltype.getFieldType().decode((String) obj));
             } else {
                 Map<String, Object> subTree = (Map<String, Object>) obj;
                 for (String subSegment : subTree.keySet()) {
-                    //add elements to list
+                    // add elements to list
                     try {
                         list.add(getSegmentData(subTree, subSegment, ltype.getFieldType()));
                     } catch (ClientException ce) {
-                        //don't break, go further
+                        // don't break, go further
                         log.warn(subSegment + " couldn't be imported", ce);
                         continue;
                     }
@@ -330,12 +325,11 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             ComplexType ctype = (ComplexType) type;
             Map<String, Object> map = new HashMap<String, Object>();
             for (String subSegment : subTree.keySet()) {
-                //put elements in map
+                // put elements in map
                 try {
-                    map.put(subSegment, getSegmentData(subTree, subSegment,
-                            ctype.getField(subSegment).getType()));
+                    map.put(subSegment, getSegmentData(subTree, subSegment, ctype.getField(subSegment).getType()));
                 } catch (ClientException ce) {
-                    //don't break, go further
+                    // don't break, go further
                     log.warn(subSegment + " couldn't be imported", ce);
                     continue;
                 }
@@ -356,38 +350,39 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * @throws XPathExpressionException
      */
     @SuppressWarnings("unchecked")
-    protected void processZippedDocument(File zipHandle) throws IOException,
-            ParserConfigurationException, SAXException, TransformerException,
-            XPathExpressionException, ClientException {
+    protected void processZippedDocument(File zipHandle) throws IOException, ParserConfigurationException,
+            SAXException, TransformerException, XPathExpressionException, ClientException {
         ZipFile zipFile = new ZipFile(zipHandle);
         Enumeration<ZipEntry> entries = (Enumeration<ZipEntry>) zipFile.entries();
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         docBuilderFactory.setNamespaceAware(true);
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 
-        //do XML filter
+        // do XML filter
         XPathFactory xPathFactory = XPathFactory.newInstance();
         XPath xPath = xPathFactory.newXPath();
         xPath.setNamespaceContext(new NXNSContext());
         xPath.setXPathFunctionResolver(new NXFunctionResolver());
         final String xPathString = "//*[name() = 'data' and nx:isBlob(text())]";
 
-        //collect blobs data
+        // collect blobs data
         class XMLBlobData {
             public String enconding;
+
             public String mimeType;
+
             public String xpath;
+
             public File blobFile;
         }
         Map<String, XMLBlobData> collect = new HashMap<String, XMLBlobData>();
         while (entries.hasMoreElements()) {
             ZipEntry entry = entries.nextElement();
             if (entry.getName().endsWith("document.xml")) {
-                //document properties, collect blobs data from current node and neighbors
+                // document properties, collect blobs data from current node and neighbors
                 Document document = docBuilder.parse(zipFile.getInputStream(entry));
                 XPathExpression xPathExpression = xPath.compile(xPathString);
-                Object result = xPathExpression.evaluate(document,
-                        XPathConstants.NODESET);
+                Object result = xPathExpression.evaluate(document, XPathConstants.NODESET);
                 NodeList nodes = (NodeList) result;
                 for (int i = 0; i < nodes.getLength(); i++) {
                     Element element = (Element) nodes.item(i);
@@ -413,7 +408,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                     }
                 }
             } else if (entry.getName().endsWith(".blob")) {
-                //blob entry, save it
+                // blob entry, save it
                 String blobName = entry.getName();
                 File absoluteFileName = new File(blobName);
                 blobName = absoluteFileName.getName();
@@ -426,28 +421,24 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                 File blobFile = File.createTempFile(blobId, "blob");
                 FileUtils.copyToFile(zipFile.getInputStream(entry), blobFile);
                 blobData.blobFile = blobFile;
-                Framework.trackFile(blobFile,this);
+                Framework.trackFile(blobFile, this);
             }
         }
         for (String blobId : collect.keySet()) {
-            //set all collected data
+            // set all collected data
             XMLBlobData blobData = collect.get(blobId);
-            if (blobData.blobFile == null || blobData.xpath == null ||
-                    blobData.mimeType == null) {
+            if (blobData.blobFile == null || blobData.xpath == null || blobData.mimeType == null) {
                 log.warn("Can't import blob" + blobId + " for " + blobData.xpath);
                 continue;
             }
             String firstLevelXPath = blobData.xpath.split("/")[0];
-            if (importConfiguration == null
-                    || !importConfiguration.getExcludedFields().contains(firstLevelXPath)) {
-                Blob blob = StreamingBlob.createFromStream(
-                        new FileInputStream(blobData.blobFile),
-                        blobData.mimeType).persist();
+            if (importConfiguration == null || !importConfiguration.getExcludedFields().contains(firstLevelXPath)) {
+                Blob blob = StreamingBlob.createFromStream(new FileInputStream(blobData.blobFile), blobData.mimeType).persist();
                 blob.setEncoding(blobData.enconding);
                 blob.setMimeType(blobData.mimeType);
                 String correctedXPath = correctXPath(blobData.xpath);
                 if (correctedXPath != null) {
-                    localDocument.setPropertyValue(correctedXPath, (Serializable)blob);
+                    localDocument.setPropertyValue(correctedXPath, (Serializable) blob);
                 } else {
                     log.warn("Couldn't import blob " + blobData.xpath);
                 }
@@ -459,42 +450,40 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
     }
 
     /**
-     * Corrects the xpath. The XPath collected from exported document.xml doesn't have a
-     * definition schema. So it is impossible to tell which property is "list". Indeed, it
-     * is possible to identify "list" property if the elements are repeating, but if the
-     * property exists only once in the context, as long as there is no XSD or other way
-     * to define the XML. Looking in the document schemes and identifying the XPath, if
-     * a particular segment is List type, and the [i] is missing, it is concluded that it
-     * is about a single item in list, which obviously is xpathed as [0]
+     * Corrects the xpath. The XPath collected from exported document.xml doesn't have a definition schema. So it is
+     * impossible to tell which property is "list". Indeed, it is possible to identify "list" property if the elements
+     * are repeating, but if the property exists only once in the context, as long as there is no XSD or other way to
+     * define the XML. Looking in the document schemes and identifying the XPath, if a particular segment is List type,
+     * and the [i] is missing, it is concluded that it is about a single item in list, which obviously is xpathed as [0]
+     * 
      * @param initialXPath
      * @return
      * @throws ClientException
      */
     protected String correctXPath(String initialXPath) throws ClientException {
-        //get schema name: it has to be the first part before :
+        // get schema name: it has to be the first part before :
         String[] tokens = initialXPath.split(":");
         if (tokens.length != 2) {
-            //strange, no schema name? skip
+            // strange, no schema name? skip
             log.warn(initialXPath + " no XPath: no schema found");
             return null;
         }
-        //get the segments of the property name
+        // get the segments of the property name
         String[] segments = tokens[1].split("/");
         if (segments.length == 0) {
-            //strange, no segments, only schema name? skip
+            // strange, no segments, only schema name? skip
             log.warn(initialXPath + " no XPath: no segments found");
             return null;
         }
-        StringBuilder correctedXPath = new StringBuilder(tokens[0] + ":" +
-                segments[0]);
+        StringBuilder correctedXPath = new StringBuilder(tokens[0] + ":" + segments[0]);
         DocumentPart part = localDocument.getPart(tokens[0]);
-        correctedXPath.append(recursiveCorrectPath(
-                part.getSchema().getField(segments[0]).getType(), segments, 1));
+        correctedXPath.append(recursiveCorrectPath(part.getSchema().getField(segments[0]).getType(), segments, 1));
         return correctedXPath.toString();
     }
 
     /**
      * It recursively goes with segments and operates the correction on list type segment.
+     * 
      * @param type
      * @param segments
      * @param index
@@ -502,7 +491,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      */
     protected static String recursiveCorrectPath(Type type, String[] segments, int index) {
         if (index >= (segments.length - 1)) {
-            //for blobs no need of last segment
+            // for blobs no need of last segment
             return "";
         }
         StringBuilder ret = new StringBuilder("/" + segments[index]);
@@ -510,30 +499,29 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             return ret.toString();
         } else if (type.isListType()) {
             ListType ltype = (ListType) type;
-            //we have a list type, see if it is indexed
+            // we have a list type, see if it is indexed
             if (!segments[index].contains("[")) {
-                    //it isn't, just append [0]
-                    ret.append("[0]");
+                // it isn't, just append [0]
+                ret.append("[0]");
             }
             ret.append(recursiveCorrectPath(ltype.getFieldType(), segments, index + 1));
             return ret.toString();
         } else {
             ComplexType ctype = (ComplexType) type;
-            ret.append(recursiveCorrectPath(
-                    ctype.getField(segments[index]).getType(), segments,
-                    index + 1));
+            ret.append(recursiveCorrectPath(ctype.getField(segments[index]).getType(), segments, index + 1));
             return ret.toString();
         }
     }
 
     /**
-     * Updates the blobs into the localDocument. It first retrieves the document exported
-     * using the ExportRestlet, then reads document.xml and blob files from zip archive,
-     * saves the blobs temporary, and sets the blobs in local document.
+     * Updates the blobs into the localDocument. It first retrieves the document exported using the ExportRestlet, then
+     * reads document.xml and blob files from zip archive, saves the blobs temporary, and sets the blobs in local
+     * document.
+     * 
      * @throws ClientException
      */
     protected void updateBlobs() throws ClientException {
-        //first get blobs through export restlet
+        // first get blobs through export restlet
         SynchHttpClient httpClient = new SynchHttpClient(synchronizeDetails);
         String repoName = session.getRepositoryName();
         String docId = tuple.getServerId();
@@ -544,8 +532,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
         boolean finished = false;
         File zipHandle = null;
         try {
-            InputStream inputStream = httpClient.executeGetCall(pathParams,
-                    params);
+            InputStream inputStream = httpClient.executeGetCall(pathParams, params);
 
             zipHandle = File.createTempFile("ZipFile", ".zip");
             FileUtils.copyToFile(inputStream, zipHandle);
@@ -558,11 +545,11 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
 
         if (!finished) {
             log.warn("Couldn't proces the exported zip.");
-            //problem storing the zip file
+            // problem storing the zip file
             return;
         }
         try {
-            //process zip
+            // process zip
             processZippedDocument(zipHandle);
         } catch (Exception e) {
             throw new ClientException(e);
@@ -587,14 +574,11 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * The unrestricted runner for running the save of a document.
      *
      * @author rux
-     *
      */
-    protected static class UnrestrictedSaveDocument extends
-            UnrestrictedSessionRunner {
+    protected static class UnrestrictedSaveDocument extends UnrestrictedSessionRunner {
         DocumentModel documentModel;
 
-        public UnrestrictedSaveDocument(CoreSession session,
-                DocumentModel documentModel) {
+        public UnrestrictedSaveDocument(CoreSession session, DocumentModel documentModel) {
             super(session);
             this.documentModel = documentModel;
         }

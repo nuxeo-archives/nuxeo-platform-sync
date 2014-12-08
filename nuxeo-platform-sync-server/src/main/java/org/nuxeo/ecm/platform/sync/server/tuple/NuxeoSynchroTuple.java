@@ -20,8 +20,7 @@ package org.nuxeo.ecm.platform.sync.server.tuple;
 import java.io.Serializable;
 
 /**
- * It contains all relevant data to decide if a synchronization on a document is
- * needed.
+ * It contains all relevant data to decide if a synchronization on a document is needed.
  *
  * @author mcedica
  */

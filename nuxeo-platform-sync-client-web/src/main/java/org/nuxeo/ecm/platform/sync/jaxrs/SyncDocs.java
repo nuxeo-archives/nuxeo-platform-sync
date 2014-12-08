@@ -30,23 +30,21 @@ import org.nuxeo.ecm.webengine.model.WebObject;
 
 /**
  * @author "Stephane Lacoin (aka matic) slacoin@nuxeo.com"
- *
  */
-@WebObject(type="Docs")
+@WebObject(type = "Docs")
 public class SyncDocs extends SyncOp {
-   
-        
+
     protected String query = "SELECT * FROM Document";
-    
+
     public String getQuery() {
         return query;
     }
-    
+
     @GET
     public Object doGet() throws MalformedURLException {
         return getView("index");
     }
-    
+
     @POST
     public Object doPost(@FormParam("query") @DefaultValue("SELECT * from Document") String query) throws Exception {
         this.query = query;

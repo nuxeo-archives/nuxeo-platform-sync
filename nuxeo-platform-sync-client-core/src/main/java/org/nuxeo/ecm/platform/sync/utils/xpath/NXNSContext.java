@@ -26,7 +26,6 @@ import javax.xml.namespace.NamespaceContext;
  * Context resolver for the DOM parser.
  *
  * @author price
- *
  */
 public class NXNSContext implements NamespaceContext {
     @Override

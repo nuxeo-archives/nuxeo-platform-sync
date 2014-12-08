@@ -7,3 +7,4 @@
 
 @javax.xml.bind.annotation.XmlSchema(elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package org.nuxeo.ecm.platform.sync.vocabularies.generated;
+

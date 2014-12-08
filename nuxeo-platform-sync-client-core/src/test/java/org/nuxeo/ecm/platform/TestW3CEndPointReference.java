@@ -31,7 +31,7 @@ public class TestW3CEndPointReference {
                 fields[i].setAccessible(true);
                 try {
                     Object address = fields[i].get(ref);
-                    Field uriField =  fields[i].getType().getDeclaredField("uri");
+                    Field uriField = fields[i].getType().getDeclaredField("uri");
                     uriField.setAccessible(true);
                     uriField.set(address, value);
                 } catch (IllegalArgumentException e) {
@@ -46,7 +46,7 @@ public class TestW3CEndPointReference {
             }
         }
     }
-    
+
     private String getPrivateAdressFromEndPointReference(W3CEndpointReference ref) {
         if (ref == null) {
             return null;
@@ -63,5 +63,5 @@ public class TestW3CEndPointReference {
         }
         return null;
     }
-    
+
 }

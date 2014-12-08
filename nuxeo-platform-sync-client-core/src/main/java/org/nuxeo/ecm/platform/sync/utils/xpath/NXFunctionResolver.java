@@ -25,12 +25,10 @@ import javax.xml.xpath.XPathFunctionResolver;
  * Resolver for the DOM parser.
  *
  * @author price
- *
  */
 public class NXFunctionResolver implements XPathFunctionResolver {
 
-    private static final QName name = new QName("http://www.nuxeo.org/blob",
-            "isBlob");
+    private static final QName name = new QName("http://www.nuxeo.org/blob", "isBlob");
 
     @Override
     public XPathFunction resolveFunction(QName fName, int arity) {

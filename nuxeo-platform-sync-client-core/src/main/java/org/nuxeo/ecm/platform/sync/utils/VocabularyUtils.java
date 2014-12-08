@@ -35,7 +35,6 @@ import org.nuxeo.runtime.api.Framework;
  * Utility class used to ease the vocabulary management.
  *
  * @author mcedica
- *
  */
 public class VocabularyUtils {
 
@@ -65,25 +64,21 @@ public class VocabularyUtils {
         List<String> vocabularyNames = new ArrayList<String>();
         for (String string : getDirectoryService().getDirectoryNames()) {
             String type = getDirectoryService().getDirectorySchema(string);
-            if (type.equals(VOCABULARY_TYPE_HIER)
-                    || type.equals(VOCABULARY_TYPE_SIMPLE)) {
+            if (type.equals(VOCABULARY_TYPE_HIER) || type.equals(VOCABULARY_TYPE_SIMPLE)) {
                 vocabularyNames.add(string);
             }
         }
         return vocabularyNames;
     }
 
-    public static void deleteVocabularyEntry(String vocabularyName,
-            VocabularyEntry selectedVocabularyEntry) {
+    public static void deleteVocabularyEntry(String vocabularyName, VocabularyEntry selectedVocabularyEntry) {
         Session vocabulary = null;
         try {
             vocabulary = openVocabulary(vocabularyName);
             if (vocabulary != null) {
-                if (getDirectoryService().getDirectorySchema(vocabularyName).equals(
-                        VOCABULARY_TYPE_HIER)) {
+                if (getDirectoryService().getDirectorySchema(vocabularyName).equals(VOCABULARY_TYPE_HIER)) {
                     Map<String, String> map = new HashMap<String, String>();
-                    map.put(VOCABULARY_PARENT,
-                            selectedVocabularyEntry.getParent());
+                    map.put(VOCABULARY_PARENT, selectedVocabularyEntry.getParent());
                     vocabulary.deleteEntry(selectedVocabularyEntry.getId(), map);
                 } else {
                     vocabulary.deleteEntry(selectedVocabularyEntry.getId());
@@ -102,8 +97,7 @@ public class VocabularyUtils {
         }
     }
 
-    public static void addVocabularyEntry(String vocabularyName,
-            Map<String, Object> entry) {
+    public static void addVocabularyEntry(String vocabularyName, Map<String, Object> entry) {
         Session vocabulary = null;
         try {
             vocabulary = openVocabulary(vocabularyName);
@@ -123,8 +117,7 @@ public class VocabularyUtils {
         }
     }
 
-    public static void clearVocabulary(String vocabularyName)
-            throws ClientException {
+    public static void clearVocabulary(String vocabularyName) throws ClientException {
         Session vocabulary = null;
         try {
             vocabulary = openVocabulary(vocabularyName);
@@ -140,13 +133,11 @@ public class VocabularyUtils {
         }
     }
 
-    public static String getDirectorySchema(String vocabularyName)
-            throws ClientException {
+    public static String getDirectorySchema(String vocabularyName) throws ClientException {
         return getDirectoryService().getDirectorySchema(vocabularyName);
     }
 
-    public static Session openVocabulary(String vocabularyName)
-            throws ClientException {
+    public static Session openVocabulary(String vocabularyName) throws ClientException {
         return getDirectoryService().open(vocabularyName);
     }
 

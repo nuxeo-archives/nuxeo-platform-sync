@@ -23,7 +23,7 @@ import org.nuxeo.ecm.core.api.ClientException;
 /**
  * @author rux rdarlea@nuxeo.com
  */
-public class ClientAuthenticationException extends ClientException{
+public class ClientAuthenticationException extends ClientException {
 
     private static final long serialVersionUID = -3443936569208582480L;
 

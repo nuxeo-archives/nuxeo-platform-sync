@@ -20,8 +20,8 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 
 /**
- * The Synchronize Service interface. It contains the service API. <li>
- * synchronize documents <li>synchronize relations <li>synchronize vocabularies
+ * The Synchronize Service interface. It contains the service API. <li>synchronize documents <li>synchronize relations
+ * <li>synchronize vocabularies
  *
  * @author rux
  */
@@ -35,44 +35,36 @@ public interface SynchronizeService {
      * @param queryName - the query name to use server side
      * @throws ClientException
      */
-    SynchronizeReport synchronizeDocuments(CoreSession session,
-            SynchronizeDetails details, String queryName) throws Exception;
-
+    SynchronizeReport synchronizeDocuments(CoreSession session, SynchronizeDetails details, String queryName)
+            throws Exception;
 
     /**
-     * Synchronizes all the relations defined on the documents by using the
-     * synchronization details.This should happen after the documents
-     * synchronization.
+     * Synchronizes all the relations defined on the documents by using the synchronization details.This should happen
+     * after the documents synchronization.
      *
      * @param details - the details about the synchronization process
      * @throws ClientException
      */
-    SynchronizeReport synchronizeRelations(SynchronizeDetails details)
-            throws ClientException;
+    SynchronizeReport synchronizeRelations(SynchronizeDetails details) throws ClientException;
 
-     /**
-     * Synchronizes all the vocabularies by using the synchronization
-     * details.This should happen after the documents synchronization.
+    /**
+     * Synchronizes all the vocabularies by using the synchronization details.This should happen after the documents
+     * synchronization.
      *
      * @param details
      * @throws ClientException
      */
-    SynchronizeReport synchronizeVocabularies(SynchronizeDetails details)
-            throws ClientException;
+    SynchronizeReport synchronizeVocabularies(SynchronizeDetails details) throws ClientException;
 
- 
     /**
-     * Performs the whole synchronization process including the documents
-     * relations and vocabularies synchronizations.
+     * Performs the whole synchronization process including the documents relations and vocabularies synchronizations.
      *
      * @param session - the Nuxeo core session received from the web context
      * @param details - the details about the synchronization process
      * @throws Exception
      */
-    SynchronizeReport synchronize(CoreSession session, SynchronizeDetails details,
-            String queryName) throws Exception;
+    SynchronizeReport synchronize(CoreSession session, SynchronizeDetails details, String queryName) throws Exception;
 
-  
     /**
      * Return the pre-configured connection parameters
      * 
@@ -85,8 +77,7 @@ public interface SynchronizeService {
      *
      * @param docPath the document path to test
      * @param permission the permission to test
-     * @return {@code true} if the ReadSecurityPolicy must be disabled, {@code
-     *         false otherwise}
+     * @return {@code true} if the ReadSecurityPolicy must be disabled, {@code false otherwise}
      */
     boolean shouldDisableReadSP(String docPath, String permission);
 }
