@@ -52,7 +52,7 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
-import org.nuxeo.ecm.core.api.impl.blob.StreamingBlob;
+import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
 import org.nuxeo.ecm.core.api.model.DocumentPart;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACL;
@@ -161,7 +161,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
 
     /**
      * Sets properties (non blobs only) on the local document.
-     * 
+     *
      * @throws ClientException
      */
     @SuppressWarnings("unchecked")
@@ -213,7 +213,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
 
     /**
      * Transforms the list of properties in a tree by schema names and segments.
-     * 
+     *
      * @param properties
      * @return Map<schemaName - Map <first name - Object>> where Object is either the value or the further Map <second
      *         name - Object> and so on
@@ -266,7 +266,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
 
     /**
      * Goes throught the segments recursively and create PropertyValue in data.
-     * 
+     *
      * @param data the accumulating map for entire part
      * @param segments the property name split in segments
      * @param index the current segment
@@ -433,14 +433,14 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             }
             String firstLevelXPath = blobData.xpath.split("/")[0];
             if (importConfiguration == null || !importConfiguration.getExcludedFields().contains(firstLevelXPath)) {
-                Blob blob = StreamingBlob.createFromStream(new FileInputStream(blobData.blobFile), blobData.mimeType).persist();
-                blob.setEncoding(blobData.enconding);
-                blob.setMimeType(blobData.mimeType);
-                String correctedXPath = correctXPath(blobData.xpath);
-                if (correctedXPath != null) {
-                    localDocument.setPropertyValue(correctedXPath, (Serializable) blob);
-                } else {
-                    log.warn("Couldn't import blob " + blobData.xpath);
+                try (InputStream is = new FileInputStream(blobData.blobFile)) {
+                    Blob blob = new FileBlob(is, blobData.mimeType, blobData.enconding);
+                    String correctedXPath = correctXPath(blobData.xpath);
+                    if (correctedXPath != null) {
+                        localDocument.setPropertyValue(correctedXPath, (Serializable) blob);
+                    } else {
+                        log.warn("Couldn't import blob " + blobData.xpath);
+                    }
                 }
             }
         }
@@ -455,7 +455,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * are repeating, but if the property exists only once in the context, as long as there is no XSD or other way to
      * define the XML. Looking in the document schemes and identifying the XPath, if a particular segment is List type,
      * and the [i] is missing, it is concluded that it is about a single item in list, which obviously is xpathed as [0]
-     * 
+     *
      * @param initialXPath
      * @return
      * @throws ClientException
@@ -483,7 +483,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
 
     /**
      * It recursively goes with segments and operates the correction on list type segment.
-     * 
+     *
      * @param type
      * @param segments
      * @param index
@@ -517,7 +517,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * Updates the blobs into the localDocument. It first retrieves the document exported using the ExportRestlet, then
      * reads document.xml and blob files from zip archive, saves the blobs temporary, and sets the blobs in local
      * document.
-     * 
+     *
      * @throws ClientException
      */
     protected void updateBlobs() throws ClientException {

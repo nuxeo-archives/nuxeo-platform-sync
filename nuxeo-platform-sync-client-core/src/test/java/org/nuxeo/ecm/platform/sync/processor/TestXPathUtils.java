@@ -90,10 +90,8 @@ public class TestXPathUtils extends SQLRepositoryTestCase {
         // set properties
         DocumentModel sampleDoc = session.createDocumentModel("Sample");
         sampleDoc.setPathInfo(session.getRootDocument().getPathAsString(), "sample");
-        URLBlob blob = new URLBlob(documentUrl);
-        blob.setEncoding("UTF-8");
+        URLBlob blob = new URLBlob(documentUrl, "application/xml", "UTF-8");
         blob.setFilename("document.xml");
-        blob.setMimeType("application/xml");
         for (String xpath : xpathList) {
             sampleDoc.setPropertyValue(correctXPath(xpath, sampleDoc), blob);
         }
