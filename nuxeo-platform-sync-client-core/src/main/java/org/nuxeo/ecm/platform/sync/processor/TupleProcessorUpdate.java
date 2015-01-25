@@ -48,11 +48,11 @@ import org.nuxeo.common.collections.PrimitiveArrays;
 import org.nuxeo.common.utils.FileUtils;
 import org.nuxeo.ecm.core.NXCore;
 import org.nuxeo.ecm.core.api.Blob;
+import org.nuxeo.ecm.core.api.Blobs;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
-import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
 import org.nuxeo.ecm.core.api.model.DocumentPart;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACL;
@@ -434,7 +434,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             String firstLevelXPath = blobData.xpath.split("/")[0];
             if (importConfiguration == null || !importConfiguration.getExcludedFields().contains(firstLevelXPath)) {
                 try (InputStream is = new FileInputStream(blobData.blobFile)) {
-                    Blob blob = new FileBlob(is, blobData.mimeType, blobData.enconding);
+                    Blob blob = Blobs.createBlob(is, blobData.mimeType, blobData.enconding);
                     String correctedXPath = correctXPath(blobData.xpath);
                     if (correctedXPath != null) {
                         localDocument.setPropertyValue(correctedXPath, (Serializable) blob);
