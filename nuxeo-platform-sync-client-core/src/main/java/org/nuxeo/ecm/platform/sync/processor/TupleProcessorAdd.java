@@ -46,9 +46,8 @@ public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
     /**
      * Runs the import of a new document in unrestricted mode.
      *
-     * @throws ClientException
      */
-    protected void runUnrestrictedImport() throws ClientException {
+    protected void runUnrestrictedImport() {
         new UnrestrictedImport(session, localDocument).runUnrestricted();
     }
 
@@ -66,7 +65,7 @@ public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
         }
 
         @Override
-        public void run() throws ClientException {
+        public void run() {
             try {
                 if (documentModel.getId() != null && session.exists(new IdRef(documentModel.getId()))) {
                     log.error("Doc " + documentModel.getId() + " already exists, not importing it");
@@ -85,7 +84,7 @@ public abstract class TupleProcessorAdd extends TupleProcessorUpdate {
      * Sets life cycle details on localDocument as super user.
      */
     @Override
-    protected void setLifeCycle() throws ClientException {
+    protected void setLifeCycle() {
         String lifecycle = ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_LIFECYCLE_STATE);
         if (importConfiguration != null) {
             String importLC = importConfiguration.getClientLifeCycleStateFor(lifecycle);

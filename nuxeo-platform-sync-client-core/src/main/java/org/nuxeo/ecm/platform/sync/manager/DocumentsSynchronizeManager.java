@@ -95,7 +95,7 @@ public class DocumentsSynchronizeManager {
         prepareLists();
     }
 
-    public void run() throws ClientException {
+    public void run() {
         // first obtain the list of tuples from server based on the custom query
         NuxeoWSMainEntrancePoint entrance = new NuxeoWSMainEntrancePointService().getNuxeoWSMainEntrancePointPort();
 
@@ -154,7 +154,7 @@ public class DocumentsSynchronizeManager {
         }
     }
 
-    private void addDocuments(WSSynchroServerModule wsas) throws ClientException {
+    private void addDocuments(WSSynchroServerModule wsas) {
         // first add normal documents
         MonitorProvider.getMonitor().beginTask("Adding documents (" + addedTuples.size() + ")", addedTuples.size());
         for (NuxeoSynchroTuple tuple : addedTuples) {
@@ -188,14 +188,14 @@ public class DocumentsSynchronizeManager {
         }
     }
 
-    private void moveDocuments() throws ClientException {
+    private void moveDocuments() {
 
         // move documents
         new MoveDocumentsUnrestricted(session, movedTuples).runUnrestricted();
 
     }
 
-    private void updateDocuments(WSSynchroServerModule wsas) throws ClientException {
+    private void updateDocuments(WSSynchroServerModule wsas) {
 
         // update modified documents
         MonitorProvider.getMonitor().beginTask("Updating documents", modifiedTuples.size());
@@ -209,11 +209,11 @@ public class DocumentsSynchronizeManager {
 
     }
 
-    private void removeDocuments() throws ClientException {
+    private void removeDocuments() {
         new RemoveDocumentsUnrestricted(session, deletedIds).runUnrestricted();
     }
 
-    private void processDifferences(List<NuxeoSynchroTuple> tuples, String queryName) throws ClientException {
+    private void processDifferences(List<NuxeoSynchroTuple> tuples, String queryName) {
         log.info("Getting the differences with the server ...");
         try {
 
@@ -254,7 +254,7 @@ public class DocumentsSynchronizeManager {
         }
 
         @Override
-        public void run() throws ClientException {
+        public void run() {
 
             MonitorProvider.getMonitor().beginTask("Removing obsolete documents", 4);
             List<IdRef> refs = new ArrayList<IdRef>();
@@ -348,7 +348,7 @@ public class DocumentsSynchronizeManager {
         }
 
         @Override
-        public void run() throws ClientException {
+        public void run() {
             MonitorProvider.getMonitor().beginTask("Moving documents", movedTuples.size());
             for (NuxeoSynchroTuple tuple : movedTuples) {
                 DocumentModel localDocument = session.getDocument(new IdRef(tuple.getAdaptedId()));
@@ -386,7 +386,7 @@ public class DocumentsSynchronizeManager {
         private String query;
 
         @Override
-        public void run() throws ClientException {
+        public void run() {
             result = session.query(query);
         }
 

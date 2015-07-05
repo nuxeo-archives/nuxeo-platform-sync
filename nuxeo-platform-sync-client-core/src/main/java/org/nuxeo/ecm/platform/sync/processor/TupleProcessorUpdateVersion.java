@@ -33,7 +33,7 @@ public class TupleProcessorUpdateVersion extends TupleProcessorUpdate {
     }
 
     @Override
-    public void process() throws ClientException {
+    public void process() {
         // this case is not encountered yet
     }
 

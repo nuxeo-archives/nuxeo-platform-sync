@@ -33,7 +33,6 @@ public interface SynchronizeService {
      * @param session - the Nuxeo core session received from the web context
      * @param details - the details about the synchronization process
      * @param queryName - the query name to use server side
-     * @throws ClientException
      */
     SynchronizeReport synchronizeDocuments(CoreSession session, SynchronizeDetails details, String queryName)
             throws Exception;
@@ -43,18 +42,16 @@ public interface SynchronizeService {
      * after the documents synchronization.
      *
      * @param details - the details about the synchronization process
-     * @throws ClientException
      */
-    SynchronizeReport synchronizeRelations(SynchronizeDetails details) throws ClientException;
+    SynchronizeReport synchronizeRelations(SynchronizeDetails details);
 
     /**
      * Synchronizes all the vocabularies by using the synchronization details.This should happen after the documents
      * synchronization.
      *
      * @param details
-     * @throws ClientException
      */
-    SynchronizeReport synchronizeVocabularies(SynchronizeDetails details) throws ClientException;
+    SynchronizeReport synchronizeVocabularies(SynchronizeDetails details);
 
     /**
      * Performs the whole synchronization process including the documents relations and vocabularies synchronizations.

@@ -42,7 +42,7 @@ public class TupleProcessorUpdateProxy extends TupleProcessorUpdate {
     }
 
     @Override
-    public void process() throws ClientException {
+    public void process() {
         // this case is encountered when republishing
         // and overwriting existing proxy
 
@@ -69,7 +69,7 @@ public class TupleProcessorUpdateProxy extends TupleProcessorUpdate {
         log.debug("Finishing the process of updating proxy " + tuple.getAdaptedId() + " on the client side: " + name);
     }
 
-    private void runUnrestrictedImport() throws ClientException {
+    private void runUnrestrictedImport() {
         new UnrestrictedImport(session, localDocument).runUnrestricted();
     }
 }

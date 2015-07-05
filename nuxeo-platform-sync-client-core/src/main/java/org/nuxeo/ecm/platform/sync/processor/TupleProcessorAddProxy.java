@@ -41,7 +41,7 @@ public class TupleProcessorAddProxy extends TupleProcessorAdd {
     }
 
     @Override
-    public void process() throws ClientException {
+    public void process() {
         log.debug("Starting the process of adding proxy " + tuple.getClientId() + " on the client side: " + name);
         // in case there is a proxy, the document model will have the type
         // ecm:proxy

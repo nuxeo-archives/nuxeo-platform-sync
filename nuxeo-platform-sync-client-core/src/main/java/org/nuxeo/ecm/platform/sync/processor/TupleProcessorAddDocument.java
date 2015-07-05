@@ -42,7 +42,7 @@ public class TupleProcessorAddDocument extends TupleProcessorAdd {
     }
 
     @Override
-    public void process() throws ClientException {
+    public void process() {
         if (!session.exists(new PathRef(parentPath))) {
             log.warn("Parent path " + parentPath + " doesn't exist => Document " + tuple.getClientId()
                     + " will not be created");

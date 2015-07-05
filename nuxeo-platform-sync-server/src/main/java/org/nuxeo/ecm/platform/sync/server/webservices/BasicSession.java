@@ -47,7 +47,7 @@ public class BasicSession {
         this.loginCtx = loginCtx;
     }
 
-    public void login() throws ClientException {
+    public void login() {
         try {
             loginCtx.login();
         } catch (LoginException e) {
@@ -70,7 +70,7 @@ public class BasicSession {
     }
 
     public static BasicSession getInstanceAsUser(String repositoryName, String userName, String password)
-            throws ClientException {
+            {
         LoginContext loginContext = null;
         CoreSession session = null;
         try {

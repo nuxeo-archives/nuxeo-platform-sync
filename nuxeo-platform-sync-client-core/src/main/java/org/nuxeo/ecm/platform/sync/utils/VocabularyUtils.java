@@ -60,7 +60,7 @@ public class VocabularyUtils {
 
     private static final Log log = LogFactory.getLog(VocabularyUtils.class);
 
-    public static List<String> getAllVocabularies() throws ClientException {
+    public static List<String> getAllVocabularies() {
         List<String> vocabularyNames = new ArrayList<String>();
         for (String string : getDirectoryService().getDirectoryNames()) {
             String type = getDirectoryService().getDirectorySchema(string);
@@ -117,7 +117,7 @@ public class VocabularyUtils {
         }
     }
 
-    public static void clearVocabulary(String vocabularyName) throws ClientException {
+    public static void clearVocabulary(String vocabularyName) {
         Session vocabulary = null;
         try {
             vocabulary = openVocabulary(vocabularyName);
@@ -133,15 +133,15 @@ public class VocabularyUtils {
         }
     }
 
-    public static String getDirectorySchema(String vocabularyName) throws ClientException {
+    public static String getDirectorySchema(String vocabularyName) {
         return getDirectoryService().getDirectorySchema(vocabularyName);
     }
 
-    public static Session openVocabulary(String vocabularyName) throws ClientException {
+    public static Session openVocabulary(String vocabularyName) {
         return getDirectoryService().open(vocabularyName);
     }
 
-    public static DirectoryService getDirectoryService() throws ClientException {
+    public static DirectoryService getDirectoryService() {
         if (dirService == null) {
             dirService = Framework.getLocalService(DirectoryService.class);
         }

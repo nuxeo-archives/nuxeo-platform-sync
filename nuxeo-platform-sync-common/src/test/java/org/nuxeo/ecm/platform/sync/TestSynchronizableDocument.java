@@ -49,7 +49,7 @@ public class TestSynchronizableDocument {
     protected CoreSession session;
 
     @Test
-    public void testDefaultSyncDoc() throws ClientException {
+    public void testDefaultSyncDoc() {
         DocumentModel folder = session.createDocumentModel("/", "folder", "Folder");
         folder = session.createDocument(folder);
         SynchronizableDocument synDoc = folder.getAdapter(SynchronizableDocument.class);

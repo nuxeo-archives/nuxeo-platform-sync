@@ -134,9 +134,8 @@ public class TestXPathUtils {
      * @param initialXPath
      * @param localDocument
      * @return
-     * @throws ClientException
      */
-    protected String correctXPath(String initialXPath, DocumentModel localDocument) throws ClientException {
+    protected String correctXPath(String initialXPath, DocumentModel localDocument) {
         // get schema name: it has to be the first part before :
         String[] tokens = initialXPath.split(":");
         if (tokens.length != 2) {

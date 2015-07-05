@@ -41,7 +41,7 @@ public class TupleProcessorAddVersion extends TupleProcessorAdd {
     }
 
     @Override
-    public void process() throws ClientException {
+    public void process() {
         log.debug("Starting the process of adding version " + tuple.getClientId() + " on the client side: " + name);
         // in case there is a version, the document model will have parent ref
         // null

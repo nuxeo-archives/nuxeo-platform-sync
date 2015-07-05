@@ -45,7 +45,7 @@ public class RelationsSynchronizeManager {
 
     }
 
-    public SynchronizeReport performChanges() throws ClientException {
+    public SynchronizeReport performChanges() {
         RelationManager relationManager;
         try {
             relationManager = Framework.getService(RelationManager.class);

@@ -116,15 +116,14 @@ public abstract class TupleProcessor {
      * Processes the tuple. Actual implementation in the implementors. Be careful to catch the ClientException to make
      * possible continuing the process.
      *
-     * @throws ClientException
      */
-    public abstract void process() throws ClientException;
+    public abstract void process();
 
     /**
      * Obtains the WS document representation. It returns it and also sets it as remoteDocument. Never returns null, but
      * throws exceptions.
      */
-    protected FlagedDocumentSnapshot getDocumentSnapshot() throws ClientException {
+    protected FlagedDocumentSnapshot getDocumentSnapshot() {
         if (documentSnapshot == null) {
             documentSnapshot = synchroServerModule.getDocumentByIdWithoutBlob(tuple.getServerId());
         }

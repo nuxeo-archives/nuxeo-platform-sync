@@ -91,7 +91,7 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
     }
 
     @WebMethod(operationName = "getAvailableDocumentListWithQuery")
-    public NuxeoSynchroTuple[] getAvailableDocumentListWithQuery(String queryName) throws ClientException {
+    public NuxeoSynchroTuple[] getAvailableDocumentListWithQuery(String queryName) {
         List<NuxeoSynchroTuple> availableTuples = new ArrayList<NuxeoSynchroTuple>();
         NuxeoSynchroTuple tuple = null;
         Calendar modificationDate = null;
@@ -178,15 +178,14 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
      * representation offers enough data to client to decide what more needed for full synchronization.
      *
      * @return
-     * @throws ClientException
      */
     @WebMethod(operationName = "getAvailableDocumentList")
-    public NuxeoSynchroTuple[] getAvailableDocumentList() throws ClientException {
+    public NuxeoSynchroTuple[] getAvailableDocumentList() {
         return getAvailableDocumentListWithQuery("QUERY_ALL");
     }
 
     @WebMethod(operationName = "getQueryAvailableDocumentListWithQuery")
-    public String getQueryAvailableDocumentListWithQuery(String queryName) throws ClientException {
+    public String getQueryAvailableDocumentListWithQuery(String queryName) {
         String query = getInlinedQuery(queryName);
         if (query == null) {
             query = getQuery(queryName + "_CLIENT_SIDE");
@@ -201,10 +200,9 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
      * Gets the query used to find all available documents for synchronization
      *
      * @return a string query
-     * @throws ClientException
      */
     @WebMethod(operationName = "getQueryAvailableDocumentList")
-    public String getQueryAvailableDocumentList() throws ClientException {
+    public String getQueryAvailableDocumentList() {
         return getQueryAvailableDocumentListWithQuery("QUERY_ALL");
     }
 
@@ -212,7 +210,6 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
      * Returns a DocumentSnapshot for a given document id ; this describes a documentModel without blob properties
      *
      * @return DocumentSnapshot
-     * @throws ClientException
      */
 
     @WebMethod(operationName = "getDocumentByIdWithoutBlob")
@@ -414,7 +411,7 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
         return null;
     }
 
-    private String getQuery(String queryName) throws ClientException {
+    private String getQuery(String queryName) {
         PageProviderService ppService = Framework.getLocalService(PageProviderService.class);
         if (ppService == null) {
             throw new ClientException("Unable to get PageProviderService");
@@ -477,7 +474,7 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
         }
 
         @Override
-        public void run() throws ClientException {
+        public void run() {
             DocumentModel sourceDocument = null;
             try {
                 document = session.getDocument(ref);
@@ -520,7 +517,7 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
         }
 
         @Override
-        public void run() throws ClientException {
+        public void run() {
 
             StringBuilder uwsPath = new StringBuilder("/").append(domainName);
             uwsPath.append("/").append("UserWorkspaces");

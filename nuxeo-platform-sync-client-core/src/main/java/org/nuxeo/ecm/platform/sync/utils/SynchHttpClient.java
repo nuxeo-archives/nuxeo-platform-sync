@@ -56,7 +56,7 @@ public class SynchHttpClient {
 
     }
 
-    public InputStream executeGetCall(List<String> pathParams, Map<String, String> queryParams) throws ClientException {
+    public InputStream executeGetCall(List<String> pathParams, Map<String, String> queryParams) {
         HttpClient client = new HttpClient();
         Credentials defaultcreds = new UsernamePasswordCredentials(synchronizeDetails.getUsername(),
                 synchronizeDetails.getPassword());

@@ -33,16 +33,16 @@ import org.nuxeo.ecm.webengine.model.WebObject;
 public class SyncVocs extends SyncOp {
 
     @GET
-    public Object doGet() throws MalformedURLException, ClientException {
+    public Object doGet() throws MalformedURLException {
         return run();
     }
 
     @POST
-    public Object doPost() throws MalformedURLException, ClientException {
+    public Object doPost() throws MalformedURLException {
         return run();
     }
 
-    protected Object run() throws ClientException {
+    protected Object run() {
         final SyncHost host = host();
         SynchronizeDetails details = host.details();
         SynchronizeReport report = root().service.synchronizeVocabularies(details);

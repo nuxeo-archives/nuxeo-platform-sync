@@ -133,7 +133,7 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
     }
 
     @Override
-    public SynchronizeReport synchronizeRelations(SynchronizeDetails details) throws ClientException {
+    public SynchronizeReport synchronizeRelations(SynchronizeDetails details) {
         if (details == null) {
             throw new IllegalArgumentException("Cannot synchronize without synchronization details");
         }
@@ -145,7 +145,7 @@ public class SynchronizeServiceImpl extends DefaultComponent implements Synchron
     }
 
     @Override
-    public SynchronizeReport synchronizeVocabularies(SynchronizeDetails details) throws ClientException {
+    public SynchronizeReport synchronizeVocabularies(SynchronizeDetails details) {
         if (details == null) {
             throw new IllegalArgumentException("Cannot synchronize without synchronization details");
         }

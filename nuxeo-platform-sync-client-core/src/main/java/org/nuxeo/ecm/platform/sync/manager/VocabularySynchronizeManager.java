@@ -62,7 +62,7 @@ public class VocabularySynchronizeManager {
 
     }
 
-    public SynchronizeReport performChanges() throws ClientException {
+    public SynchronizeReport performChanges() {
         // get all vocabularies
         List<String> vocabularyNames = VocabularyUtils.getAllVocabularies();
         for (String vocabularyName : vocabularyNames) {
@@ -76,7 +76,7 @@ public class VocabularySynchronizeManager {
         return SynchronizeReport.newVocabulariesReport(vocabularyNames);
     }
 
-    private void syncronize(String vocabularyName, List<String> pathParams) throws ClientException {
+    private void syncronize(String vocabularyName, List<String> pathParams) {
 
         try {
             InputStream inputStream = httpClient.executeGetCall(pathParams, null);

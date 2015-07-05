@@ -55,9 +55,8 @@ public class FlagedDocumentSnapshotFactory {
      * 
      * @param document
      * @return
-     * @throws ClientException
      */
-    public FlagedDocumentSnapshot newDocumentSnapshot(DocumentModel document) throws ClientException {
+    public FlagedDocumentSnapshot newDocumentSnapshot(DocumentModel document) {
         hasBlobs = false;
         DocumentProperty[] props = getDocumentNoBlobProperties(document);
         ACE[] resACP = null;
@@ -71,7 +70,7 @@ public class FlagedDocumentSnapshotFactory {
         return new FlagedDocumentSnapshot(props, null, document.getPathAsString(), WsACE.wrap(resACP), hasBlobs);
     }
 
-    private DocumentProperty[] getDocumentNoBlobProperties(DocumentModel doc) throws ClientException {
+    private DocumentProperty[] getDocumentNoBlobProperties(DocumentModel doc) {
 
         List<DocumentProperty> props = new ArrayList<DocumentProperty>();
         if (doc != null) {
@@ -89,7 +88,7 @@ public class FlagedDocumentSnapshotFactory {
 
     @SuppressWarnings("unchecked")
     private void collectNoBlobProperty(String prefix, String rawName, Object value, List<DocumentProperty> props)
-            throws ClientException {
+            {
         // eliminate any prefix
         String[] tokens = rawName.split(":");
         String name = tokens[tokens.length - 1];
@@ -119,7 +118,7 @@ public class FlagedDocumentSnapshotFactory {
 
     @SuppressWarnings("unchecked")
     private void collectProperty(String prefix, String name, Object value, List<DocumentProperty> props)
-            throws ClientException {
+            {
         final String STRINGS_LIST_SEP = ";";
         if (value instanceof Map) {
             Map<String, Object> map = (Map<String, Object>) value;

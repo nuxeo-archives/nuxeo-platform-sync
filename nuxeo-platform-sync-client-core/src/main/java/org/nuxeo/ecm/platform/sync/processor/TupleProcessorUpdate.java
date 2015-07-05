@@ -95,9 +95,8 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
     /**
      * Sets the ACE on localDocument as super user.
      *
-     * @throws ClientException
      */
-    protected void setACE() throws ClientException {
+    protected void setACE() {
         ACL newACL = localDocument.getACP().getOrCreateACL();
         newACL.clear();
         try {
@@ -114,9 +113,8 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
     /**
      * Sets the properties on localDocument as super user. Lifecycle details are also included here.
      *
-     * @throws ClientException
      */
-    protected void setProperties() throws ClientException {
+    protected void setProperties() {
         setLifeCycle();
 
         try {
@@ -133,9 +131,8 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
     /**
      * Sets life cycle details on localDocument as super user.
      *
-     * @throws ClientException
      */
-    protected void setLifeCycle() throws ClientException {
+    protected void setLifeCycle() {
         String lifeCyclePolicy = ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_LIFECYCLE_POLICY);
         String destState = ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_LIFECYCLE_STATE);
         if (importConfiguration != null) {
@@ -162,10 +159,9 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
     /**
      * Sets properties (non blobs only) on the local document.
      *
-     * @throws ClientException
      */
     @SuppressWarnings("unchecked")
-    protected void setPropertiesOnDocument() throws ClientException {
+    protected void setPropertiesOnDocument() {
         // first prepare the list of properties as tree
         Map<String, Object> propertyTree = transformList(getDocumentSnapshot().getNoBlobProperties());
         // get the parts: one for each schema applied
@@ -272,11 +268,10 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * @param index the current segment
      * @param value the value string encoded
      * @param part the schema
-     * @throws ClientException
      */
     @SuppressWarnings("unchecked")
     private static Object getSegmentData(Map<String, Object> tree, String propertySegment, Type type)
-            throws ClientException {
+            {
         Object obj = tree.get(propertySegment);
         if (obj == null) {
             // set null value
@@ -351,7 +346,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      */
     @SuppressWarnings("unchecked")
     protected void processZippedDocument(File zipHandle) throws IOException, ParserConfigurationException,
-            SAXException, TransformerException, XPathExpressionException, ClientException {
+            SAXException, TransformerException, XPathExpressionException {
         ZipFile zipFile = new ZipFile(zipHandle);
         Enumeration<ZipEntry> entries = (Enumeration<ZipEntry>) zipFile.entries();
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -458,9 +453,8 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      *
      * @param initialXPath
      * @return
-     * @throws ClientException
      */
-    protected String correctXPath(String initialXPath) throws ClientException {
+    protected String correctXPath(String initialXPath) {
         // get schema name: it has to be the first part before :
         String[] tokens = initialXPath.split(":");
         if (tokens.length != 2) {
@@ -518,9 +512,8 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * reads document.xml and blob files from zip archive, saves the blobs temporary, and sets the blobs in local
      * document.
      *
-     * @throws ClientException
      */
-    protected void updateBlobs() throws ClientException {
+    protected void updateBlobs() {
         // first get blobs through export restlet
         SynchHttpClient httpClient = new SynchHttpClient(synchronizeDetails);
         String repoName = session.getRepositoryName();
@@ -563,9 +556,8 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
     /**
      * Saves the permissions of a document in unrestricted mode.
      *
-     * @throws ClientException
      */
-    protected DocumentModel updateDocument() throws ClientException {
+    protected DocumentModel updateDocument() {
         new UnrestrictedSaveDocument(session, localDocument).runUnrestricted();
         return localDocument;
     }
@@ -584,7 +576,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
         }
 
         @Override
-        public void run() throws ClientException {
+        public void run() {
             session.saveDocument(documentModel);
             session.save();
         }
