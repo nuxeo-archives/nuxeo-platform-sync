@@ -19,7 +19,6 @@
 
 package org.nuxeo.ecm.platform.sync.security;
 
-import org.nuxeo.ecm.core.api.DocumentException;
 import org.nuxeo.ecm.core.api.security.ACP;
 import org.nuxeo.ecm.core.api.security.Access;
 import static org.nuxeo.ecm.core.api.security.SecurityConstants.BROWSE;
@@ -72,13 +71,8 @@ public class ReadSecurityPolicy extends AbstractSecurityPolicy {
 
     protected boolean shouldDisableSecurityPolicy(Document doc, String permission) {
         SynchronizeService service = getSynchronizeService();
-        try {
-            String docPath = doc.getPath();
-            return service.shouldDisableReadSP(docPath, permission);
-        } catch (DocumentException e) {
-            // Do nothing, will return false
-        }
-        return false;
+        String docPath = doc.getPath();
+        return service.shouldDisableReadSP(docPath, permission);
     }
 
     protected SynchronizeService getSynchronizeService() {
