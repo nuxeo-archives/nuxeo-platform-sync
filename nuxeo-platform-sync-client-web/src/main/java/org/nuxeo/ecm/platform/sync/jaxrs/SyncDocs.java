@@ -46,7 +46,7 @@ public class SyncDocs extends SyncOp {
     }
 
     @POST
-    public Object doPost(@FormParam("query") @DefaultValue("SELECT * from Document") String query) throws Exception {
+    public Object doPost(@FormParam("query") @DefaultValue("SELECT * from Document") String query) {
         this.query = query;
         final SyncHost host = host();
         SynchronizeDetails details = host.details();

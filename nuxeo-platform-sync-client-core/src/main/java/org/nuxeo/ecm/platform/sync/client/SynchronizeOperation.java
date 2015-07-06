@@ -55,7 +55,7 @@ public class SynchronizeOperation {
     protected int port = -1;
 
     @OperationMethod
-    public void test() throws Exception {
+    public void test() {
         SynchronizeDetails syncDetails = new SynchronizeDetails();
         if (host != null)
             syncDetails.setHost(host);

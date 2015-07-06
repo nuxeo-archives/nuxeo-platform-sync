@@ -34,8 +34,7 @@ public interface SynchronizeService {
      * @param details - the details about the synchronization process
      * @param queryName - the query name to use server side
      */
-    SynchronizeReport synchronizeDocuments(CoreSession session, SynchronizeDetails details, String queryName)
-            throws Exception;
+    SynchronizeReport synchronizeDocuments(CoreSession session, SynchronizeDetails details, String queryName);
 
     /**
      * Synchronizes all the relations defined on the documents by using the synchronization details.This should happen
@@ -58,13 +57,12 @@ public interface SynchronizeService {
      *
      * @param session - the Nuxeo core session received from the web context
      * @param details - the details about the synchronization process
-     * @throws Exception
      */
-    SynchronizeReport synchronize(CoreSession session, SynchronizeDetails details, String queryName) throws Exception;
+    SynchronizeReport synchronize(CoreSession session, SynchronizeDetails details, String queryName);
 
     /**
      * Return the pre-configured connection parameters
-     * 
+     *
      * @return
      */
     SynchronizeDetails getDefaultDetails();

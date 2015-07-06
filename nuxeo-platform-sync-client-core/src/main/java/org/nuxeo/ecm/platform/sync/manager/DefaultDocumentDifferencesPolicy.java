@@ -19,7 +19,7 @@ public class DefaultDocumentDifferencesPolicy implements DocumentDifferencesPoli
     @Override
     public void process(DocumentModelList availableDocs, List<NuxeoSynchroTuple> tuples,
             List<NuxeoSynchroTuple> addedTuples, List<NuxeoSynchroTuple> modifiedTuples, List<String> deletedIds,
-            List<NuxeoSynchroTuple> movedTuples) throws Exception {
+            List<NuxeoSynchroTuple> movedTuples) {
 
         MonitorProvider.getMonitor().beginTask("Computing the differences", availableDocs.size());
         addedTuples.addAll(tuples);

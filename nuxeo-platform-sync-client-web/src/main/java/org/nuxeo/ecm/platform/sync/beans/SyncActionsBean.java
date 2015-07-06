@@ -68,7 +68,7 @@ public class SyncActionsBean implements Serializable {
     private SynchronizeService synchronizeService;
 
     @Create
-    public void initialize() throws Exception {
+    public void initialize() {
         log.debug("Initializing syncActions ...");
         synchronizeDetails = getSynchronizeService().getDefaultDetails();
         if (synchronizeDetails == null) {
@@ -87,12 +87,12 @@ public class SyncActionsBean implements Serializable {
         return goHome();
     }
 
-    public String doSynchronizeVocabularies() throws Exception {
+    public String doSynchronizeVocabularies() {
         getSynchronizeService().synchronizeVocabularies(synchronizeDetails);
         return goHome();
     }
 
-    public String doSynchronizeRelations() throws Exception {
+    public String doSynchronizeRelations() {
         getSynchronizeService().synchronizeRelations(synchronizeDetails);
         relationActions.resetStatements();
         return goHome();
@@ -119,7 +119,7 @@ public class SyncActionsBean implements Serializable {
         this.synchronizeDetails = synchronizeDetails;
     }
 
-    private SynchronizeService getSynchronizeService() throws Exception {
+    private SynchronizeService getSynchronizeService() {
         if (synchronizeService == null) {
             synchronizeService = Framework.getService(SynchronizeService.class);
         }

@@ -82,7 +82,7 @@ public class SyncRoot extends ModuleRoot {
     @POST
     @Path("synchronize")
     @Deprecated
-    public String synchronize(@FormParam("query") String query) throws Exception {
+    public String synchronize(@FormParam("query") String query) {
         throw new WebException(Status.BAD_REQUEST);
     }
 

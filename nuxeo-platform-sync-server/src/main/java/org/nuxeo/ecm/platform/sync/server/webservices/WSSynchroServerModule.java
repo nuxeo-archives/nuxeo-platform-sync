@@ -250,7 +250,7 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
     }
 
     private ContextDataInfo[] getContextData(CoreSession documentManager, DocumentModel document,
-            List<String> availableDocIds, DocumentModelList unrestrictedDocs) throws Exception {
+            List<String> availableDocIds, DocumentModelList unrestrictedDocs) {
 
         List<ContextDataInfo> listContextData = new ArrayList<ContextDataInfo>();
         DocumentModel sourceDocument = null;
