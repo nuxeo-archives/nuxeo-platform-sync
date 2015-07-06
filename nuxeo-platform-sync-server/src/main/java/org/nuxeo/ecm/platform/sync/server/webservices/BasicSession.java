@@ -23,9 +23,9 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.ClientRuntimeException;
 import org.nuxeo.ecm.core.api.CoreInstance;
 import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.runtime.api.Framework;
 
 /**
@@ -60,7 +60,7 @@ public class BasicSession {
         try {
             loginCtx.logout();
         } catch (LoginException e) {
-            throw new ClientRuntimeException(e);
+            throw new NuxeoException(e);
         }
     }
 
