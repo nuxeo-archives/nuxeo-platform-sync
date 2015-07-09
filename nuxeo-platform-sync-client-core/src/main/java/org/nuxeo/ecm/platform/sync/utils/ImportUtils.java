@@ -22,8 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.nuxeo.ecm.core.api.LifeCycleException;
 import org.nuxeo.ecm.core.lifecycle.LifeCycle;
-import org.nuxeo.ecm.core.lifecycle.LifeCycleException;
 import org.nuxeo.ecm.core.lifecycle.LifeCycleTransition;
 import org.nuxeo.ecm.platform.sync.webservices.generated.ContextDataInfo;
 
