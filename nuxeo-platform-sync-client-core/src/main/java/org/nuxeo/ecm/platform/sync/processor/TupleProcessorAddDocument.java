@@ -20,7 +20,6 @@ package org.nuxeo.ecm.platform.sync.processor;
 import org.apache.log4j.Logger;
 import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.common.utils.Path;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.impl.DocumentModelImpl;

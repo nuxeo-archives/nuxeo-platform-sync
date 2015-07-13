@@ -27,9 +27,9 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentSecurityException;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.platform.relations.web.listener.RelationActions;
 import org.nuxeo.ecm.platform.sync.api.SynchronizeService;
@@ -105,7 +105,7 @@ public class SyncActionsBean implements Serializable {
             root = documentManager.getDocument(new PathRef("/"));
             navigationContext.setCurrentDocument(root);
             return navigationContext.navigateToDocument(root);
-        } catch (ClientException e) {
+        } catch (DocumentSecurityException e) {
             log.error("Couldn't navigate to root document", e);
         }
         return "home";

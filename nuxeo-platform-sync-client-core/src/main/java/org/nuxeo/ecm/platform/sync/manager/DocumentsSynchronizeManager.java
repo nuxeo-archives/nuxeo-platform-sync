@@ -28,21 +28,23 @@ import javax.xml.ws.wsaddressing.W3CEndpointReference;
 
 import org.apache.log4j.Logger;
 import org.nuxeo.common.utils.Path;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.DocumentNotFoundException;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.event.EventServiceAdmin;
 import org.nuxeo.ecm.platform.sync.api.SynchronizeReport;
-import org.nuxeo.ecm.platform.sync.api.exception.SynchronizationException;
 import org.nuxeo.ecm.platform.sync.api.util.MonitorProvider;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 import org.nuxeo.ecm.platform.sync.client.ImportConfiguration;
 import org.nuxeo.ecm.platform.sync.processor.TupleProcessor;
+import org.nuxeo.ecm.platform.sync.webservices.generated.ClientAuthenticationException_Exception;
+import org.nuxeo.ecm.platform.sync.webservices.generated.ClientException_Exception;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoSynchroTuple;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoWSMainEntrancePoint;
 import org.nuxeo.ecm.platform.sync.webservices.generated.NuxeoWSMainEntrancePointService;
@@ -124,9 +126,9 @@ public class DocumentsSynchronizeManager {
                 // get the query to run from the server
                 query = wsas.getQueryAvailableDocumentListWithQuery(queryName);
             }
-        } catch (Exception e) {
+        } catch (ClientAuthenticationException_Exception | ClientException_Exception e) {
             log.debug("Problems retrieving the WSSynchroServerModule ...");
-            throw new ClientException(e);
+            throw new NuxeoException(e);
         }
         // computes the diffs
         processDifferences(tuples, query);
@@ -145,9 +147,6 @@ public class DocumentsSynchronizeManager {
             moveDocuments();
             // and update the modified ones
             updateDocuments(wsas);
-        } catch (ClientException e) {
-            log.error(e);
-            throw new ClientException(e);
         } finally {
             // enable the listener
             eventAdmin.setListenerEnabledFlag(DC_LISTENER, true);
@@ -215,25 +214,18 @@ public class DocumentsSynchronizeManager {
 
     private void processDifferences(List<NuxeoSynchroTuple> tuples, String queryName) {
         log.info("Getting the differences with the server ...");
-        try {
-
-            // make the query the client side to get all the documents
-            UnrestrictedSessionRunQuery query = new UnrestrictedSessionRunQuery(session, queryName);
-            query.runUnrestricted();
-            DocumentModelList availableDocs = query.result;
-
-            if (documentDifferencesPolicy != null) {
-                documentDifferencesPolicy.process(availableDocs, tuples, addedTuples, modifiedTuples, deletedIds,
-                        movedTuples);
+        // make the query the client side to get all the documents
+        UnrestrictedSessionRunQuery query = new UnrestrictedSessionRunQuery(session, queryName);
+        query.runUnrestricted();
+        DocumentModelList availableDocs = query.result;
+        if (documentDifferencesPolicy != null) {
+            documentDifferencesPolicy.process(availableDocs, tuples, addedTuples, modifiedTuples, deletedIds,
+                    movedTuples);
+        }
+        if (importConfiguration != null && importConfiguration.getGenerateNewId()) {
+            for (NuxeoSynchroTuple tuple : addedTuples) {
+                tuple.setClientId(UUID.randomUUID().toString());
             }
-
-            if (importConfiguration != null && importConfiguration.getGenerateNewId()) {
-                for (NuxeoSynchroTuple tuple : addedTuples) {
-                    tuple.setClientId(UUID.randomUUID().toString());
-                }
-            }
-        } catch (Exception e) {
-            throw new ClientException(e);
         }
     }
 
@@ -283,7 +275,7 @@ public class DocumentsSynchronizeManager {
                 try {
                     log.debug("Removing proxy: " + idRef);
                     session.removeDocument(idRef);
-                } catch (ClientException e) {
+                } catch (DocumentNotFoundException e) {
                     log.error(e);
                 }
             }
@@ -301,7 +293,7 @@ public class DocumentsSynchronizeManager {
                         try {
                             log.debug("Removing version: " + doc.getId());
                             session.removeDocument(docRef);
-                        } catch (ClientException e) {
+                        } catch (DocumentNotFoundException e) {
                             log.error(e);
                         }
                     }
@@ -317,7 +309,7 @@ public class DocumentsSynchronizeManager {
                 session.save();
                 log.debug("Removed all versions with a non null parent path to delete.");
                 MonitorProvider.getMonitor().worked(1);
-            } catch (ClientException e) {
+            } catch (DocumentNotFoundException e) {
                 log.error(e);
             }
 
@@ -332,7 +324,7 @@ public class DocumentsSynchronizeManager {
                 session.save();
                 log.debug("Removed all live documents to delete.");
                 MonitorProvider.getMonitor().worked(1);
-            } catch (ClientException e) {
+            } catch (DocumentNotFoundException e) {
                 log.error(e);
             }
         }
@@ -392,9 +384,9 @@ public class DocumentsSynchronizeManager {
 
     }
 
-    public void checkSynchronizeStatus() throws SynchronizationException {
+    public void checkSynchronizeStatus() {
         if (MonitorProvider.getMonitor().isCanceled()) {
-            throw new SynchronizationException("Synchronization canceled by user");
+            throw new NuxeoException("Synchronization canceled by user");
         }
     }
 
@@ -440,7 +432,7 @@ public class DocumentsSynchronizeManager {
             try {
                 DocumentModel doc = session.getDocument(new IdRef(id));
                 refs.add(new PathRef(doc.getPathAsString()));
-            } catch (ClientException e) {
+            } catch (DocumentNotFoundException e) {
                 log.warn("Cannot get access to document " + id, e);
             }
         }

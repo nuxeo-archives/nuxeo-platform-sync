@@ -32,7 +32,6 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.schema.SchemaManager;
 import org.nuxeo.ecm.core.schema.types.Field;
 import org.nuxeo.ecm.core.schema.types.Schema;
@@ -109,10 +108,7 @@ public class VocabularySynchronizeManager {
             return extractVocabulary(directorySchema, res);
         } catch (DocumentException e) {
             throw new Error("Unexpected error occured while parsing the vocabularies", e);
-        } catch (ClientException e) {
-            throw new Error("Unexpected error occured while parsing the vocabularies", e);
         }
-
     }
 
     @SuppressWarnings("rawtypes")

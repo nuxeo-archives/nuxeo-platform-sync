@@ -17,13 +17,14 @@
  */
 package org.nuxeo.ecm.platform.sync.manager;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.filters.StringInputStream;
-import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.platform.relations.api.Graph;
 import org.nuxeo.ecm.platform.relations.api.RelationManager;
 import org.nuxeo.ecm.platform.sync.api.SynchronizeReport;
@@ -34,7 +35,7 @@ import org.nuxeo.runtime.api.Framework;
 /**
  * The manager to take care the relations set synchronization. It simple replaces the local relations with the ones from
  * server.
- * 
+ *
  * @author <a href="mailto:cbaican@nuxeo.com">Catalin Baican</a>
  */
 public class RelationsSynchronizeManager {
@@ -46,14 +47,9 @@ public class RelationsSynchronizeManager {
     }
 
     public SynchronizeReport performChanges() {
-        RelationManager relationManager;
-        try {
-            relationManager = Framework.getService(RelationManager.class);
-            if (relationManager == null) {
-                throw new ClientException("Cannot get RelationManager");
-            }
-        } catch (Exception e) {
-            throw new ClientException("Cannot get RelationManager", e);
+        RelationManager relationManager = Framework.getService(RelationManager.class);
+        if (relationManager == null) {
+            throw new NuxeoException("Cannot get RelationManager");
         }
 
         Graph graph;
@@ -65,11 +61,7 @@ public class RelationsSynchronizeManager {
                 if (inputStream == null) {
                     throw new IllegalStateException("Cannot fetch graphs input from server");
                 }
-                try {
-                    graph = relationManager.getGraphByName(currentGraphName);
-                } catch (ClientException e) {
-                    throw new ClientException("Unable to get graph:" + currentGraphName);
-                }
+                graph = relationManager.getGraphByName(currentGraphName);
 
                 graph.clear();
 
@@ -77,8 +69,8 @@ public class RelationsSynchronizeManager {
                     String inputString = IOUtils.toString(inputStream, "ISO-8859-1");
                     InputStream inStream = new StringInputStream(new String(inputString.getBytes(), "UTF-8"));
                     graph.read(inStream, null, null);
-                } catch (Exception e) {
-                    throw new ClientException("Can't parse stream in UTF-8", e);
+                } catch (IOException e) {
+                    throw new NuxeoException("Can't parse stream in UTF-8", e);
                 }
             } finally {
                 // close connection

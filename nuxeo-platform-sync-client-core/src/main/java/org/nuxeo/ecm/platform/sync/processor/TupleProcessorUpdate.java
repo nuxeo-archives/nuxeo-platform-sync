@@ -49,10 +49,10 @@ import org.nuxeo.common.utils.FileUtils;
 import org.nuxeo.ecm.core.NXCore;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.Blobs;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.LifeCycleException;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.api.model.DocumentPart;
 import org.nuxeo.ecm.core.api.security.ACE;
@@ -196,9 +196,9 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                 Object value = null;
                 try {
                     value = getSegmentData(subTree, topProperty, field.getType());
-                } catch (ClientException ce) {
+                } catch (NuxeoException ce) {
                     // don't break, go further
-                    log.warn(topProperty + " couldn't be imported", ce);
+                    log.error(topProperty + " couldn't be imported", ce);
                     continue;
                 }
                 data.put(topProperty, value);
@@ -281,7 +281,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             if (obj instanceof String) {
                 return type.decode((String) obj);
             } else {
-                throw new ClientException("Property " + propertySegment + " holding complex object");
+                throw new NuxeoException("Property " + propertySegment + " holding complex object");
             }
         } else if (type.isListType()) {
             ListType ltype = (ListType) type;
@@ -295,7 +295,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                     // add elements to list
                     try {
                         list.add(getSegmentData(subTree, subSegment, ltype.getFieldType()));
-                    } catch (ClientException ce) {
+                    } catch (NuxeoException ce) {
                         // don't break, go further
                         log.warn(subSegment + " couldn't be imported", ce);
                         continue;
@@ -314,7 +314,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             return list;
         } else {
             if (obj instanceof String) {
-                throw new ClientException("Property " + propertySegment + " not holding complex object");
+                throw new NuxeoException("Property " + propertySegment + " not holding complex object");
             }
             Map<String, Object> subTree = (Map<String, Object>) obj;
             ComplexType ctype = (ComplexType) type;
@@ -323,7 +323,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                 // put elements in map
                 try {
                     map.put(subSegment, getSegmentData(subTree, subSegment, ctype.getField(subSegment).getType()));
-                } catch (ClientException ce) {
+                } catch (NuxeoException ce) {
                     // don't break, go further
                     log.warn(subSegment + " couldn't be imported", ce);
                     continue;
@@ -544,8 +544,9 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
         try {
             // process zip
             processZippedDocument(zipHandle);
-        } catch (Exception e) {
-            throw new ClientException(e);
+        } catch (IOException | XPathExpressionException | ParserConfigurationException | SAXException
+                | TransformerException e) {
+            throw new NuxeoException(e);
         } finally {
             if (zipHandle != null) {
                 zipHandle.delete();

@@ -28,7 +28,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 
 /**
@@ -67,10 +67,8 @@ public class SynchHttpClient {
         try {
             client.executeMethod(httpGet);
             return httpGet.getResponseBodyAsStream();
-        } catch (UnsupportedEncodingException e) {
-            throw new ClientException(e);
         } catch (IOException e) {
-            throw new ClientException(e);
+            throw new NuxeoException(e);
         }
     }
 

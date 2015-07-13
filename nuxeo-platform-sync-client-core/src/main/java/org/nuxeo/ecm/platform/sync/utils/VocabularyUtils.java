@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.directory.DirectoryException;
 import org.nuxeo.ecm.directory.Session;
 import org.nuxeo.ecm.directory.api.DirectoryService;
@@ -146,7 +146,7 @@ public class VocabularyUtils {
             dirService = Framework.getLocalService(DirectoryService.class);
         }
         if (dirService == null) {
-            throw new ClientException("Unable to get directoryService...");
+            throw new NuxeoException("Unable to get directoryService...");
         }
         return dirService;
     }

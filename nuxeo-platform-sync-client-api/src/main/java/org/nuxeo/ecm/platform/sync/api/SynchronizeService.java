@@ -15,7 +15,6 @@
 
 package org.nuxeo.ecm.platform.sync.api;
 
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 

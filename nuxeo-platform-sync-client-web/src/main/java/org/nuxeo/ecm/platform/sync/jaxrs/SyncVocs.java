@@ -21,7 +21,6 @@ import java.net.MalformedURLException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.platform.sync.api.SynchronizeReport;
 import org.nuxeo.ecm.platform.sync.api.util.SynchronizeDetails;
 import org.nuxeo.ecm.webengine.model.WebObject;

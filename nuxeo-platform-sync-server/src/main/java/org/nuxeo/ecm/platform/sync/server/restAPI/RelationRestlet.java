@@ -19,7 +19,6 @@ package org.nuxeo.ecm.platform.sync.server.restAPI;
 
 import java.io.ByteArrayOutputStream;
 
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.platform.relations.api.Graph;
 import org.nuxeo.ecm.platform.relations.api.RelationManager;
 import org.nuxeo.ecm.platform.ui.web.restAPI.BaseStatelessNuxeoRestlet;
@@ -30,7 +29,7 @@ import org.restlet.data.Response;
 
 /**
  * Simple restlet to export relation graphs.
- * 
+ *
  * @author <a href="mailto:cbaican@nuxeo.com">Catalin Baican</a>
  */
 public class RelationRestlet extends BaseStatelessNuxeoRestlet {
@@ -60,13 +59,7 @@ public class RelationRestlet extends BaseStatelessNuxeoRestlet {
             return;
         }
 
-        Graph graph;
-        try {
-            graph = relationManager.getGraphByName(graphName);
-        } catch (ClientException e) {
-            handleError(res, "Unable to get graph:" + graphName);
-            return;
-        }
+        Graph graph = relationManager.getGraphByName(graphName);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
