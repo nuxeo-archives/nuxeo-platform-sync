@@ -22,7 +22,6 @@ package org.nuxeo.ecm.platform.sync.server.webservices;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreInstance;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.NuxeoException;
@@ -51,7 +50,7 @@ public class BasicSession {
         try {
             loginCtx.login();
         } catch (LoginException e) {
-            throw new ClientException(e);
+            throw new NuxeoException(e);
         }
 
     }
@@ -76,17 +75,17 @@ public class BasicSession {
         try {
             loginContext = Framework.login(userName, password);
         } catch (LoginException e) {
-            throw new ClientException(e);
+            throw new NuxeoException(e);
         }
         try {
             session = CoreInstance.openCoreSession(repositoryName);
-        } catch (ClientException e) {
+        } catch (NuxeoException e) {
             try {
                 loginContext.logout();
             } catch (LoginException le) {
                 // not interested
             }
-            throw new ClientException(e);
+            throw e;
         }
         return new BasicSession(session, loginContext);
     }

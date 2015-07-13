@@ -35,13 +35,14 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.wsdl.EndpointReferenceUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.DocumentNotFoundException;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.Lock;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.api.VersionModel;
@@ -162,7 +163,7 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
 
         } catch (Exception ce) {
             log.error(ce);
-            throw new ClientException(ce);
+            throw new NuxeoException(ce);
 
         } finally {
             if (getSession() != null) {
@@ -220,17 +221,12 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
             CoreSession documentManager = getSession().getCoreSession();
             DocumentModel documentModel = documentManager.getDocument(new IdRef(uuid));
             ds = new FlagedDocumentSnapshotFactory().newDocumentSnapshot(documentModel);
-        } catch (ClientException e) {
+        } catch (DocumentNotFoundException e) {
             log.error(e);
             DocumentSourceUnrestricted usr = new DocumentSourceUnrestricted(getSession().getCoreSession(), new IdRef(
                     uuid));
-            try {
-                usr.runUnrestricted();
-                ds = usr.documentSnapshot;
-            } catch (ClientException e1) {
-                log.error(e1);
-            }
-
+            usr.runUnrestricted();
+            ds = usr.documentSnapshot;
         } finally {
             getSession().logout();
         }
@@ -413,9 +409,6 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
 
     private String getQuery(String queryName) {
         PageProviderService ppService = Framework.getLocalService(PageProviderService.class);
-        if (ppService == null) {
-            throw new ClientException("Unable to get PageProviderService");
-        }
         PageProviderDefinition def = ppService.getPageProviderDefinition(queryName);
         if (def != null) {
             return def.getPattern();
@@ -479,21 +472,17 @@ public class WSSynchroServerModule implements StatefulWebServiceManagement {
             try {
                 document = session.getDocument(ref);
                 // first the source of the version is retrieved
-                try {
-                    if (document.getSourceId() == null) {
-                        throw new ClientException("Document has null source document");
-                    }
-                    sourceDocument = session.getSourceDocument(ref);
-                    if (sourceDocument != null) {
-                        sourceId = sourceDocument.getId();
-                        this.sourceDocument = sourceDocument;
-                        versionsForSourceDocument = session.getVersionsForDocument(sourceDocument.getRef());
-                        VersioningDocument docVer = document.getAdapter(VersioningDocument.class);
-                        minorVer = docVer.getMinorVersion().toString();
-                        majorVer = docVer.getMajorVersion().toString();
-                    }
-                } catch (ClientException e) {
-                    log.error(e.getMessage(), e);
+                if (document.getSourceId() == null) {
+                    throw new NuxeoException("Document has null source document");
+                }
+                sourceDocument = session.getSourceDocument(ref);
+                if (sourceDocument != null) {
+                    sourceId = sourceDocument.getId();
+                    this.sourceDocument = sourceDocument;
+                    versionsForSourceDocument = session.getVersionsForDocument(sourceDocument.getRef());
+                    VersioningDocument docVer = document.getAdapter(VersioningDocument.class);
+                    minorVer = docVer.getMinorVersion().toString();
+                    majorVer = docVer.getMajorVersion().toString();
                 }
                 documentSnapshot = new FlagedDocumentSnapshotFactory().newDocumentSnapshot(document);
             } catch (Exception e) {

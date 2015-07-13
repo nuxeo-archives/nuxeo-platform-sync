@@ -24,9 +24,9 @@ import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.nuxeo.ecm.core.api.Blob;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DataModel;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACL;
 import org.nuxeo.ecm.core.api.security.ACP;
@@ -40,7 +40,7 @@ import org.nuxeo.runtime.api.Framework;
 /**
  * Class factory for flagged document shanpshot initialization. The code is basically the same as in
  * {@link NuxeoRemotingBean} but: that code is private and also we need the hasBlobs flag.
- * 
+ *
  * @author mcedica
  */
 public class FlagedDocumentSnapshotFactory {
@@ -52,7 +52,7 @@ public class FlagedDocumentSnapshotFactory {
 
     /**
      * Creates a new FlagedDocumentSnapshot based on the properties of the document.
-     * 
+     *
      * @param document
      * @return
      */
@@ -141,7 +141,7 @@ public class FlagedDocumentSnapshotFactory {
                         byte[] bytes = ((Blob) value).getByteArray();
                         strValue = Base64.encodeBase64String(bytes);
                     } catch (IOException e) {
-                        throw new ClientException("Failed to get blob property value", e);
+                        throw new NuxeoException("Failed to get blob property value", e);
                     }
                 } else if (value instanceof Calendar) {
                     strValue = new DateType().encode(value);

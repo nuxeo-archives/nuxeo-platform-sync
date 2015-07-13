@@ -26,7 +26,6 @@ import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.wsdl.EndpointReferenceUtils;
-import org.nuxeo.ecm.platform.sync.server.exceptions.ClientAuthenticationException;
 
 /**
  * Provides a clean way to obtain a WS-Addressing flavor web service. A client is wanting to use a certain Web Service.
@@ -46,15 +45,9 @@ public class NuxeoWSMainEntrancePoint {
 
     @WebMethod(operationName = "accessWSSynchroServerModule")
     public synchronized W3CEndpointReference accessWSSynchroServerModule(@WebParam(name = "repository") String repo,
-            @WebParam(name = "user") String userName, @WebParam(name = "password") String password)
-            throws ClientAuthenticationException {
+            @WebParam(name = "user") String userName, @WebParam(name = "password") String password) {
 
-        BasicSession session = null;
-        try {
-            session = BasicSession.getInstanceAsUser(repo, userName, password);
-        } catch (Exception e) {
-            throw new ClientAuthenticationException(e);
-        }
+        BasicSession session = BasicSession.getInstanceAsUser(repo, userName, password);
         session.logout();
         WSSynchroServerModule wssyncro = new WSSynchroServerModule(session);
 
