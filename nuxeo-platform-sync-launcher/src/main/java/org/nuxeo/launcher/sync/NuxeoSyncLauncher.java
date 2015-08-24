@@ -21,8 +21,10 @@ import static org.nuxeo.launcher.NuxeoLauncher.launch;
 import static org.nuxeo.launcher.NuxeoLauncher.printLongHelp;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import org.apache.commons.cli.ParseException;
+
 import org.nuxeo.connect.update.PackageException;
 import org.nuxeo.launcher.NuxeoLauncher;
 import org.nuxeo.launcher.config.ConfigurationException;
@@ -34,7 +36,8 @@ import org.nuxeo.launcher.config.ConfigurationException;
  */
 public class NuxeoSyncLauncher {
 
-    public static void main(String[] args) throws ConfigurationException, ParseException, IOException, PackageException {
+    public static void main(String[] args) throws ConfigurationException, ParseException, IOException,
+            PackageException, GeneralSecurityException {
         if (args.length == 0) {
             printLongHelp();
             return;
