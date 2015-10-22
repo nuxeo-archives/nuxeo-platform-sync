@@ -25,7 +25,7 @@ import javax.xml.ws.wsaddressing.W3CEndpointReference;
 
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
-import org.apache.cxf.wsdl.EndpointReferenceUtils;
+import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 
 /**
  * Provides a clean way to obtain a WS-Addressing flavor web service. A client is wanting to use a certain Web Service.
