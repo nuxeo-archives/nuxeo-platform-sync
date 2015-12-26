@@ -1,3 +1,21 @@
+/*
+ * (C) Copyright 2009 Nuxeo SA (http://nuxeo.com/) and others.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Contributors:
+ *     Quentin Lamerand
+ */
 package org.nuxeo.ecm.platform.sync.webservices.generated;
 
 import java.util.ArrayList;
@@ -12,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
  * Java class for nuxeoSynchroTuple complex type.
  * <p>
  * The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="nuxeoSynchroTuple">
  *   &lt;complexContent>
@@ -59,7 +77,7 @@ public class NuxeoSynchroTuple {
 
     /**
      * Gets the value of the adaptedId property.
-     * 
+     *
      * @return possible object is {@link String }
      */
     public String getAdaptedId() {
@@ -68,7 +86,7 @@ public class NuxeoSynchroTuple {
 
     /**
      * Sets the value of the adaptedId property.
-     * 
+     *
      * @param value allowed object is {@link String }
      */
     public void setAdaptedId(String value) {
@@ -77,7 +95,7 @@ public class NuxeoSynchroTuple {
 
     /**
      * Gets the value of the clientId property.
-     * 
+     *
      * @return possible object is {@link String }
      */
     public String getClientId() {
@@ -86,7 +104,7 @@ public class NuxeoSynchroTuple {
 
     /**
      * Sets the value of the clientId property.
-     * 
+     *
      * @param value allowed object is {@link String }
      */
     public void setClientId(String value) {
@@ -101,7 +119,7 @@ public class NuxeoSynchroTuple {
      * the contextData property.
      * <p>
      * For example, to add a new item, do as follows:
-     * 
+     *
      * <pre>
      * getContextData().add(newItem);
      * </pre>
@@ -117,7 +135,7 @@ public class NuxeoSynchroTuple {
 
     /**
      * Gets the value of the lastModification property.
-     * 
+     *
      * @return possible object is {@link Long }
      */
     public Long getLastModification() {
@@ -126,7 +144,7 @@ public class NuxeoSynchroTuple {
 
     /**
      * Sets the value of the lastModification property.
-     * 
+     *
      * @param value allowed object is {@link Long }
      */
     public void setLastModification(Long value) {
@@ -135,7 +153,7 @@ public class NuxeoSynchroTuple {
 
     /**
      * Gets the value of the path property.
-     * 
+     *
      * @return possible object is {@link String }
      */
     public String getPath() {
@@ -144,7 +162,7 @@ public class NuxeoSynchroTuple {
 
     /**
      * Sets the value of the path property.
-     * 
+     *
      * @param value allowed object is {@link String }
      */
     public void setPath(String value) {
@@ -167,7 +185,7 @@ public class NuxeoSynchroTuple {
 
     /**
      * Gets the value of the serverId property.
-     * 
+     *
      * @return possible object is {@link String }
      */
     public String getServerId() {
@@ -176,7 +194,7 @@ public class NuxeoSynchroTuple {
 
     /**
      * Sets the value of the serverId property.
-     * 
+     *
      * @param value allowed object is {@link String }
      */
     public void setServerId(String value) {
@@ -185,7 +203,7 @@ public class NuxeoSynchroTuple {
 
     /**
      * Gets the value of the type property.
-     * 
+     *
      * @return possible object is {@link String }
      */
     public String getType() {
@@ -194,7 +212,7 @@ public class NuxeoSynchroTuple {
 
     /**
      * Sets the value of the type property.
-     * 
+     *
      * @param value allowed object is {@link String }
      */
     public void setType(String value) {

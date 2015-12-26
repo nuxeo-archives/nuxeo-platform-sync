@@ -1,3 +1,21 @@
+/*
+ * (C) Copyright 2009 Nuxeo SA (http://nuxeo.com/) and others.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Contributors:
+ *     Quentin Lamerand
+ */
 package org.nuxeo.ecm.platform.sync.webservices.generated;
 
 import java.util.ArrayList;
@@ -13,7 +31,7 @@ import javax.xml.bind.annotation.XmlType;
  * Java class for documentSnapshot complex type.
  * <p>
  * The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="documentSnapshot">
  *   &lt;complexContent>
@@ -53,7 +71,7 @@ public class DocumentSnapshot {
      * the acl property.
      * <p>
      * For example, to add a new item, do as follows:
-     * 
+     *
      * <pre>
      * getAcl().add(newItem);
      * </pre>
@@ -75,7 +93,7 @@ public class DocumentSnapshot {
      * the blobProperties property.
      * <p>
      * For example, to add a new item, do as follows:
-     * 
+     *
      * <pre>
      * getBlobProperties().add(newItem);
      * </pre>
@@ -97,7 +115,7 @@ public class DocumentSnapshot {
      * the noBlobProperties property.
      * <p>
      * For example, to add a new item, do as follows:
-     * 
+     *
      * <pre>
      * getNoBlobProperties().add(newItem);
      * </pre>
@@ -113,7 +131,7 @@ public class DocumentSnapshot {
 
     /**
      * Gets the value of the pathAsString property.
-     * 
+     *
      * @return possible object is {@link String }
      */
     public String getPathAsString() {
@@ -122,7 +140,7 @@ public class DocumentSnapshot {
 
     /**
      * Sets the value of the pathAsString property.
-     * 
+     *
      * @param value allowed object is {@link String }
      */
     public void setPathAsString(String value) {
