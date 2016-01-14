@@ -415,7 +415,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                     collect.put(blobId, new XMLBlobData());
                 }
                 XMLBlobData blobData = collect.get(blobId);
-                File blobFile = File.createTempFile(blobId, "blob");
+                File blobFile = Framework.createTempFile(blobId, "blob");
                 FileUtils.copyToFile(zipFile.getInputStream(entry), blobFile);
                 blobData.blobFile = blobFile;
                 Framework.trackFile(blobFile, this);
@@ -529,7 +529,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
         try {
             InputStream inputStream = httpClient.executeGetCall(pathParams, params);
 
-            zipHandle = File.createTempFile("ZipFile", ".zip");
+            zipHandle = Framework.createTempFile("ZipFile", ".zip");
             FileUtils.copyToFile(inputStream, zipHandle);
             finished = true;
         } catch (Exception e) {
