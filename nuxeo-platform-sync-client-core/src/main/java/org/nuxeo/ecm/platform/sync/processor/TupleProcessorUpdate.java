@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2009 Nuxeo SA (http://nuxeo.com/) and others.
+ * (C) Copyright 2009-2016 Nuxeo SA (http://nuxeo.com/) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +96,6 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
 
     /**
      * Sets the ACE on localDocument as super user.
-     *
      */
     protected void setACE() {
         ACL newACL = localDocument.getACP().getOrCreateACL();
@@ -114,7 +113,6 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
 
     /**
      * Sets the properties on localDocument as super user. Lifecycle details are also included here.
-     *
      */
     protected void setProperties() {
         setLifeCycle();
@@ -132,15 +130,15 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
 
     /**
      * Sets life cycle details on localDocument as super user.
-     *
      */
     protected void setLifeCycle() {
         String lifeCyclePolicy = ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_LIFECYCLE_POLICY);
         String destState = ImportUtils.getContextDataInfo(contextData, CoreSession.IMPORT_LIFECYCLE_STATE);
         if (importConfiguration != null) {
             String importLC = importConfiguration.getClientLifeCycleStateFor(destState);
-            if (importLC != null && importLC.length() > 0)
+            if (importLC != null && importLC.length() > 0) {
                 destState = importLC;
+            }
         }
         String origState = localDocument.getCurrentLifeCycleState();
 
@@ -160,7 +158,6 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
 
     /**
      * Sets properties (non blobs only) on the local document.
-     *
      */
     @SuppressWarnings("unchecked")
     protected void setPropertiesOnDocument() {
@@ -171,7 +168,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
         // for each part hunt the properties in document snapshot
         for (DocumentPart part : parts) {
             // the map to accumulate the data
-            Map<String, Object> data = new HashMap<String, Object>();
+            Map<String, Object> data = new HashMap<>();
             // now look for properties
             Map<String, Object> subTree = (Map<String, Object>) propertyTree.get(part.getName());
             if (subTree == null) {
@@ -218,7 +215,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      */
     @SuppressWarnings("unchecked")
     private static Map<String, Object> transformList(List<DocumentProperty> properties) {
-        Map<String, Object> ret = new LinkedHashMap<String, Object>();
+        Map<String, Object> ret = new LinkedHashMap<>();
         for (DocumentProperty property : properties) {
             // get schema name: it has to be the first part before :
             String[] tokens = property.getName().split(":");
@@ -272,8 +269,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * @param part the schema
      */
     @SuppressWarnings("unchecked")
-    private static Object getSegmentData(Map<String, Object> tree, String propertySegment, Type type)
-            {
+    private static Object getSegmentData(Map<String, Object> tree, String propertySegment, Type type) {
         Object obj = tree.get(propertySegment);
         if (obj == null) {
             // set null value
@@ -287,7 +283,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             }
         } else if (type.isListType()) {
             ListType ltype = (ListType) type;
-            List<Object> list = new ArrayList<Object>();
+            List<Object> list = new ArrayList<>();
             if (obj instanceof String) {
                 // one single value?
                 list.add(ltype.getFieldType().decode((String) obj));
@@ -320,7 +316,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             }
             Map<String, Object> subTree = (Map<String, Object>) obj;
             ComplexType ctype = (ComplexType) type;
-            Map<String, Object> map = new HashMap<String, Object>();
+            Map<String, Object> map = new HashMap<>();
             for (String subSegment : subTree.keySet()) {
                 // put elements in map
                 try {
@@ -372,7 +368,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
 
             public File blobFile;
         }
-        Map<String, XMLBlobData> collect = new HashMap<String, XMLBlobData>();
+        Map<String, XMLBlobData> collect = new HashMap<>();
         while (entries.hasMoreElements()) {
             ZipEntry entry = entries.nextElement();
             if (entry.getName().endsWith("document.xml")) {
@@ -441,9 +437,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                 }
             }
         }
-        if (zipFile != null) {
-            zipFile.close();
-        }
+        zipFile.close();
     }
 
     /**
@@ -454,7 +448,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * and the [i] is missing, it is concluded that it is about a single item in list, which obviously is xpathed as [0]
      *
      * @param initialXPath
-     * @return
+     * @return the corrected XPath
      */
     protected String correctXPath(String initialXPath) {
         // get schema name: it has to be the first part before :
@@ -483,7 +477,6 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * @param type
      * @param segments
      * @param index
-     * @return
      */
     protected static String recursiveCorrectPath(Type type, String[] segments, int index) {
         if (index >= (segments.length - 1)) {
@@ -513,7 +506,6 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * Updates the blobs into the localDocument. It first retrieves the document exported using the ExportRestlet, then
      * reads document.xml and blob files from zip archive, saves the blobs temporary, and sets the blobs in local
      * document.
-     *
      */
     protected void updateBlobs() {
         // first get blobs through export restlet
@@ -521,7 +513,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
         String repoName = session.getRepositoryName();
         String docId = tuple.getServerId();
         List<String> pathParams = Arrays.asList(repoName, docId, "exportSingle");
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put("format", "zip");
 
         boolean finished = false;
@@ -558,7 +550,6 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
 
     /**
      * Saves the permissions of a document in unrestricted mode.
-     *
      */
     protected DocumentModel updateDocument() {
         new UnrestrictedSaveDocument(session, localDocument).runUnrestricted();
