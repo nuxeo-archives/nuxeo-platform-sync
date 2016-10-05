@@ -42,7 +42,6 @@ import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.impl.blob.URLBlob;
-import org.nuxeo.ecm.core.api.model.DocumentPart;
 import org.nuxeo.ecm.core.test.CoreFeature;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
@@ -110,7 +109,7 @@ public class TestXPathUtils {
         URLBlob blob = new URLBlob(documentUrl, "application/xml", "UTF-8");
         blob.setFilename("document.xml");
         for (String xpath : xpathList) {
-            sampleDoc.setPropertyValue(correctXPath(xpath, sampleDoc), blob);
+            sampleDoc.setPropertyValue(TupleProcessorUpdate.correctXPath(xpath), blob);
         }
 
         sampleDoc = session.createDocument(sampleDoc);
@@ -142,35 +141,6 @@ public class TestXPathUtils {
         XPathExpression xPathExpression = xPath.compile(xPathString);
         Object result = xPathExpression.evaluate(document, XPathConstants.NODESET);
         return (NodeList) result;
-    }
-
-    /**
-     * Copy of TupleProcessorUpdate#correctXPath which is not static due to a reference on localDocument
-     *
-     * @param initialXPath
-     * @param localDocument
-     * @return
-     */
-    protected String correctXPath(String initialXPath, DocumentModel localDocument) {
-        // get schema name: it has to be the first part before :
-        String[] tokens = initialXPath.split(":");
-        if (tokens.length != 2) {
-            // strange, no schema name? skip
-            log.warn(initialXPath + " no XPath: no schema found");
-            return null;
-        }
-        // get the segments of the property name
-        String[] segments = tokens[1].split("/");
-        if (segments.length == 0) {
-            // strange, no segments, only schema name? skip
-            log.warn(initialXPath + " no XPath: no segments found");
-            return null;
-        }
-        StringBuilder correctedXPath = new StringBuilder(tokens[0] + ":" + segments[0]);
-        DocumentPart part = localDocument.getPart(tokens[0]);
-        correctedXPath.append(TupleProcessorUpdate.recursiveCorrectPath(
-                part.getSchema().getField(segments[0]).getType(), segments, 1));
-        return correctedXPath.toString();
     }
 
 }

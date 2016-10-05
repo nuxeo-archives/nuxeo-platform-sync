@@ -56,15 +56,16 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.LifeCycleException;
 import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
-import org.nuxeo.ecm.core.api.model.DocumentPart;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACL;
 import org.nuxeo.ecm.core.lifecycle.LifeCycle;
 import org.nuxeo.ecm.core.lifecycle.LifeCycleService;
+import org.nuxeo.ecm.core.schema.SchemaManager;
 import org.nuxeo.ecm.core.schema.types.ComplexType;
 import org.nuxeo.ecm.core.schema.types.Field;
 import org.nuxeo.ecm.core.schema.types.JavaTypes;
 import org.nuxeo.ecm.core.schema.types.ListType;
+import org.nuxeo.ecm.core.schema.types.Schema;
 import org.nuxeo.ecm.core.schema.types.Type;
 import org.nuxeo.ecm.platform.sync.utils.ImportUtils;
 import org.nuxeo.ecm.platform.sync.utils.SynchHttpClient;
@@ -164,28 +165,29 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
         // first prepare the list of properties as tree
         Map<String, Object> propertyTree = transformList(getDocumentSnapshot().getNoBlobProperties());
         // get the parts: one for each schema applied
-        DocumentPart[] parts = localDocument.getParts();
         // for each part hunt the properties in document snapshot
-        for (DocumentPart part : parts) {
+        SchemaManager schemaManager = Framework.getService(SchemaManager.class);
+        for (String schemaName : localDocument.getSchemas()) {
             // the map to accumulate the data
             Map<String, Object> data = new HashMap<>();
             // now look for properties
-            Map<String, Object> subTree = (Map<String, Object>) propertyTree.get(part.getName());
+            Map<String, Object> subTree = (Map<String, Object>) propertyTree.get(schemaName);
             if (subTree == null) {
                 // no data for this map
                 continue;
             }
+            Schema schema = schemaManager.getSchema(schemaName);
             for (String topProperty : subTree.keySet()) {
-                Field field = part.getSchema().getField(topProperty);
+                Field field = schema.getField(topProperty);
                 if (field == null) {
                     // property required but not in schema
-                    log.warn(topProperty + " not in schema" + part.getName());
+                    log.warn(topProperty + " not in schema" + schemaName);
                     continue;
                 }
                 if (importConfiguration != null) {
                     String xpath = field.getName().getPrefix();
                     if (xpath == null || "".equals(xpath)) {
-                        xpath = part.getSchema().getName();
+                        xpath = schemaName;
                     }
                     xpath += ":" + field.getName().getLocalName();
                     if (importConfiguration.getExcludedFields().contains(xpath)) {
@@ -202,7 +204,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
                 }
                 data.put(topProperty, value);
             }
-            localDocument.setProperties(part.getName(), data);
+            localDocument.setProperties(schemaName, data);
         }
     }
 
@@ -450,7 +452,7 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
      * @param initialXPath
      * @return the corrected XPath
      */
-    protected String correctXPath(String initialXPath) {
+    protected static String correctXPath(String initialXPath) {
         // get schema name: it has to be the first part before :
         String[] tokens = initialXPath.split(":");
         if (tokens.length != 2) {
@@ -466,8 +468,9 @@ public abstract class TupleProcessorUpdate extends TupleProcessor {
             return null;
         }
         StringBuilder correctedXPath = new StringBuilder(tokens[0] + ":" + segments[0]);
-        DocumentPart part = localDocument.getPart(tokens[0]);
-        correctedXPath.append(recursiveCorrectPath(part.getSchema().getField(segments[0]).getType(), segments, 1));
+        SchemaManager schemaManager = Framework.getService(SchemaManager.class);
+        Type type = schemaManager.getSchema(tokens[0]).getField(segments[0]).getType();
+        correctedXPath.append(recursiveCorrectPath(type, segments, 1));
         return correctedXPath.toString();
     }
 
