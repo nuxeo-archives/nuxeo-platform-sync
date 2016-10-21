@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.nuxeo.ecm.core.api.Blob;
-import org.nuxeo.ecm.core.api.DataModel;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.security.ACE;
@@ -78,8 +77,7 @@ public class FlagedDocumentSnapshotFactory {
         if (doc != null) {
             String[] schemas = doc.getSchemas();
             for (String schema : schemas) {
-                DataModel dm = doc.getDataModel(schema);
-                Map<String, Object> map = dm.getMap();
+                Map<String, Object> map = doc.getProperties(schema);
                 for (Map.Entry<String, Object> entry : map.entrySet()) {
                     collectNoBlobProperty(schema + ":", entry.getKey(), entry.getValue(), props);
                 }
