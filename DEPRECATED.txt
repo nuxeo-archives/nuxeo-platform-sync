@@ -1,0 +1,1 @@
+The imaging-recompute module has been deprecated since 8.4 and removed from 8.10.
